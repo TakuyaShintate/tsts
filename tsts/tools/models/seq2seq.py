@@ -1,14 +1,13 @@
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Tuple
 
 import torch
-from nablasian.zoo.skeleton import Skeleton
 from torch import Tensor
-from torch.nn import Linear, LSTMCell, ModuleList
+from torch.nn import Linear, LSTMCell, Module, ModuleList
 
 __all__ = ["Seq2Seq"]
 
 
-class Seq2Seq(Skeleton):
+class Seq2Seq(Module):
     """Seq2Seq implementation.
 
     Parameters
@@ -19,16 +18,13 @@ class Seq2Seq(Skeleton):
     num_out_feats : int
         Number of output features
 
-    horizon : int
+    horizon : int, optional
         Indicate how many steps it predicts, by default 1
 
-    num_h_units : int
+    num_h_units : int, optional
         Number of hidden units, by default 64
 
-    path : Optional[str]
-        Model config path, by default None
-
-    depth : int
+    depth : int, optional
         Number of hidden layers, bu default 2
     """
 
@@ -38,15 +34,13 @@ class Seq2Seq(Skeleton):
         num_out_feats: int,
         horizon: int = 1,
         num_h_units: int = 64,
-        path: Optional[str] = None,
         depth: int = 2,
     ) -> None:
-        super(Seq2Seq, self).__init__(path)
+        super(Seq2Seq, self).__init__()
         self.num_in_feats = num_in_feats
         self.num_out_feats = num_out_feats
         self.horizon = horizon
         self.num_h_units = num_h_units
-        self.path = path
         self.depth = depth
         self._init_hidden_layers()
         self._init_regressor()
