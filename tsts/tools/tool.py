@@ -1,4 +1,4 @@
-class Tool(object):
+class _Tool(object):
     """Base tool class."""
 
     pass

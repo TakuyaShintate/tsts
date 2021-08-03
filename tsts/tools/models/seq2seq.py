@@ -1,10 +1,10 @@
-from typing import Any, List, Tuple
+from typing import List, Optional, Tuple
 
 import torch
 from torch import Tensor
 from torch.nn import Linear, LSTMCell, Module, ModuleList
 
-__all__ = ["Seq2Seq"]
+__all__ = ["seq2seq"]
 
 
 class Seq2Seq(Module):
@@ -102,8 +102,25 @@ class Seq2Seq(Module):
         mb_preds = mb_preds
         return mb_preds
 
-    def forward(self, mb_feats: Tensor, *args: Any) -> Tensor:
+    def forward(self, mb_feats: Tensor, mask: Optional[Tensor] = None) -> Tensor:
         mb_feats = self._run_encoder(mb_feats)
         mb_feats = self._run_decoder(mb_feats)
         mb_preds = self._run_regressor(mb_feats)
         return mb_preds
+
+
+def seq2seq(
+    num_in_feats: int,
+    num_out_feats: int,
+    lookback: int = 1,
+    horizon: int = 1,
+    num_h_units: int = 64,
+    depth: int = 2,
+) -> Seq2Seq:
+    return Seq2Seq(
+        num_in_feats,
+        num_out_feats,
+        horizon,
+        num_h_units,
+        depth,
+    )

@@ -1,8 +1,8 @@
 from typing import List
 
-from tsts.tools.models.seq2seq import Seq2Seq
+from tsts.tools.models.seq2seq import seq2seq
 
-__all__ = ["Seq2Seq"]
+__all__ = ["seq2seq"]
 
 
 def get_classifier_names() -> List[str]:
@@ -10,4 +10,4 @@ def get_classifier_names() -> List[str]:
 
 
 def get_forecaster_names() -> List[str]:
-    return ["Seq2Seq"]
+    return ["seq2seq"]
