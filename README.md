@@ -1,1 +1,1 @@
-![tsts-logo](img/tsts-log.png)
+![tsts-logo](img/tsts-logo.png)
