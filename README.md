@@ -1,2 +1,1 @@
-# tsts
-toolset for time series
+![tsts-logo](img/tsts-log.png)
