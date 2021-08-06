@@ -3,3 +3,7 @@
 ## Introduction
 
 tsts is an easy-to-use toolset for time series analysis.
+
+## Installation
+
+TODO
