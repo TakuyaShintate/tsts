@@ -18,16 +18,16 @@ LMN = 0
 MN = 1
 
 
-class _ForecasterDataset(Dataset):
-    def __init__(self, X: Tensor, lookback: int, horizon: int) -> None:
+class _ForecasterNMDataset(Dataset):
+    def __init__(
+        self, X: Tensor, y: Optional[Tensor], lookback: int, horizon: int
+    ) -> None:
         self.X = X
+        self.y = y
         self.lookback = lookback
         self.horizon = horizon
 
     def _verify_time_length(self, X: Tensor, lookback: int, horizon: int) -> None:
-        pass
-
-    def _infer_dataset_type(self, X: Tensor) -> int:
         pass
 
     def __len__(self) -> int:
@@ -35,7 +35,10 @@ class _ForecasterDataset(Dataset):
 
     def __getitem__(self, i: int) -> Tuple[Tensor, Tensor]:
         X = self.X[i : i + self.lookback]
-        y = self.X[i + self.lookback : i + self.lookback + self.horizon]
+        if self.y is not None:
+            y = self.y[i + self.lookback : i + self.lookback + self.horizon]
+        else:
+            y = self.X[i + self.lookback : i + self.lookback + self.horizon]
         return (X, y)
 
 
@@ -59,11 +62,13 @@ class Forecaster(_Tool):
         model_name: str = "seq2seq",
         lookback: int = 100,
         horizon: int = 1,
+        batch_size: int = 8,
     ) -> None:
         super(Forecaster, self).__init__()
         self.model_name = model_name
         self.lookback = lookback
         self.horizon = horizon
+        self.batch_size = batch_size
 
     def _infer_num_in_feats(self, X: Tensor) -> int:
         assert X.dim() == 2, "X has invalid shape"
@@ -80,8 +85,24 @@ class Forecaster(_Tool):
         model = cls(num_in_feats, num_out_feats, self.lookback, self.horizon)
         return model
 
-    def _build_dataloaders(self, X: Tensor) -> Tuple[DataLoader, DataLoader]:
-        pass
+    def _infer_dataset_type(self, X: Tensor) -> str:
+        num_dims = X.dim()
+        if num_dims == 2:
+            return "nm"
+        elif num_dims == 3:
+            return "lnm"
+        else:
+            raise ValueError("Invalid dataset")
+
+    def _build_dls(
+        self, X: Tensor, y: Optional[Tensor]
+    ) -> Tuple[DataLoader, DataLoader]:
+        dataset_type = self._infer_dataset_type(X)
+        if dataset_type == "nm":
+            dataset = _ForecasterNMDataset(X, y, self.lookback, self.horizon)
+        dl = DataLoader(dataset, self.batch_size)
+        # Dummy for test
+        return (dl, dl)
 
     def fit(
         self,
@@ -97,9 +118,10 @@ class Forecaster(_Tool):
             Input on witch the model is trained
 
         y : Optional[Tensor], optional
-            Dummy, by default None
+            Target, by default None
         """
         num_in_feats = self._infer_num_in_feats(X)
         num_out_feats = self._infer_num_out_feats(X)
         model = self._build_forecasting_model(num_in_feats, num_out_feats)
-        print(model)
+        (train_dl, val_dl) = self._build_dls(X, y)
+        print(next(iter(train_dl)))
