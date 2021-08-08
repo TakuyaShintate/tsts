@@ -3,10 +3,10 @@ from typing import List, Optional, Tuple
 import torch
 from torch import Tensor
 from torch.nn import Linear, LSTMCell, Module, ModuleList
+from tsts.core import MODELS
 
-__all__ = ["seq2seq"]
 
-
+@MODELS.register()
 class Seq2Seq(Module):
     """Seq2Seq implementation.
 
@@ -57,6 +57,7 @@ class Seq2Seq(Module):
         self.regressor = Linear(
             self.num_h_units,
             self.num_out_feats,
+            bias=False,
         )
 
     def _init_memory(
@@ -107,20 +108,3 @@ class Seq2Seq(Module):
         mb_feats = self._run_decoder(mb_feats)
         mb_preds = self._run_regressor(mb_feats)
         return mb_preds
-
-
-def seq2seq(
-    num_in_feats: int,
-    num_out_feats: int,
-    lookback: int = 1,
-    horizon: int = 1,
-    num_h_units: int = 64,
-    depth: int = 2,
-) -> Seq2Seq:
-    return Seq2Seq(
-        num_in_feats,
-        num_out_feats,
-        horizon,
-        num_h_units,
-        depth,
-    )
