@@ -1,13 +1,4 @@
-from typing import List
+import tsts.tools.models.seq2seq as seq2seq
+from tsts.tools.models.builder import build_model
 
-from tsts.tools.models.seq2seq import seq2seq
-
-__all__ = ["seq2seq"]
-
-
-def get_classifier_names() -> List[str]:
-    return []
-
-
-def get_forecaster_names() -> List[str]:
-    return ["seq2seq"]
+__all__ = ["build_model", "seq2seq"]

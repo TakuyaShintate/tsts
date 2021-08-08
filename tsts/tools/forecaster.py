@@ -1,45 +1,24 @@
-from typing import Optional, Tuple
+import copy
+from typing import Any, Dict, Optional, Tuple
 
 from torch import Tensor
 from torch.nn import Module
-from torch.utils.data import DataLoader, Dataset
-from tsts.tools.models import seq2seq
+from torch.optim import Adam
+from torch.utils.data import DataLoader
+from tsts.tools.datasets import ForecasterMNDataset
+from tsts.tools.models import build_model
 from tsts.tools.tool import _Tool
+from tsts.tools.trainers import SupervisedTrainer
 
 __all__ = ["Forecaster"]
 
 
-MODELS = {
-    "seq2seq": seq2seq,
-}
-
-# Dataset types
-LMN = 0
-MN = 1
-
-
-class _ForecasterNMDataset(Dataset):
-    def __init__(
-        self, X: Tensor, y: Optional[Tensor], lookback: int, horizon: int
-    ) -> None:
-        self.X = X
-        self.y = y
-        self.lookback = lookback
-        self.horizon = horizon
-
-    def _verify_time_length(self, X: Tensor, lookback: int, horizon: int) -> None:
-        pass
-
-    def __len__(self) -> int:
-        return len(self.X) - self.lookback - self.horizon
-
-    def __getitem__(self, i: int) -> Tuple[Tensor, Tensor]:
-        X = self.X[i : i + self.lookback]
-        if self.y is not None:
-            y = self.y[i + self.lookback : i + self.lookback + self.horizon]
-        else:
-            y = self.X[i + self.lookback : i + self.lookback + self.horizon]
-        return (X, y)
+DEFAULT_MODEL = "Seq2Seq"
+MN = 0
+LMN = 1
+TRAIN_INDEX = 0
+VAL_INDEX = 1
+INVALID_INDEX = -1
 
 
 class Forecaster(_Tool):
@@ -59,16 +38,21 @@ class Forecaster(_Tool):
 
     def __init__(
         self,
-        model_name: str = "seq2seq",
         lookback: int = 100,
         horizon: int = 1,
-        batch_size: int = 8,
+        batch_size: int = 32,
+        train_ratio: float = 0.75,
+        num_epochs: int = 100,
+        model_cfg: Dict[str, Any] = {},
+        dataset_cfg: Dict[str, Any] = {},
     ) -> None:
         super(Forecaster, self).__init__()
-        self.model_name = model_name
         self.lookback = lookback
         self.horizon = horizon
         self.batch_size = batch_size
+        self.train_ratio = train_ratio
+        self.num_epochs = num_epochs
+        self.model_cfg = model_cfg
 
     def _infer_num_in_feats(self, X: Tensor) -> int:
         assert X.dim() == 2, "X has invalid shape"
@@ -79,30 +63,83 @@ class Forecaster(_Tool):
         num_out_feats = self._infer_num_in_feats(y)
         return num_out_feats
 
-    def _build_forecasting_model(self, num_in_feats: int, num_out_feats: int) -> Module:
-        assert self.model_name in MODELS, "model_name is invalid"
-        cls = MODELS[self.model_name]
-        model = cls(num_in_feats, num_out_feats, self.lookback, self.horizon)
-        return model
+    def _build_model(self, num_in_feats: int, num_out_feats: int) -> Module:
+        cfg = copy.copy(self.model_cfg)
+        cfg.setdefault("name", DEFAULT_MODEL)
+        cfg.setdefault("args", {})
+        cfg["args"].setdefault("num_in_feats", num_in_feats)
+        cfg["args"].setdefault("num_out_feats", num_out_feats)
+        cfg["args"].setdefault("horizon", self.horizon)
+        return build_model(cfg)
 
-    def _infer_dataset_type(self, X: Tensor) -> str:
+    def _build_optimizer(self, model: Module) -> Adam:
+        optimizer = Adam(model.parameters(), 0.002)
+        return optimizer
+
+    def _infer_dataset_type(self, X: Tensor) -> int:
         num_dims = X.dim()
         if num_dims == 2:
-            return "nm"
+            return MN
         elif num_dims == 3:
-            return "lnm"
+            return LMN
         else:
             raise ValueError("Invalid dataset")
 
+    def _split_train_and_val_data(
+        self,
+        X: Tensor,
+        y: Optional[Tensor],
+        dataset_type: int,
+    ) -> Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]:
+        if dataset_type == MN:
+            num_samples = X.size(0)
+            num_train_samples = int(self.train_ratio * num_samples)
+            indices = X.new_zeros(num_samples)
+            offset = num_train_samples
+            indices[offset + self.lookback :] += VAL_INDEX
+            indices[offset : offset + self.lookback] += INVALID_INDEX
+        else:
+            raise NotImplementedError
+        train_X = X[indices == TRAIN_INDEX]
+        val_X = X[indices == VAL_INDEX]
+        if y is not None:
+            train_y: Optional[Tensor] = y[indices == TRAIN_INDEX]
+            val_y: Optional[Tensor] = y[indices == VAL_INDEX]
+        else:
+            train_y = None
+            val_y = None
+        return (train_X, val_X, train_y, val_y)
+
     def _build_dls(
-        self, X: Tensor, y: Optional[Tensor]
+        self,
+        X: Tensor,
+        y: Optional[Tensor],
     ) -> Tuple[DataLoader, DataLoader]:
         dataset_type = self._infer_dataset_type(X)
-        if dataset_type == "nm":
-            dataset = _ForecasterNMDataset(X, y, self.lookback, self.horizon)
-        dl = DataLoader(dataset, self.batch_size)
-        # Dummy for test
-        return (dl, dl)
+        (train_X, val_X, train_y, val_y) = self._split_train_and_val_data(
+            X,
+            y,
+            dataset_type,
+        )
+        if dataset_type == MN:
+            dataset = ForecasterMNDataset
+        else:
+            raise NotImplementedError
+        train_dataset = dataset(train_X, train_y, self.lookback, self.horizon)
+        val_dataset = dataset(val_X, val_y, self.lookback, self.horizon)
+        train_dl = DataLoader(train_dataset, self.batch_size, shuffle=True)
+        val_dl = DataLoader(val_dataset, self.batch_size)
+        return (train_dl, val_dl)
+
+    def _build_trainer(
+        self,
+        model: Module,
+        optimizer: Adam,
+        train_dl: DataLoader,
+        val_dl: DataLoader,
+    ) -> SupervisedTrainer:
+        trainer = SupervisedTrainer(model, optimizer, train_dl, val_dl)
+        return trainer
 
     def fit(
         self,
@@ -121,7 +158,10 @@ class Forecaster(_Tool):
             Target, by default None
         """
         num_in_feats = self._infer_num_in_feats(X)
-        num_out_feats = self._infer_num_out_feats(X)
-        model = self._build_forecasting_model(num_in_feats, num_out_feats)
+        num_out_feats = self._infer_num_out_feats(y if y is not None else X)
+        model = self._build_model(num_in_feats, num_out_feats)
+        optimizer = self._build_optimizer(model)
         (train_dl, val_dl) = self._build_dls(X, y)
-        print(next(iter(train_dl)))
+        trainer = self._build_trainer(model, optimizer, train_dl, val_dl)
+        for _ in range(self.num_epochs):
+            trainer.step()
