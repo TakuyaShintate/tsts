@@ -2,8 +2,11 @@ from typing import List, Optional, Tuple
 
 import torch
 from torch import Tensor
-from torch.nn import Linear, LSTMCell, Module, ModuleList
+from torch.nn import Linear, LSTMCell, ModuleList
+from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
+
+from .module import Module
 
 
 @MODELS.register()
@@ -18,8 +21,8 @@ class Seq2Seq(Module):
     num_out_feats : int
         Number of output features
 
-    horizon : int, optional
-        Indicate how many steps it predicts, by default 1
+    horizon : int. optional
+        Indicate how many steps it predicts by default 1
 
     num_h_units : int, optional
         Number of hidden units, by default 64
@@ -44,6 +47,20 @@ class Seq2Seq(Module):
         self.depth = depth
         self._init_hidden_layers()
         self._init_regressor()
+
+    @classmethod
+    def from_cfg(cls, num_in_feats: int, num_out_feats: int, cfg: CN) -> "Seq2Seq":
+        horizon = cfg.IO.HORIZON
+        num_h_units = cfg.MODEL.NUM_H_UNITS
+        depth = cfg.MODEL.DEPTH
+        model = cls(
+            num_in_feats,
+            num_out_feats,
+            horizon=horizon,
+            num_h_units=num_h_units,
+            depth=depth,
+        )
+        return model
 
     def _init_hidden_layers(self) -> None:
         self.encoder = ModuleList([LSTMCell(self.num_in_feats, self.num_h_units)])
