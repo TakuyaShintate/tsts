@@ -7,6 +7,7 @@ from tqdm import tqdm
 from tsts.cfg import CfgNode as CN
 from tsts.core import TRAINERS
 from tsts.losses import Loss
+from tsts.metrics import Metric
 from tsts.optimizers import Optimizer
 
 __all__ = ["SupervisedTrainer", "Trainer"]
@@ -18,6 +19,7 @@ class Trainer(object):
         model: Module,
         losses: List[Loss],
         weight_per_loss: List[float],
+        metrics: List[Metric],
         optimizer: Optimizer,
         train_dataloader: DataLoader,
         val_dataloader: DataLoader,
@@ -25,6 +27,7 @@ class Trainer(object):
         self.model = model
         self.losses = losses
         self.weight_per_loss = weight_per_loss
+        self.metrics = metrics
         self.optimizer = optimizer
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
@@ -40,6 +43,7 @@ class SupervisedTrainer(Trainer):
         cls,
         model: Module,
         losses: List[Loss],
+        metrics: List[Metric],
         optimizer: Optimizer,
         train_dataloader: DataLoader,
         val_dataloader: DataLoader,
@@ -50,6 +54,7 @@ class SupervisedTrainer(Trainer):
             model,
             losses,
             weight_per_loss,
+            metrics,
             optimizer,
             train_dataloader,
             val_dataloader,
@@ -75,11 +80,14 @@ class SupervisedTrainer(Trainer):
             self.optimizer.step()
             total_loss_val += loss_val.item()
         self.model.eval()
-        total_score = 0.0
         for (X, y) in tqdm(self.val_dataloader):
             Z = self.model(X)
-            score = (100 * torch.abs((Z - y) / y)).sum()
-            total_score += score.item()
-        print(total_score)
+            for (i, metric) in enumerate(self.metrics):
+                metric.update(Z, y)
+        ave_scores = []
+        for (i, metric) in enumerate(self.metrics):
+            ave_score = metric()
+            ave_scores.append(ave_score)
+        print(ave_scores)
         print(total_loss_val)
         return total_loss_val

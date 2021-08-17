@@ -4,6 +4,7 @@ from tsts.cfg import CfgNode as CN
 from tsts.core import TRAINERS
 from tsts.dataloaders import DataLoader
 from tsts.losses import Loss
+from tsts.metrics import Metric
 from tsts.models import Module
 from tsts.optimizers import Optimizer
 
@@ -15,6 +16,7 @@ __all__ = ["build_trainer"]
 def build_trainer(
     model: Module,
     losses: List[Loss],
+    metrics: List[Metric],
     optimizer: Optimizer,
     train_dataloader: DataLoader,
     val_dataloader: DataLoader,
@@ -25,6 +27,7 @@ def build_trainer(
     trainer = cls.from_cfg(
         model,
         losses,
+        metrics,
         optimizer,
         train_dataloader,
         val_dataloader,
