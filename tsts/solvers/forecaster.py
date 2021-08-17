@@ -9,6 +9,7 @@ from tsts.dataloaders import DataLoader, build_dataloader
 from tsts.datasets import Dataset, build_dataset
 from tsts.losses import Loss
 from tsts.losses.builder import build_losses
+from tsts.metrics import Metric, build_metrics
 from tsts.models import Module, build_model
 from tsts.optimizers import build_optimizer
 from tsts.trainers import Trainer, build_trainer
@@ -62,6 +63,10 @@ class Forecaster(Solver):
     def _build_losses(self) -> List[Loss]:
         losses = build_losses(self.cfg)
         return losses
+
+    def _build_metrics(self) -> List[Metric]:
+        metrics = build_metrics(self.cfg)
+        return metrics
 
     def _build_optimizer(self, model: Module) -> Optimizer:
         optimizer = build_optimizer(model.parameters(), self.cfg)
@@ -147,6 +152,7 @@ class Forecaster(Solver):
         self,
         model: Module,
         losses: List[Loss],
+        metrics: List[Metric],
         optimizer: Optimizer,
         train_dataloader: DataLoader,
         val_dataloader: DataLoader,
@@ -154,6 +160,7 @@ class Forecaster(Solver):
         trainer = build_trainer(
             model,
             losses,
+            metrics,
             optimizer,
             train_dataloader,
             val_dataloader,
@@ -180,6 +187,7 @@ class Forecaster(Solver):
         num_out_feats = self._infer_num_out_feats(y if y is not None else X)
         model = self._build_model(num_in_feats, num_out_feats)
         losses = self._build_losses()
+        metrics = self._build_metrics()
         optimizer = self._build_optimizer(model)
         (X_train, X_val, y_train, y_val) = self._split_train_and_val_data(X, y)
         train_dataset = self._build_train_dataset(X_train, y_train)
@@ -189,6 +197,7 @@ class Forecaster(Solver):
         trainer = self._build_trainer(
             model,
             losses,
+            metrics,
             optimizer,
             train_dataloader,
             val_dataloader,

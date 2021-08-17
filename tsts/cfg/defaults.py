@@ -51,6 +51,12 @@ _C.LOSSES.ARGS = [{}]
 # Loss function weights
 _C.LOSSES.WEIGHT_PER_LOSS = [1.0]
 
+_C.METRICS = CN()
+# Metric names
+_C.METRICS.NAMES = ["RMSE"]
+# Metric arguments
+_C.METRICS.ARGS = [{}]
+
 _C.DATASET = CN()
 # Train dataset name
 _C.DATASET.NAME_TRAIN = "Dataset"
