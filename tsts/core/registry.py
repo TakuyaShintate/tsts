@@ -1,6 +1,13 @@
 from typing import Any, Callable, Dict
 
-__all__ = ["MODELS"]
+__all__ = [
+    "COLLATORS",
+    "DATALOADERS",
+    "DATASETS",
+    "MODELS",
+    "OPTIMIZERS",
+    "TRAINERS",
+]
 
 
 class Registry(object):
@@ -35,4 +42,9 @@ class Registry(object):
         return wrapper
 
 
+COLLATORS = Registry()
+DATALOADERS = Registry()
+DATASETS = Registry()
 MODELS = Registry()
+OPTIMIZERS = Registry()
+TRAINERS = Registry()
