@@ -1,5 +1,3 @@
-from typing import Type
-
 from torch.nn import Module
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
@@ -11,7 +9,7 @@ def build_model(
     num_in_feats: int,
     num_out_feats: int,
     cfg: CN,
-) -> Type[Module]:
+) -> Module:
     """Build forecasting model.
 
     Parameters

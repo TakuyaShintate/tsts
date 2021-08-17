@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Optional
 
 from tsts.cfg import CfgNode as CN
 from tsts.core import DATASETS
@@ -14,7 +14,7 @@ def build_dataset(
     y: Optional[RawDataset],
     image_set: str,
     cfg: CN,
-) -> Type[Dataset]:
+) -> Dataset:
     if image_set == "train":
         dataset_name = cfg.DATASET.NAME_TRAIN
     else:
