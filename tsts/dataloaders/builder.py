@@ -1,5 +1,3 @@
-from typing import Type
-
 from tsts.cfg import CfgNode as CN
 from tsts.core import DATALOADERS
 from tsts.datasets import Dataset
@@ -10,10 +8,10 @@ __all__ = ["build_dataloader"]
 
 
 def build_dataloader(
-    dataset: Type[Dataset],
+    dataset: Dataset,
     image_set: str,
     cfg: CN,
-) -> Type[DataLoader]:
+) -> DataLoader:
     if image_set == "train":
         dataloader_name = cfg.DATALOADER.NAME_TRAIN
     else:

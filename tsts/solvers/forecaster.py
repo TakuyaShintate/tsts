@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Type
+from typing import List, Optional, Tuple
 
 import torch
 from torch import Tensor
@@ -7,6 +7,8 @@ from tsts.cfg import CfgNode as CN
 from tsts.cfg import get_cfg_defaults
 from tsts.dataloaders import DataLoader, build_dataloader
 from tsts.datasets import Dataset, build_dataset
+from tsts.losses import Loss
+from tsts.losses.builder import build_losses
 from tsts.models import Module, build_model
 from tsts.optimizers import build_optimizer
 from tsts.trainers import Trainer, build_trainer
@@ -50,15 +52,19 @@ class Forecaster(Solver):
         self,
         num_in_feats: int,
         num_out_feats: int,
-    ) -> Type[Module]:
+    ) -> Module:
         return build_model(
             num_in_feats,
             num_out_feats,
             self.cfg,
         )
 
-    def _build_optimizer(self, model: Type[Module]) -> Type[Optimizer]:
-        optimizer = build_optimizer(model.parameters(), self.cfg)  # type:ignore
+    def _build_losses(self) -> List[Loss]:
+        losses = build_losses(self.cfg)
+        return losses
+
+    def _build_optimizer(self, model: Module) -> Optimizer:
+        optimizer = build_optimizer(model.parameters(), self.cfg)
         return optimizer
 
     def _split_train_and_val_data(
@@ -93,7 +99,7 @@ class Forecaster(Solver):
         self,
         X: RawDataset,
         y: Optional[RawDataset],
-    ) -> Type[Dataset]:
+    ) -> Dataset:
         train_dataset = build_dataset(
             X,
             y,
@@ -106,7 +112,7 @@ class Forecaster(Solver):
         self,
         X: RawDataset,
         y: Optional[RawDataset],
-    ) -> Type[Dataset]:
+    ) -> Dataset:
         val_dataset = build_dataset(
             X,
             y,
@@ -117,8 +123,8 @@ class Forecaster(Solver):
 
     def _build_train_dataloader(
         self,
-        train_dataset: Type[Dataset],
-    ) -> Type[DataLoader]:
+        train_dataset: Dataset,
+    ) -> DataLoader:
         train_dataloader = build_dataloader(
             train_dataset,
             "train",
@@ -128,8 +134,8 @@ class Forecaster(Solver):
 
     def _build_val_dataloader(
         self,
-        val_dataset: Type[Dataset],
-    ) -> Type[DataLoader]:
+        val_dataset: Dataset,
+    ) -> DataLoader:
         val_dataloader = build_dataloader(
             val_dataset,
             "val",
@@ -139,13 +145,15 @@ class Forecaster(Solver):
 
     def _build_trainer(
         self,
-        model: Type[Module],
-        optimizer: Type[Optimizer],
-        train_dataloader: Type[DataLoader],
-        val_dataloader: Type[DataLoader],
-    ) -> Type[Trainer]:
+        model: Module,
+        losses: List[Loss],
+        optimizer: Optimizer,
+        train_dataloader: DataLoader,
+        val_dataloader: DataLoader,
+    ) -> Trainer:
         trainer = build_trainer(
             model,
+            losses,
             optimizer,
             train_dataloader,
             val_dataloader,
@@ -171,6 +179,7 @@ class Forecaster(Solver):
         num_in_feats = self._infer_num_in_feats(X)
         num_out_feats = self._infer_num_out_feats(y if y is not None else X)
         model = self._build_model(num_in_feats, num_out_feats)
+        losses = self._build_losses()
         optimizer = self._build_optimizer(model)
         (X_train, X_val, y_train, y_val) = self._split_train_and_val_data(X, y)
         train_dataset = self._build_train_dataset(X_train, y_train)
@@ -179,6 +188,7 @@ class Forecaster(Solver):
         val_dataloader = self._build_val_dataloader(val_dataset)
         trainer = self._build_trainer(
             model,
+            losses,
             optimizer,
             train_dataloader,
             val_dataloader,

@@ -1,8 +1,9 @@
-from typing import Type
+from typing import List
 
 from tsts.cfg import CfgNode as CN
 from tsts.core import TRAINERS
 from tsts.dataloaders import DataLoader
+from tsts.losses import Loss
 from tsts.models import Module
 from tsts.optimizers import Optimizer
 
@@ -12,16 +13,18 @@ __all__ = ["build_trainer"]
 
 
 def build_trainer(
-    model: Type[Module],
-    optimizer: Type[Optimizer],
-    train_dataloader: Type[DataLoader],
-    val_dataloader: Type[DataLoader],
+    model: Module,
+    losses: List[Loss],
+    optimizer: Optimizer,
+    train_dataloader: DataLoader,
+    val_dataloader: DataLoader,
     cfg: CN,
-) -> Type[Trainer]:
+) -> Trainer:
     trainer_name = cfg.TRAINER.NAME
     cls = TRAINERS[trainer_name]
     trainer = cls.from_cfg(
         model,
+        losses,
         optimizer,
         train_dataloader,
         val_dataloader,

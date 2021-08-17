@@ -43,6 +43,14 @@ _C.MODEL.NUM_H_UNITS = 64
 # Number of hidden layers in encoder and decoder
 _C.MODEL.DEPTH = 2
 
+_C.LOSSES = CN()
+# Loss function names
+_C.LOSSES.NAMES = ["MSE"]
+# Loss function arguments
+_C.LOSSES.ARGS = [{}]
+# Loss function weights
+_C.LOSSES.WEIGHT_PER_LOSS = [1.0]
+
 _C.DATASET = CN()
 # Train dataset name
 _C.DATASET.NAME_TRAIN = "Dataset"
