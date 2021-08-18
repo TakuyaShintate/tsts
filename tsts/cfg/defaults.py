@@ -39,9 +39,11 @@ _C.MODEL = CN()
 # Model name
 _C.MODEL.NAME = "Seq2Seq"
 # Number of hidden units in encoder and decoder
-_C.MODEL.NUM_H_UNITS = 32
+_C.MODEL.NUM_H_UNITS = 512
 # Number of hidden layers in encoder and decoder
-_C.MODEL.DEPTH = 1
+_C.MODEL.DEPTH = 2
+# Stack size of NBeats
+_C.MODEL.STACK_SIZE = 30
 
 _C.LOSSES = CN()
 # Loss function names
