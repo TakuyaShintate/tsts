@@ -9,7 +9,7 @@ _C.IO = CN()
 # Number of input time steps
 _C.IO.LOOKBACK = 100
 # Number of output time steps
-_C.IO.HORIZON = 1
+_C.IO.HORIZON = 8
 
 _C.TRAINING = CN()
 # Ratio of training dataset over validation dataset
@@ -39,9 +39,9 @@ _C.MODEL = CN()
 # Model name
 _C.MODEL.NAME = "Seq2Seq"
 # Number of hidden units in encoder and decoder
-_C.MODEL.NUM_H_UNITS = 64
+_C.MODEL.NUM_H_UNITS = 32
 # Number of hidden layers in encoder and decoder
-_C.MODEL.DEPTH = 2
+_C.MODEL.DEPTH = 1
 
 _C.LOSSES = CN()
 # Loss function names
@@ -64,7 +64,7 @@ _C.DATASET.NAME_TRAIN = "Dataset"
 _C.DATASET.NAME_VAL = "Dataset"
 
 _C.COLLATOR = CN()
-_C.COLLATOR.TRAIN_NAME = "Collator"
+_C.COLLATOR.NAME = "Collator"
 
 _C.DATALOADER = CN()
 # Train dataloader name

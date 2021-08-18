@@ -5,6 +5,7 @@ from torch import Tensor
 from torch.optim import Optimizer
 from tsts.cfg import CfgNode as CN
 from tsts.cfg import get_cfg_defaults
+from tsts.collators import Collator, build_collator
 from tsts.dataloaders import DataLoader, build_dataloader
 from tsts.datasets import Dataset, build_dataset
 from tsts.losses import Loss
@@ -126,13 +127,19 @@ class Forecaster(Solver):
         )
         return val_dataset
 
+    def _build_collator(self) -> Collator:
+        collator = build_collator(self.cfg)
+        return collator
+
     def _build_train_dataloader(
         self,
         train_dataset: Dataset,
+        collator: Collator,
     ) -> DataLoader:
         train_dataloader = build_dataloader(
             train_dataset,
             "train",
+            collator,
             self.cfg,
         )
         return train_dataloader
@@ -140,10 +147,12 @@ class Forecaster(Solver):
     def _build_val_dataloader(
         self,
         val_dataset: Dataset,
+        collator: Collator,
     ) -> DataLoader:
         val_dataloader = build_dataloader(
             val_dataset,
             "val",
+            collator,
             self.cfg,
         )
         return val_dataloader
@@ -192,8 +201,9 @@ class Forecaster(Solver):
         (X_train, X_val, y_train, y_val) = self._split_train_and_val_data(X, y)
         train_dataset = self._build_train_dataset(X_train, y_train)
         val_dataset = self._build_val_dataset(X_val, y_val)
-        train_dataloader = self._build_train_dataloader(train_dataset)
-        val_dataloader = self._build_val_dataloader(val_dataset)
+        collator = self._build_collator()
+        train_dataloader = self._build_train_dataloader(train_dataset, collator)
+        val_dataloader = self._build_val_dataloader(val_dataset, collator)
         trainer = self._build_trainer(
             model,
             losses,

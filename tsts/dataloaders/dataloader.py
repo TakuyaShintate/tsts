@@ -2,6 +2,7 @@ from typing import Type
 
 from torch.utils.data import DataLoader as _DataLoader
 from tsts.cfg import CfgNode as CN
+from tsts.collators import Collator
 from tsts.core import DATALOADERS
 from tsts.datasets import Dataset
 
@@ -15,6 +16,7 @@ class DataLoader(_DataLoader):
         cls,
         dataset: Type[Dataset],
         image_set: str,
+        collator: Collator,
         cfg: CN,
     ) -> "DataLoader":
         """Build dataloader from config.
@@ -42,5 +44,6 @@ class DataLoader(_DataLoader):
             dataset,  # type:ignore
             batch_size,
             shuffle=shuffle,
+            collate_fn=collator,  # type:ignore
         )
         return dataloader

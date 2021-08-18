@@ -15,6 +15,8 @@ class MSE(Loss):
         loss = cls()
         return loss
 
-    def forward(self, Z: Tensor, y: Tensor) -> Tensor:
-        loss_val = F.mse_loss(Z, y)
+    def forward(self, Z: Tensor, y: Tensor, y_mask: Tensor) -> Tensor:
+        loss_val = F.mse_loss(Z, y, reduction="none")
+        loss_val *= y_mask
+        loss_val = loss_val.mean()
         return loss_val
