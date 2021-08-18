@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 import torch
 from torch import Tensor
@@ -120,8 +120,8 @@ class Seq2Seq(Module):
         mb_preds = mb_preds
         return mb_preds
 
-    def forward(self, mb_feats: Tensor, mask: Optional[Tensor] = None) -> Tensor:
-        mb_feats = self._run_encoder(mb_feats)
+    def forward(self, X: Tensor, X_mask: Tensor) -> Tensor:
+        mb_feats = self._run_encoder(X)
         mb_feats = self._run_decoder(mb_feats)
         mb_preds = self._run_regressor(mb_feats)
         return mb_preds

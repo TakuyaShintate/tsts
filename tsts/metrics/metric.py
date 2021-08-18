@@ -16,7 +16,7 @@ class Metric(_Loss):
 
     def _reset_internal_state(self) -> None:
         self.total_score = 0.0
-        self.num_instances = 0.0
+        self.total_instances = 0.0
 
-    def update(self, Z: Tensor, y: Tensor) -> None:
+    def update(self, Z: Tensor, y: Tensor, y_mask: Tensor) -> None:
         raise NotImplementedError

@@ -64,8 +64,8 @@ class SupervisedTrainer(Trainer):
     def step(self) -> float:
         self.model.train()
         total_loss_val = 0.0
-        for (X, y) in tqdm(self.train_dataloader):
-            Z = self.model(X)
+        for (X, y, X_mask, y_mask) in tqdm(self.train_dataloader):
+            Z = self.model(X, X_mask)
             self.optimizer.zero_grad()
             device = Z.device
             loss_val = torch.tensor(
@@ -75,15 +75,15 @@ class SupervisedTrainer(Trainer):
             )
             for (i, loss) in enumerate(self.losses):
                 weight = self.weight_per_loss[i]
-                loss_val += weight * loss(Z, y)
+                loss_val += weight * loss(Z, y, y_mask)
             loss_val.backward()
             self.optimizer.step()
             total_loss_val += loss_val.item()
         self.model.eval()
-        for (X, y) in tqdm(self.val_dataloader):
-            Z = self.model(X)
+        for (X, y, X_mask, y_mask) in tqdm(self.val_dataloader):
+            Z = self.model(X, X_mask)
             for (i, metric) in enumerate(self.metrics):
-                metric.update(Z, y)
+                metric.update(Z, y, y_mask)
         ave_scores = []
         for (i, metric) in enumerate(self.metrics):
             ave_score = metric()

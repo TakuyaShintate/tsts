@@ -18,15 +18,16 @@ class RMSE(Metric):
         metric = cls()
         return metric
 
-    def update(self, Z: Tensor, y: Tensor) -> None:
+    def update(self, Z: Tensor, y: Tensor, y_mask: Tensor) -> None:
         mse = F.mse_loss(Z, y, reduction="none")
         rmse = mse.sqrt()
+        rmse *= y_mask
         score = rmse.sum().item()
         self.total_score += score
-        batch_size = Z.size(0)
-        self.num_instances += batch_size
+        instances = y_mask.sum().item()
+        self.total_instances += instances
 
     def forward(self) -> float:
-        ave_score = self.total_score / self.num_instances
+        ave_score = self.total_score / self.total_instances
         self._reset_internal_state()
         return ave_score
