@@ -1,4 +1,5 @@
-from typing import List, Optional, Tuple
+import os
+from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 from torch import Tensor
@@ -8,6 +9,7 @@ from tsts.cfg import get_cfg_defaults
 from tsts.collators import Collator, build_collator
 from tsts.dataloaders import DataLoader, build_dataloader
 from tsts.datasets import Dataset, build_dataset
+from tsts.loggers import Logger, build_logger
 from tsts.losses import Loss
 from tsts.losses.builder import build_losses
 from tsts.metrics import Metric, build_metrics
@@ -62,9 +64,10 @@ class Forecaster(Solver):
         )
         device = self.cfg.DEVICE
         model.to(device)
-        pretrain = self.cfg.MODEL.PRETRAIN
-        if len(pretrain) > 0:
-            state_dict = torch.load(pretrain)
+        log_dir = self.cfg.LOGGER.LOG_DIR
+        if os.path.exists(log_dir) is True:
+            model_path = os.path.join(log_dir, "model.pth")
+            state_dict = torch.load(model_path)
             model.load_state_dict(state_dict)
         return model
 
@@ -190,6 +193,25 @@ class Forecaster(Solver):
         )
         return trainer
 
+    def _build_logger(
+        self,
+        model: Module,
+        losses: List[Loss],
+        metrics: List[Metric],
+        meta_info: Dict[str, Any],
+    ) -> Logger:
+        logger = build_logger(
+            model,
+            losses,
+            metrics,
+            meta_info,
+            self.cfg,
+        )
+        return logger
+
+    def predict(self, X: RawDataset) -> None:
+        pass
+
     def fit(
         self,
         X: RawDataset,
@@ -217,6 +239,8 @@ class Forecaster(Solver):
         collator = self._build_collator()
         train_dataloader = self._build_train_dataloader(train_dataset, collator)
         val_dataloader = self._build_val_dataloader(val_dataset, collator)
+        meta_info = {"num_in_feats": num_in_feats, "num_out_feats": num_out_feats}
+        logger = self._build_logger(model, losses, metrics, meta_info)
         trainer = self._build_trainer(
             model,
             losses,
@@ -226,5 +250,6 @@ class Forecaster(Solver):
             val_dataloader,
         )
         num_epochs = self.cfg.TRAINING.NUM_EPOCHS
-        for _ in range(num_epochs):
-            trainer.step()  # type:ignore
+        for i in range(num_epochs):
+            (ave_loss_vals, ave_scores) = trainer.step()
+            logger.log(i, ave_loss_vals, ave_scores)

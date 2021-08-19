@@ -4,6 +4,7 @@ __all__ = [
     "COLLATORS",
     "DATALOADERS",
     "DATASETS",
+    "LOGGERS",
     "LOSSES",
     "METRICS",
     "MODELS",
@@ -47,6 +48,7 @@ class Registry(object):
 COLLATORS = Registry()
 DATALOADERS = Registry()
 DATASETS = Registry()
+LOGGERS = Registry()
 LOSSES = Registry()
 METRICS = Registry()
 MODELS = Registry()

@@ -1,6 +1,4 @@
-import os
-import uuid
-from typing import Any, Dict, List
+from typing import List, Tuple
 
 import torch
 from torch.nn import Module
@@ -25,7 +23,6 @@ class Trainer(object):
         optimizer: Optimizer,
         train_dataloader: DataLoader,
         val_dataloader: DataLoader,
-        log_dir: str,
         max_grad_norm: float,
         device: str,
     ) -> None:
@@ -36,47 +33,8 @@ class Trainer(object):
         self.optimizer = optimizer
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
-        self.log_dir = log_dir
         self.max_grad_norm = max_grad_norm
         self.device = device
-        self._init_internal_state()
-        self._init_log_dir()
-
-    def _init_internal_state(self) -> None:
-        self.epoch = 0
-        self.best_ave_score = float("inf")
-
-    def _init_log_dir(self) -> None:
-        os.mkdir(self.log_dir)
-
-    def log(
-        self,
-        ave_loss_vals: List[float],
-        ave_scores: List[float],
-    ) -> None:
-        # Update model params
-        current_ave_score = sum(ave_scores) / len(ave_scores)
-        if current_ave_score < self.best_ave_score:
-            self.best_ave_score = current_ave_score
-            root = os.path.join(self.log_dir, "model.pth")
-            torch.save(self.model.state_dict(), root)
-        # Add new record to log file
-        record: Dict[str, Any] = {
-            "epoch": self.epoch,
-            "loss": {},
-            "metric": {},
-        }
-        for (i, loss) in enumerate(self.losses):
-            loss_name = loss.__class__.__name__
-            ave_loss_val = ave_loss_vals[i]
-            record["loss"][loss_name] = ave_loss_val
-        for (i, metric) in enumerate(self.metrics):
-            metric_name = metric.__class__.__name__
-            ave_score = ave_scores[i]
-            record["metric"][metric_name] = ave_score
-        log_file = os.path.join(self.log_dir, "log.txt")
-        with open(log_file, "a") as f:
-            f.write(str(record) + "\n")
 
     def on_train(self) -> List[float]:
         raise NotImplementedError
@@ -84,11 +42,10 @@ class Trainer(object):
     def on_val(self) -> List[float]:
         raise NotImplementedError
 
-    def step(self) -> None:
+    def step(self) -> Tuple[List[float], List[float]]:
         ave_loss_vals = self.on_train()
         ave_scores = self.on_val()
-        self.log(ave_loss_vals, ave_scores)
-        self.epoch += 1
+        return (ave_loss_vals, ave_scores)
 
 
 @TRAINERS.register()
@@ -105,9 +62,6 @@ class SupervisedTrainer(Trainer):
         cfg: CN,
     ) -> "SupervisedTrainer":
         weight_per_loss = cfg.LOSSES.WEIGHT_PER_LOSS
-        log_dir = cfg.LOG_DIR
-        if log_dir == "auto":
-            log_dir = str(uuid.uuid4())
         max_grad_norm = cfg.TRAINER.MAX_GRAD_NORM
         device = cfg.DEVICE
         trainer = cls(
@@ -118,7 +72,6 @@ class SupervisedTrainer(Trainer):
             optimizer,
             train_dataloader,
             val_dataloader,
-            log_dir,
             max_grad_norm,
             device,
         )

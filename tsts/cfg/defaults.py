@@ -5,8 +5,6 @@ __all__ = ["get_cfg_defaults"]
 _C = CN()
 # Main device
 _C.DEVICE = "cpu"
-# Log directory name (if "auto", it is randomly generated)
-_C.LOG_DIR = "auto"
 
 _C.IO = CN()
 # Number of input time steps
@@ -43,8 +41,6 @@ _C.SOLVER.NAME = "Forecaster"
 _C.MODEL = CN()
 # Model name
 _C.MODEL.NAME = "Seq2Seq"
-# Pretrained model path
-_C.MODEL.PRETRAIN = ""
 # Number of hidden units in encoder and decoder
 _C.MODEL.NUM_H_UNITS = 512
 # Number of hidden layers in encoder and decoder
@@ -88,6 +84,11 @@ _C.DATALOADER.BATCH_SIZE_VAL = 100
 _C.DATALOADER.SHUFFLE_TRAIN = True
 # If True, shuffle validation dataset for every epoch
 _C.DATALOADER.SHUFFLE_VAL = False
+
+_C.LOGGER = CN()
+_C.LOGGER.NAME = "Logger"
+# Log directory name (if "auto", it is randomly generated)
+_C.LOGGER.LOG_DIR = "auto"
 
 
 def get_cfg_defaults() -> CN:
