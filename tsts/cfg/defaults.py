@@ -43,6 +43,8 @@ _C.SOLVER.NAME = "Forecaster"
 _C.MODEL = CN()
 # Model name
 _C.MODEL.NAME = "Seq2Seq"
+# Pretrained model path
+_C.MODEL.PRETRAIN = ""
 # Number of hidden units in encoder and decoder
 _C.MODEL.NUM_H_UNITS = 512
 # Number of hidden layers in encoder and decoder

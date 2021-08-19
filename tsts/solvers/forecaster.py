@@ -55,18 +55,31 @@ class Forecaster(Solver):
         num_in_feats: int,
         num_out_feats: int,
     ) -> Module:
-        return build_model(
+        model = build_model(
             num_in_feats,
             num_out_feats,
             self.cfg,
         )
+        device = self.cfg.DEVICE
+        model.to(device)
+        pretrain = self.cfg.MODEL.PRETRAIN
+        if len(pretrain) > 0:
+            state_dict = torch.load(pretrain)
+            model.load_state_dict(state_dict)
+        return model
 
     def _build_losses(self) -> List[Loss]:
         losses = build_losses(self.cfg)
+        device = self.cfg.DEVICE
+        for loss in losses:
+            loss.to(device)
         return losses
 
     def _build_metrics(self) -> List[Metric]:
         metrics = build_metrics(self.cfg)
+        device = self.cfg.DEVICE
+        for metric in metrics:
+            metric.to(device)
         return metrics
 
     def _build_optimizer(self, model: Module) -> Optimizer:
