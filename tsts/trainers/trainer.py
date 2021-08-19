@@ -1,4 +1,6 @@
-from typing import List
+import os
+import uuid
+from typing import Any, Dict, List
 
 import torch
 from torch.nn import Module
@@ -23,6 +25,8 @@ class Trainer(object):
         optimizer: Optimizer,
         train_dataloader: DataLoader,
         val_dataloader: DataLoader,
+        log_dir: str,
+        max_grad_norm: float,
     ) -> None:
         self.model = model
         self.losses = losses
@@ -31,9 +35,50 @@ class Trainer(object):
         self.optimizer = optimizer
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
+        self.log_dir = log_dir
+        self.max_grad_norm = max_grad_norm
+        self._init_internal_state()
+        self._init_log_dir()
 
-    def step(self) -> float:
+    def _init_internal_state(self) -> None:
+        self.epoch = 0
+
+    def _init_log_dir(self) -> None:
+        os.mkdir(self.log_dir)
+
+    def log(
+        self,
+        ave_loss_vals: List[float],
+        ave_scores: List[float],
+    ) -> None:
+        record: Dict[str, Any] = {
+            "epoch": self.epoch,
+            "loss": {},
+            "metric": {},
+        }
+        for (i, loss) in enumerate(self.losses):
+            loss_name = loss.__class__.__name__
+            ave_loss_val = ave_loss_vals[i]
+            record["loss"][loss_name] = ave_loss_val
+        for (i, metric) in enumerate(self.metrics):
+            metric_name = metric.__class__.__name__
+            ave_score = ave_scores[i]
+            record["metric"][metric_name] = ave_score
+        log_file = os.path.join(self.log_dir, "log.txt")
+        with open(log_file, "a") as f:
+            f.write(str(record) + "\n")
+
+    def on_train(self) -> List[float]:
         raise NotImplementedError
+
+    def on_val(self) -> List[float]:
+        raise NotImplementedError
+
+    def step(self) -> None:
+        ave_loss_vals = self.on_train()
+        ave_scores = self.on_val()
+        self.log(ave_loss_vals, ave_scores)
+        self.epoch += 1
 
 
 @TRAINERS.register()
@@ -50,6 +95,10 @@ class SupervisedTrainer(Trainer):
         cfg: CN,
     ) -> "SupervisedTrainer":
         weight_per_loss = cfg.LOSSES.WEIGHT_PER_LOSS
+        log_dir = cfg.LOG_DIR
+        if log_dir == "auto":
+            log_dir = str(uuid.uuid4())
+        max_grad_norm = cfg.TRAINER.MAX_GRAD_NORM
         trainer = cls(
             model,
             losses,
@@ -58,27 +107,41 @@ class SupervisedTrainer(Trainer):
             optimizer,
             train_dataloader,
             val_dataloader,
+            log_dir,
+            max_grad_norm,
         )
         return trainer
 
-    def step(self) -> float:
+    def on_train(self) -> List[float]:
         self.model.train()
-        total_loss_val = 0.0
+        ave_loss_vals = [0.0 for _ in range(len(self.losses))]
         for (X, y, X_mask, y_mask) in tqdm(self.train_dataloader):
             Z = self.model(X, X_mask)
             self.optimizer.zero_grad()
             device = Z.device
-            loss_val = torch.tensor(
+            total_loss_val = torch.tensor(
                 0.0,
                 dtype=torch.float32,
                 device=device,
             )
             for (i, loss) in enumerate(self.losses):
                 weight = self.weight_per_loss[i]
-                loss_val += weight * loss(Z, y, y_mask)
-            loss_val.backward()
+                loss_val = loss(Z, y, y_mask)
+                total_loss_val += weight * loss_val
+                ave_loss_vals[i] += loss_val.item()
+            total_loss_val.backward()
+            if self.max_grad_norm > 0:
+                torch.nn.utils.clip_grad_norm_(
+                    self.model.parameters(),
+                    self.max_grad_norm,
+                )
             self.optimizer.step()
-            total_loss_val += loss_val.item()
+        num_samples = len(self.train_dataloader)
+        for i in range(len(self.losses)):
+            ave_loss_vals[i] /= num_samples
+        return ave_loss_vals
+
+    def on_val(self) -> List[float]:
         self.model.eval()
         for (X, y, X_mask, y_mask) in tqdm(self.val_dataloader):
             Z = self.model(X, X_mask)
@@ -88,6 +151,4 @@ class SupervisedTrainer(Trainer):
         for (i, metric) in enumerate(self.metrics):
             ave_score = metric()
             ave_scores.append(ave_score)
-        print(ave_scores)
-        print(total_loss_val)
-        return total_loss_val
+        return ave_scores

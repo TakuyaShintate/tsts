@@ -3,7 +3,10 @@ from .cfg import CfgNode as CN
 __all__ = ["get_cfg_defaults"]
 
 _C = CN()
+# Main device
 _C.DEVICE = "cpu"
+# Log directory name (if "auto", it is randomly generated)
+_C.LOG_DIR = "auto"
 
 _C.IO = CN()
 # Number of input time steps
@@ -30,6 +33,8 @@ _C.OPTIMIZER.WEIGHT_DECAY = 1e-4
 _C.TRAINER = CN()
 # Trainer name
 _C.TRAINER.NAME = "SupervisedTrainer"
+# Maximum gradient norm
+_C.TRAINER.MAX_GRAD_NORM = 1.0
 
 _C.SOLVER = CN()
 # Solver name
