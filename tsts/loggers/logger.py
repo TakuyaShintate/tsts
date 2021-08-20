@@ -65,7 +65,7 @@ class Logger(object):
     def log(
         self,
         epoch: int,
-        ave_loss_vals: List[float],
+        ave_loss_vs: List[float],
         ave_scores: List[float],
     ) -> None:
         # Update model params
@@ -82,8 +82,8 @@ class Logger(object):
         }
         for (i, loss) in enumerate(self.losses):
             loss_name = loss.__class__.__name__
-            ave_loss_val = ave_loss_vals[i]
-            record["loss"][loss_name] = ave_loss_val
+            ave_loss_v = ave_loss_vs[i]
+            record["loss"][loss_name] = ave_loss_v
         for (i, metric) in enumerate(self.metrics):
             metric_name = metric.__class__.__name__
             ave_score = ave_scores[i]
