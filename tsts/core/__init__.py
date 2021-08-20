@@ -7,6 +7,7 @@ from tsts.core.registry import (
     METRICS,
     MODELS,
     OPTIMIZERS,
+    SCALERS,
     TRAINERS,
 )
 
@@ -19,5 +20,6 @@ __all__ = [
     "METRICS",
     "MODELS",
     "OPTIMIZERS",
+    "SCALERS",
     "TRAINERS",
 ]

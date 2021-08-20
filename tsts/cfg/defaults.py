@@ -68,6 +68,10 @@ _C.DATASET.NAME_TRAIN = "Dataset"
 # Validation dataset name
 _C.DATASET.NAME_VAL = "Dataset"
 
+_C.SCALER = CN()
+# Scaler name
+_C.SCALER.NAME = "MinMaxScaler"
+
 _C.COLLATOR = CN()
 _C.COLLATOR.NAME = "Collator"
 
