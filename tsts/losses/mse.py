@@ -1,3 +1,5 @@
+from typing import Any
+
 import torch.nn.functional as F
 from torch import Tensor
 from tsts.cfg import CfgNode as CN
@@ -11,8 +13,8 @@ __all__ = ["MSE"]
 @LOSSES.register()
 class MSE(Loss):
     @classmethod
-    def from_cfg(cls, cfg: CN) -> "MSE":
-        loss = cls()
+    def from_cfg(cls, cfg: CN, **loss_args: Any) -> "MSE":
+        loss = cls(**loss_args)
         return loss
 
     def forward(self, Z: Tensor, y: Tensor, y_mask: Tensor) -> Tensor:
