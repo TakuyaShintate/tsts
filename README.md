@@ -26,7 +26,7 @@ Use `predict` for inference.
 
 > Batch inference is no supported yet (we are working on it)
 
-`fit` method makes random named directory (it can be configured) which contains training log and model parameters. Refer to the directory to load pretrained model in your config.
+`fit` method makes random named directory (it can be configured) which contains training log and model parameters. Refer to the directory to load pretrained model by adding LOGGER section to a custom config.
 
 ```yaml
 # cos.yml
@@ -34,7 +34,7 @@ LOGGER:
   LOG_DIR: "b5a20cc3-6d8e-43a0-8d08-4357de81d8d7"
 ```
 
-Update default config by your config (`cos.yml`) and use it to use pretrained model for inference.
+Update default config by the custom config (`cos.yml`) and use it to load the pretrained model for inference.
 
 ```python
 import torch
