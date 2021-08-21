@@ -10,7 +10,7 @@ TODO
 
 ## Quick Start
 
-For training, use `fit` method as [sklearn].
+For training, use `fit` method as [sklearn](https://scikit-learn.org/stable/).
 
 ```python
 import torch
