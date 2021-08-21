@@ -1,3 +1,5 @@
+from typing import Any
+
 from torch import Tensor
 from tsts.cfg import CfgNode as CN
 from tsts.core import LOSSES
@@ -10,8 +12,8 @@ __all__ = ["MAPE"]
 @LOSSES.register()
 class MAPE(Loss):
     @classmethod
-    def from_cfg(cls, cfg: CN) -> "MAPE":
-        loss = cls()
+    def from_cfg(cls, cfg: CN, **loss_args: Any) -> "MAPE":
+        loss = cls(**loss_args)
         return loss
 
     def forward(self, Z: Tensor, y: Tensor, y_mask: Tensor) -> Tensor:

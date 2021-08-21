@@ -15,6 +15,6 @@ def build_losses(cfg: CN) -> List[Loss]:
         loss_name = cfg.LOSSES.NAMES[i]
         cls = LOSSES[loss_name]
         loss_args = cfg.LOSSES.ARGS[i]
-        loss = cls(**loss_args)
+        loss = cls.from_cfg(cfg, **loss_args)
         losses.append(loss)
     return losses

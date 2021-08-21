@@ -1,4 +1,14 @@
-from . import cfg, dataloaders, datasets, losses, metrics, models, optimizers, solvers
+from . import (
+    cfg,
+    dataloaders,
+    datasets,
+    losses,
+    metrics,
+    models,
+    optimizers,
+    solvers,
+    thirdparty,
+)
 
 __all__ = [
     "cfg",
@@ -9,4 +19,5 @@ __all__ = [
     "models",
     "optimizers",
     "solvers",
+    "thirdparty",
 ]
