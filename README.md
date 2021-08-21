@@ -6,7 +6,11 @@ tsts is an opensource easy-to-use toolset for time series forecasting.
 
 ## Installation
 
-TODO
+```
+git clone https://github.com/TakuyaShintate/tsts.git
+cd tsts
+pip install .
+```
 
 ## Quick Start
 
@@ -67,6 +71,27 @@ MODEL:
   NUM_H_UNITS: 512
 ```
 
+### Example
+
+Create a custom config to use the custom model.
+
+```yaml
+# custom_model.yml
+MODEL:
+  NAME: "Seq2Seq"
+```
+
+Then, update default config with the custom config and pass it to `Forecaster`.
+
+```python
+from tsts.cfg import get_cfg_defaults
+from tsts.solvers import Forecaster
+
+cfg = get_cfg_defaults()
+cfg.merge_from_file("custom_model.yml")
+forecaster = Forecaster(cfg)
+```
+
 ## Losses
 
 Add `LOSSES` section shown below to your config to use.
@@ -76,4 +101,26 @@ Add `LOSSES` section shown below to your config to use.
 ```yaml
 LOSSES:
   NAMES: ["DILATE"]
+```
+
+### Example
+
+Create a custom config to use the custom loss. Note `NAMES` takes a list of loss functions, which means multiple loss functions can be used. In that case, configure `WEIGHT_PER_LOSS` to reweight loss functions.
+
+```yaml
+# custom_loss.yml
+LOSSES:
+  NAMES: ["DILATE"]
+  WEIGHT_PER_LOSS: [1.0]  # Optional if only single loss function
+```
+
+Then, update default config with the custom config and pass it to `Forecaster`.
+
+```python
+from tsts.cfg import get_cfg_defaults
+from tsts.solvers import Forecaster
+
+cfg = get_cfg_defaults()
+cfg.merge_from_file("custom_loss.yml")
+forecaster = Forecaster(cfg)
 ```
