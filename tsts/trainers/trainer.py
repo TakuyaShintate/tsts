@@ -122,7 +122,8 @@ class SupervisedTrainer(Trainer):
             y = y.to(self.device)
             X_mask = X_mask.to(self.device)
             y_mask = y_mask.to(self.device)
-            Z = self.model(X, X_mask)
+            with torch.no_grad():
+                Z = self.model(X, X_mask)
             Z = self.scaler.inv_transform(Z)
             y = self.scaler.inv_transform(y)
             for metric in self.metrics:

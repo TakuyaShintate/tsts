@@ -20,11 +20,9 @@ _C.TRAINING.NUM_EPOCHS = 100
 
 _C.OPTIMIZER = CN()
 # OPTIM name
-_C.OPTIMIZER.NAME = "SGD"
+_C.OPTIMIZER.NAME = "Adam"
 # Learning rate
-_C.OPTIMIZER.LR = 0.01
-# Momentum factor
-_C.OPTIMIZER.MOMENTUM = 0.9
+_C.OPTIMIZER.LR = 0.001
 # L2 penalty factor
 _C.OPTIMIZER.WEIGHT_DECAY = 1e-4
 
@@ -42,7 +40,7 @@ _C.MODEL = CN()
 # Model name
 _C.MODEL.NAME = "Seq2Seq"
 # Number of hidden units in encoder and decoder
-_C.MODEL.NUM_H_UNITS = 512
+_C.MODEL.NUM_H_UNITS = 64
 # Number of hidden layers in encoder and decoder
 _C.MODEL.DEPTH = 2
 # Stack size of NBeats
