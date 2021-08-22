@@ -1,6 +1,9 @@
 import copy
-from typing import Any, Dict
+import typing
+from typing import Any, Dict, List, Union
 
+import torch
+from torch import Tensor
 from tsts.cfg import CfgNode as CN
 from tsts.core import SCALERS
 from tsts.types import RawDataset
@@ -14,39 +17,43 @@ __all__ = ["MinMaxScaler"]
 class MinMaxScaler(Scaler):
     def __init__(
         self,
-        min_v: float,
-        max_v: float,
+        min_v: Union[Tensor, List[List[float]]],
+        max_v: Union[Tensor, List[List[float]]],
         cfg: CN,
     ) -> None:
         super(MinMaxScaler, self).__init__()
-        self.min_v = min_v
-        self.max_v = max_v
+        if isinstance(min_v, Tensor) is False:
+            min_v = torch.tensor(min_v)
+        if isinstance(max_v, Tensor) is False:
+            max_v = torch.tensor(max_v)
+        self.min_v = typing.cast(Tensor, min_v)
+        self.max_v = typing.cast(Tensor, max_v)
         self.cfg = cfg
 
     @property
     def meta_info(self) -> Dict[str, Any]:
         return {
-            "min_v": self.min_v,
-            "max_v": self.max_v,
+            "min_v": self.min_v.tolist(),
+            "max_v": self.max_v.tolist(),
         }
 
     @classmethod
     def from_cfg(cls, X_or_y: RawDataset, cfg: CN) -> "MinMaxScaler":
         num_instances = len(X_or_y)
-        min_v = float("inf")
-        max_v = -float("inf")
+        num_feats = X_or_y[0].size(-1)
+        min_v = torch.zeros(num_feats) + float("inf")
+        max_v = torch.zeros(num_feats) - float("inf")
         for i in range(num_instances):
-            current_min_v = X_or_y[i].min().item()
-            current_max_v = X_or_y[i].max().item()
-            if current_min_v < min_v:
-                min_v = current_min_v
-            if current_max_v > max_v:
-                max_v = current_max_v
+            min_v = torch.minimum(min_v, X_or_y[i])
+            max_v = torch.maximum(max_v, X_or_y[i])
         scaler = cls(min_v, max_v, cfg)
         return scaler
 
     def transform(self, X_or_y: RawDataset) -> RawDataset:
         num_instances = len(X_or_y)
+        device = X_or_y[0].device
+        self.min_v = self.min_v.to(device)
+        self.max_v = self.max_v.to(device)
         X_or_y_new = copy.deepcopy(X_or_y)
         for i in range(num_instances):
             X_or_y_new[i] = (X_or_y[i] - self.min_v) / (self.max_v - self.min_v)
@@ -54,6 +61,9 @@ class MinMaxScaler(Scaler):
 
     def inv_transform(self, X_or_y: RawDataset) -> RawDataset:
         num_instances = len(X_or_y)
+        device = X_or_y[0].device
+        self.min_v = self.min_v.to(device)
+        self.max_v = self.max_v.to(device)
         X_or_y_new = copy.deepcopy(X_or_y)
         for i in range(num_instances):
             X_or_y_new[i] = X_or_y[i] * (self.max_v - self.min_v) + self.min_v

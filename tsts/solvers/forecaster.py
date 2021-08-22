@@ -5,6 +5,8 @@ from typing import Any, Dict, Optional
 import torch
 from torch import Tensor
 from tsts.core import SCALERS
+from tsts.models import Module
+from tsts.scalers import Scaler
 from tsts.types import RawDataset
 
 from .solver import Solver
@@ -15,25 +17,68 @@ __all__ = ["Forecaster"]
 class Forecaster(Solver):
     """Tool to solve time series forecasting."""
 
-    def predict(self, X: RawDataset) -> Tensor:
+    def _load_meta_info(self) -> Dict[str, Any]:
+        """Load meta info collected during training.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Meta info
+        """
         log_dir = self.cfg.LOGGER.LOG_DIR
         if os.path.exists(log_dir) is False:
             FileNotFoundError(f"{log_dir} not found")
         meta_info_path = os.path.join(log_dir, "meta.json")
         with open(meta_info_path, "r") as f:
             meta_info = json.load(f)
+        return meta_info
+
+    def _restore_model(self, meta_info: Dict[str, Any]) -> Module:
+        """Restore pretrained model by meta_info.
+
+        Parameters
+        ----------
+        meta_info : Dict[str, Any]
+            Meta info collected during training
+
+        Returns
+        -------
+        Module
+            Pretrained model
+        """
         num_in_feats = meta_info["num_in_feats"]
         num_out_feats = meta_info["num_out_feats"]
         model = self.build_model(num_in_feats, num_out_feats)
         model.eval()
+        return model
+
+    def _restore_scaler(self, meta_info: Dict[str, Any]) -> Scaler:
+        """Restore scaler used during training
+
+        Parameters
+        ----------
+        meta_info : Dict[str, Any]
+            Meta info collected during training
+
+        Returns
+        -------
+        Scaler
+            Scaler
+        """
         scaler_name = self.cfg.SCALER.NAME
         scaler = SCALERS[scaler_name](cfg=self.cfg, **meta_info["scaler"])
+        return scaler
+
+    def predict(self, X: RawDataset) -> Tensor:
+        meta_info = self._load_meta_info()
+        model = self._restore_model(meta_info)
+        scaler = self._restore_scaler(meta_info)
         X_new = scaler.transform(X)
         test_dataset = self.build_test_dataset(X_new)
         collator = self.build_collator()
         horizon = self.cfg.IO.HORIZON
         num_instances = len(test_dataset) + horizon - 1
-        Z_total = torch.zeros((num_instances, num_out_feats))
+        Z_total = torch.zeros((num_instances, meta_info["num_out_feats"]))
         device = self.cfg.DEVICE
         Z_total = Z_total.to(device)
         for i in range(len(test_dataset)):
@@ -49,7 +94,8 @@ class Forecaster(Solver):
                 Z_total[i : i + horizon - 1] /= 2.0
             else:
                 Z_total[i : i + horizon] += Z
-        Z_total = scaler.inv_transform(Z_total)
+        # FIXME: Type error
+        Z_total = scaler.inv_transform(Z_total)  # type: ignore
         return Z_total
 
     def fit(
