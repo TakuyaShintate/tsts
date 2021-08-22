@@ -28,10 +28,14 @@ class DILATE(Loss):
         Balancing parameter of shape and temporal losses, by default 0.5
 
     gamma: float, optional
-        Smoothing parameter of softmin, by default 0.01
+        Smoothing parameter of softmin, by default 0.001
     """
 
-    def __init__(self, alpha: float = 0.5, gamma: float = 0.01) -> None:
+    def __init__(
+        self,
+        alpha: float = 0.5,
+        gamma: float = 0.001,
+    ) -> None:
         super(DILATE, self).__init__()
         self.alpha = alpha
         self.gamma = gamma
