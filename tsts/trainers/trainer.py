@@ -116,6 +116,18 @@ class SupervisedTrainer(Trainer):
         return ave_loss_vs
 
     def on_val(self) -> List[float]:
+        """Evaluate model on validation dataset.
+
+        Notes
+        -----
+        Currently, it evaluates model per instance (not whole time series) and averages the score.
+        Evaluation on whole time series is the future work.
+
+        Returns
+        -------
+        List[float]
+            List of averaged scores
+        """
         self.model.eval()
         for (X, y, X_mask, y_mask) in tqdm(self.val_dataloader):
             X = X.to(self.device)
