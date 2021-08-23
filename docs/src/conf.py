@@ -22,5 +22,5 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 templates_path = ["_templates"]
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
-html_logo = "../img/tsts-logo.png"
+html_logo = "../../img/tsts-logo.png"
 html_theme_options = {"logo_only": True}
