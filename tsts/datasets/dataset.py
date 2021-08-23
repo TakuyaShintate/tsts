@@ -61,22 +61,18 @@ class Dataset(_Dataset):
         return dataset
 
     def __len__(self) -> int:
-        num_instances = len(self.X)
-        # No zero padding at the beginning
-        num_instances -= self.lookback
-        # No zero padding at the end
-        num_instances -= self.horizon
+        # For -1, every instance has target which horizon is larger than 0
+        num_instances = len(self.X) - 1
         return num_instances
 
     def __getitem__(self, i: int) -> Tuple[Tensor, Tensor]:
         dataset_type = infer_dataset_type(self.X)
         if dataset_type == "mn":
-            start = i
-            mid = i + self.lookback
-            end = i + self.lookback + self.horizon
+            start = max(0, i - self.lookback + 1)
+            mid = i + 1
+            end = i + 1 + self.horizon
             X = self.X[start:mid]
             if self.y is not None:
-
                 y = self.y[mid:end]
             else:
                 y = self.X[mid:end]
