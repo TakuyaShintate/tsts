@@ -16,6 +16,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
     "sphinx.ext.autodoc",
+    "sphinx.ext.githubpages",
 ]
 language = "en"
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
