@@ -8,18 +8,54 @@ __all__ = ["Collator"]
 
 @COLLATORS.register()
 class Collator(object):
-    def __init__(self, lookback: int, horizon: int) -> None:
+    """Basic collator.
+
+    Parameters
+    ----------
+    lookback : int, optional
+        Number of input time steps, by default 100
+
+    horizon : int, optional
+        Number of output time steps, by default 1
+    """
+
+    def __init__(
+        self,
+        lookback: int = 100,
+        horizon: int = 1,
+    ) -> None:
         self.lookback = lookback
         self.horizon = horizon
 
     @classmethod
     def from_cfg(cls, cfg: CN) -> "Collator":
+        """Build Collator from config.
+
+        Returns
+        -------
+        Collator
+            Built collator
+        """
         lookback = cfg.IO.LOOKBACK
         horizon = cfg.IO.HORIZON
         collator = cls(lookback, horizon)
         return collator
 
     def __call__(self, batch: RawBatch) -> Batch:
+        """Return structured batch.
+
+        It masks time series which is shorter than lookback or horizon by 0.
+
+        Parameters
+        ----------
+        batch : RawBatch
+            Non-padded time series
+
+        Returns
+        -------
+        Batch
+            Tuple of 0-padded input time series, 0-padded output time series and these masks.
+        """
         X_new = []
         y_new = []
         X_mask = []

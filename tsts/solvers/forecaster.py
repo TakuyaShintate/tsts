@@ -70,6 +70,21 @@ class Forecaster(Solver):
         return scaler
 
     def predict(self, X: RawDataset) -> Tensor:
+        """Return prediction.
+
+        If X consists of N time steps, prediction consists of N + horizon - 1. -1 is for the first
+        step. If the time steps of X are smaller than lookback, X is masked.
+
+        Parameters
+        ----------
+        X : RawDataset
+            Input time series
+
+        Returns
+        -------
+        Tensor
+            Precition
+        """
         meta_info = self._load_meta_info()
         model = self._restore_model(meta_info)
         scaler = self._restore_scaler(meta_info)
@@ -77,8 +92,13 @@ class Forecaster(Solver):
         test_dataset = self.build_test_dataset(X_new)
         collator = self.build_collator()
         horizon = self.cfg.IO.HORIZON
-        num_instances = len(test_dataset) + horizon - 1
-        Z_total = torch.zeros((num_instances, meta_info["num_out_feats"]))
+        num_instances = len(test_dataset)
+        Z_total = torch.zeros(
+            (
+                num_instances + horizon - 1,
+                meta_info["num_out_feats"],
+            ),
+        )
         device = self.cfg.DEVICE
         Z_total = Z_total.to(device)
         for i in range(len(test_dataset)):
