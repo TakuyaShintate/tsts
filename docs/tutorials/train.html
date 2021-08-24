@@ -92,13 +92,17 @@
               
             
             
-              <ul class="current">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Train (Sine/Cosine Curve)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#sine-curve">Sine Curve</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#sine-cosine-curve">Sine/Cosine Curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-configuration">(Step 1) Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-dataset-preparation">(Step 2) Dataset Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-start-training">(Step 3) Start Training</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../collators/collator.html">tsts.collators</a></li>
 </ul>
@@ -152,7 +156,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/getting-started/train.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/train.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -167,26 +171,85 @@
             
   <div class="section" id="train-sine-cosine-curve">
 <h1>Train (Sine/Cosine Curve)<a class="headerlink" href="#train-sine-cosine-curve" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will learn how to start training on a custom dataset.</p>
+<div class="section" id="workflow">
+<h2>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h2>
 <p>To start training, we have 3 steps:</p>
 <ol class="arabic simple">
-<li><p>(Optional) Make config</p></li>
-<li><p>Prepare training/validation dataset</p></li>
-<li><p>Run <cite>fit</cite> method</p></li>
+<li><p>(Optional) Make a config file</p></li>
+<li><p>Prepare training datasets (validation dataset should be included in training dataset)</p></li>
+<li><p>Run <strong>fit</strong> method</p></li>
 </ol>
-<div class="section" id="sine-curve">
-<h2>Sine Curve<a class="headerlink" href="#sine-curve" title="Permalink to this headline">¶</a></h2>
+<p>Let’s go through step by step.</p>
+</div>
+<div class="section" id="step-1-configuration">
+<h2>(Step 1) Configuration<a class="headerlink" href="#step-1-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Training process can be configured by a custom config file. In the following config file, model and the number of hidden units are indicated.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># first-config.yml</span>
+<span class="nt">MODEL</span><span class="p">:</span>
+  <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;NBeats&quot;</span>
+  <span class="nt">NUM_H_UNITS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">512</span>
+</pre></div>
+</div>
+<p>To update global configuration with the custom config file, pass the custom config file path to <strong>Forecaster</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
 
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">()</span>
+<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">(</span><span class="n">cfg_path</span><span class="o">=</span><span class="s2">&quot;first-config.yml&quot;</span><span class="p">)</span>
 <span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">sin_dataset</span><span class="p">])</span>
 </pre></div>
 </div>
+<p>You can see how it was changed by <strong>cfg</strong> property.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">forecaster</span><span class="o">.</span><span class="n">cfg</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="sine-cosine-curve">
-<h2>Sine/Cosine Curve<a class="headerlink" href="#sine-cosine-curve" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MODEL</span><span class="p">:</span>
+  <span class="nt">DEPTH</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="hll">  <span class="nt">NAME</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">NBeats</span>
+</span><span class="hll">  <span class="nt">NUM_H_UNITS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">512</span>
+</span></pre></div>
+</div>
+<p>See <strong>tsts.cfg.defaults.py</strong> for more details.</p>
+</div>
+<div class="section" id="step-2-dataset-preparation">
+<h2>(Step 2) Dataset Preparation<a class="headerlink" href="#step-2-dataset-preparation" title="Permalink to this headline">¶</a></h2>
+<p><strong>fit</strong> takes a list of dataset. Inside the method, each dataset is split into training dataset and validation dataset. You can specify the training dataset ratio by TRAINING.TRAIN_DATA_RATIO.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">TRAINING</span><span class="p">:</span>
+  <span class="nt">TRAIN_DATA_RATIO</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.8</span>
+</pre></div>
+</div>
+<p>Each dataset in the list must have the shape (number of instances, number of features).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
+
+<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sin_dataset</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>  <span class="c1"># (1000, 1)</span>
+</pre></div>
+</div>
+<p>If you want to use multiple datasets, add a new dataset to the list.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+<span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">cos_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="n">sin_dataset</span><span class="p">,</span> <span class="n">cos_dataset</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-start-training">
+<h2>(Step 3) Start Training<a class="headerlink" href="#step-3-start-training" title="Permalink to this headline">¶</a></h2>
+<p>Training can be started just by running <strong>fit</strong>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
+
+<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">()</span>
+<span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you have specific target time series, you can pass it by <strong>y</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
 
@@ -195,7 +258,7 @@
 <span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
 <span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">cos_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">()</span>
-<span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">sin_dataset</span><span class="p">,</span> <span class="n">cos_dataset</span><span class="p">])</span>
+<span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="p">[</span><span class="n">sin_dataset</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">cos_dataset</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>

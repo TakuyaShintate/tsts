@@ -40,7 +40,7 @@
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="../getting-started/train.html" /> 
+    <link rel="prev" title="Train (Sine/Cosine Curve)" href="../getting-started/train.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,7 +91,10 @@
               
             
             
-              <ul class="current">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/train.html">Train (Sine/Cosine Curve)</a></li>
+</ul>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">tsts.collators</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a></li>
@@ -168,7 +171,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="tsts.collators.build_collator">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsts.collators.</span></span><span class="sig-name descname"><span class="pre">build_collator</span></span><a class="reference internal" href="../_modules/tsts/collators/builder.html#build_collator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.collators.build_collator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Built collator.</p>
+<dd><p>Build collator.</p>
 <p>To configure collator, change lines which start with “_CN.COLLATOR”. For other settings not
 written in global configuration, refer to <cite>from_cfg method</cite> of each class.</p>
 <dl class="field-list simple">
@@ -196,12 +199,13 @@ written in global configuration, refer to <cite>from_cfg method</cite> of each c
 <dt class="sig sig-object py" id="tsts.collators.Collator">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsts.collators.</span></span><span class="sig-name descname"><span class="pre">Collator</span></span><a class="reference internal" href="../_modules/tsts/collators/collator.html#Collator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.collators.Collator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic collator.</p>
-<p>If lookback is 4 but the length of input time series is 2 i.e. [1, 2] (we remove feature
+<p>Padding works as the following example:</p>
+<p>If lookback is 4 but the length of input time series is 2 e.g. [1, 2] (we remove feature
 dimension for simplicity), it adds 0 paddings to the left i.e. [0, 0, 1, 2]. Instead of it, if
-horizon is 4 but the length of output time series is 2 i.e. [1, 2], it adds 0 paddings ti the
+horizon is 4 but the length of output time series is 2 e.g. [1, 2], it adds 0 paddings to the
 right i.e. [1, 2, 0, 0]. masks are used to specify which time steps are valid (not padded).
 For the examples above, masks for padded input time series and output time series are [0, 0, 1,
-1] and [0, 0, 1, 1].</p>
+1] and [1, 1, 0, 0].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -243,7 +247,7 @@ For the examples above, masks for padded input time series and output time serie
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="../getting-started/train.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../getting-started/train.html" class="btn btn-neutral float-left" title="Train (Sine/Cosine Curve)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
