@@ -1,6 +1,6 @@
-=========================
-Train (Sine/Cosine Curve)
-=========================
+============================
+Training (Sine/Cosine Curve)
+============================
 
 In this tutorial, we will learn how to start training on a custom dataset.
 
@@ -100,7 +100,7 @@ Training can be started just by running **fit**.
     forecaster = Forecaster()
     forecaster.fit(dataset)
 
-If you have specific target time series, you can pass it by **y**.
+If you have specific target time series, you can pass it by **y**. Then model is trained to predict **y**.
 
 .. code-block:: python
 

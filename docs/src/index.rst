@@ -21,6 +21,7 @@ Getting Started
 
     tutorials/train
     tutorials/infer
+    tutorials/gpu
 
 .. toctree::
     :maxdepth: 1
