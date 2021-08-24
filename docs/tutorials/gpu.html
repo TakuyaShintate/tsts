@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Train (Sine/Cosine Curve) &mdash; tsts  documentation</title>
+  <title>GPU Training &mdash; tsts  documentation</title>
   
 
   
@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tsts.collators" href="../collators/collator.html" />
-    <link rel="prev" title="API" href="../index.html" /> 
+    <link rel="prev" title="Inference (Sine/Cosine Curve)" href="infer.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,13 +92,16 @@
               
             
             
-              <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Train (Sine/Cosine Curve)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#sine-curve">Sine Curve</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#sine-cosine-curve">Sine/Cosine Curve</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="train.html">Train (Sine/Cosine Curve)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infer.html">Inference (Sine/Cosine Curve)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">GPU Training</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-gpu-for-training">Using GPU for Training</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../collators/collator.html">tsts.collators</a></li>
 </ul>
@@ -146,13 +149,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Train (Sine/Cosine Curve)</li>
+      <li>GPU Training</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/getting-started/train.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/gpu.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -165,37 +168,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="train-sine-cosine-curve">
-<h1>Train (Sine/Cosine Curve)<a class="headerlink" href="#train-sine-cosine-curve" title="Permalink to this headline">¶</a></h1>
-<p>To start training, we have 3 steps:</p>
-<ol class="arabic simple">
-<li><p>(Optional) Make config</p></li>
-<li><p>Prepare training/validation dataset</p></li>
-<li><p>Run <cite>fit</cite> method</p></li>
-</ol>
-<div class="section" id="sine-curve">
-<h2>Sine Curve<a class="headerlink" href="#sine-curve" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
-
-<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">()</span>
-<span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">sin_dataset</span><span class="p">])</span>
+  <div class="section" id="gpu-training">
+<h1>GPU Training<a class="headerlink" href="#gpu-training" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will learn how to use GPU for training.</p>
+<div class="section" id="using-gpu-for-training">
+<h2>Using GPU for Training<a class="headerlink" href="#using-gpu-for-training" title="Permalink to this headline">¶</a></h2>
+<p>To use GPU for training, specify <strong>DEVICE</strong> in a config file.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># gpu-training.yml</span>
+<span class="nt">DEVICE</span><span class="p">:</span> <span class="s">&quot;cuda:0&quot;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="sine-cosine-curve">
-<h2>Sine/Cosine Curve<a class="headerlink" href="#sine-cosine-curve" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
+<p>Initialize <strong>Forecaster</strong> with the config file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
 
-<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-<span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">cos_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">()</span>
-<span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">sin_dataset</span><span class="p">,</span> <span class="n">cos_dataset</span><span class="p">])</span>
+<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">(</span><span class="s2">&quot;gpu-training.yml&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -212,7 +198,7 @@
         <a href="../collators/collator.html" class="btn btn-neutral float-right" title="tsts.collators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="infer.html" class="btn btn-neutral float-left" title="Inference (Sine/Cosine Curve)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

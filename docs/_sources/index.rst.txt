@@ -20,6 +20,8 @@ Getting Started
     :caption: Tutorials
 
     tutorials/train
+    tutorials/infer
+    tutorials/gpu
 
 .. toctree::
     :maxdepth: 1

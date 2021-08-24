@@ -1,6 +1,6 @@
-=========================
-Train (Sine/Cosine Curve)
-=========================
+============================
+Training (Sine/Cosine Curve)
+============================
 
 In this tutorial, we will learn how to start training on a custom dataset.
 
