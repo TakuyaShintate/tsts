@@ -26,9 +26,9 @@ When training starts, a log directory where the results are saved will be made. 
 
 .. code-block:: python
 
-    from tsts.solvers import Forecaster
+    from tsts.solvers import TimeSeriesForecaster
 
-    forecaster = Forecaster("infer.yml")
+    forecaster = TimeSeriesForecaster("infer.yml")
 
 To specify the name of **log_dir**, pass a config file when starting training.
 
@@ -41,11 +41,11 @@ To specify the name of **log_dir**, pass a config file when starting training.
 .. code-block:: python
 
     import torch
-    from tsts.solvers import Forecaster
+    from tsts.solvers import TimeSeriesForecaster
 
     sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
     sin_dataset = sin_dataset.unsqueeze(-1)
-    forecaster = Forecaster("custom-log-dir.yml")
+    forecaster = TimeSeriesForecaster("custom-log-dir.yml")
     forecaster.fit([sin_dataset])
 
 (Step 2) Running Inference
@@ -56,11 +56,11 @@ Run **predict** method to infer on test data.
 .. code-block:: python
 
     import torch
-    from tsts.solvers import Forecaster
+    from tsts.solvers import TimeSeriesForecaster
 
     test_data = torch.arange(0, 10, 0.1)
     test_data = test_data.unsqueeze(-1)
-    forecaster = Forecaster("custom-log-dir.yml")
+    forecaster = TimeSeriesForecaster("custom-log-dir.yml")
     print(forecaster.predict(test_data))
 
     """

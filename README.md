@@ -9,9 +9,21 @@ tsts is an opensource easy-to-use toolset for time series forecasting.
 ## Installation
 
 ```
-git clone https://github.com/TakuyaShintate/tsts.git
-cd tsts
-pip install .
+pip install -i https://test.pypi.org/simple/ tsts
+```
+
+## Getting Started
+
+Following example shows how to train a model on sine curve dataset. See [Docs](https://takuyashintate.github.io/tsts/) for the details.
+
+```python
+import torch
+from tsts.solvers import TimeSeriesForecaster
+
+sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
+sin_dataset = sin_dataset.unsqueeze(-1)
+forecaster = TimeSeriesForecaster()
+forecaster.fit([sin_dataset])
 ```
 
 ## Available Modules

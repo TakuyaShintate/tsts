@@ -14,10 +14,10 @@ To use GPU for training, specify **DEVICE** in a config file.
     # gpu-training.yml
     DEVICE: "cuda:0"
 
-Initialize **Forecaster** with the config file.
+Initialize **TimeSeriesForecaster** with the config file.
 
 .. code-block:: python
 
-    from tsts.solvers import Forecaster
+    from tsts.solvers import TimeSeriesForecaster
 
-    forecaster = Forecaster("gpu-training.yml")
+    forecaster = TimeSeriesForecaster("gpu-training.yml")

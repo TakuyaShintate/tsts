@@ -107,7 +107,10 @@
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../collators/collator.html">tsts.collators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../losses/loss.html">tsts.losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics/metric.html">tsts.metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../models/model.html">tsts.models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optimizers/optimizer.html">tsts.optimizers</a></li>
 </ul>
 
             
@@ -194,13 +197,13 @@
   <span class="nt">NUM_H_UNITS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">512</span>
 </pre></div>
 </div>
-<p>To update global configuration with the custom config file, pass the custom config file path to <strong>Forecaster</strong>.</p>
+<p>To update global configuration with the custom config file, pass the custom config file path to <strong>TimeSeriesForecaster</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
+<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">TimeSeriesForecaster</span>
 
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">(</span><span class="n">cfg_path</span><span class="o">=</span><span class="s2">&quot;first-config.yml&quot;</span><span class="p">)</span>
+<span class="n">forecaster</span> <span class="o">=</span> <span class="n">TimeSeriesForecaster</span><span class="p">(</span><span class="n">cfg_path</span><span class="o">=</span><span class="s2">&quot;first-config.yml&quot;</span><span class="p">)</span>
 <span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">sin_dataset</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -225,7 +228,7 @@
 </div>
 <p>Each dataset in the list must have the shape (number of instances, number of features).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
+<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">TimeSeriesForecaster</span>
 
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -246,21 +249,21 @@
 <div class="section" id="step-3-start-training">
 <h2>(Step 3) Start Training<a class="headerlink" href="#step-3-start-training" title="Permalink to this headline">¶</a></h2>
 <p>Training can be started just by running <strong>fit</strong>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">TimeSeriesForecaster</span>
 
-<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">()</span>
+<span class="n">forecaster</span> <span class="o">=</span> <span class="n">TimeSeriesForecaster</span><span class="p">()</span>
 <span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you have specific target time series, you can pass it by <strong>y</strong>. Then model is trained to predict <strong>y</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
+<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">TimeSeriesForecaster</span>
 
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
 <span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">cos_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">()</span>
+<span class="n">forecaster</span> <span class="o">=</span> <span class="n">TimeSeriesForecaster</span><span class="p">()</span>
 <span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="p">[</span><span class="n">sin_dataset</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">cos_dataset</span><span class="p">])</span>
 </pre></div>
 </div>

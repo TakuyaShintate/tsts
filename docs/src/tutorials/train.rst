@@ -27,16 +27,16 @@ Training process can be configured by a custom config file. In the following con
       NAME: "NBeats"
       NUM_H_UNITS: 512
 
-To update global configuration with the custom config file, pass the custom config file path to **Forecaster**.
+To update global configuration with the custom config file, pass the custom config file path to **TimeSeriesForecaster**.
 
 .. code-block:: python
 
     import torch
-    from tsts.solvers import Forecaster
+    from tsts.solvers import TimeSeriesForecaster
 
     sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
     sin_dataset = sin_dataset.unsqueeze(-1)
-    forecaster = Forecaster(cfg_path="first-config.yml")
+    forecaster = TimeSeriesForecaster(cfg_path="first-config.yml")
     forecaster.fit([sin_dataset])
 
 You can see how it was changed by **cfg** property.
@@ -70,7 +70,7 @@ Each dataset in the list must have the shape (number of instances, number of fea
 .. code-block:: python
 
     import torch
-    from tsts.solvers import Forecaster
+    from tsts.solvers import TimeSeriesForecaster
 
     sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
     sin_dataset = sin_dataset.unsqueeze(-1)
@@ -95,9 +95,9 @@ Training can be started just by running **fit**.
 
 .. code-block:: python
 
-    from tsts.solvers import Forecaster
+    from tsts.solvers import TimeSeriesForecaster
 
-    forecaster = Forecaster()
+    forecaster = TimeSeriesForecaster()
     forecaster.fit(dataset)
 
 If you have specific target time series, you can pass it by **y**. Then model is trained to predict **y**.
@@ -105,11 +105,11 @@ If you have specific target time series, you can pass it by **y**. Then model is
 .. code-block:: python
 
     import torch
-    from tsts.solvers import Forecaster
+    from tsts.solvers import TimeSeriesForecaster
 
     sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
     sin_dataset = sin_dataset.unsqueeze(-1)
     cos_dataset = torch.cos(torch.arange(0, 100, 0.1))
     cos_dataset = cos_dataset.unsqueeze(-1)
-    forecaster = Forecaster()
+    forecaster = TimeSeriesForecaster()
     forecaster.fit(X=[sin_dataset], y=[cos_dataset])

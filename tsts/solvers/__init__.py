@@ -1,3 +1,3 @@
-from .forecaster import Forecaster
+from .forecaster import TimeSeriesForecaster
 
-__all__ = ["Forecaster"]
+__all__ = ["TimeSeriesForecaster"]
