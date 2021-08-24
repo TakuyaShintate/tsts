@@ -1,10 +1,7 @@
-import json
-import os
 from typing import Any, Dict, Optional
 
-from tsts.core import SCALERS
-from tsts.models import Module
-from tsts.scalers import Scaler
+import torch
+from torch import Tensor
 from tsts.types import RawDataset
 
 from .solver import Solver
@@ -15,57 +12,21 @@ __all__ = ["Forecaster"]
 class Forecaster(Solver):
     """Tool to solve time series forecasting."""
 
-    def _load_meta_info(self) -> Dict[str, Any]:
-        """Load meta info collected during training.
-
-        Returns
-        -------
-        Dict[str, Any]
-            Meta info
-        """
-        log_dir = self.cfg.LOGGER.LOG_DIR
-        if os.path.exists(log_dir) is False:
-            FileNotFoundError(f"{log_dir} not found")
-        meta_info_path = os.path.join(log_dir, "meta.json")
-        with open(meta_info_path, "r") as f:
-            meta_info = json.load(f)
-        return meta_info
-
-    def _restore_model(self, meta_info: Dict[str, Any]) -> Module:
-        """Restore pretrained model by meta_info.
-
-        Parameters
-        ----------
-        meta_info : Dict[str, Any]
-            Meta info collected during training
-
-        Returns
-        -------
-        Module
-            Pretrained model
-        """
-        num_in_feats = meta_info["num_in_feats"]
-        num_out_feats = meta_info["num_out_feats"]
-        model = self.build_model(num_in_feats, num_out_feats)
-        model.eval()
-        return model
-
-    def _restore_scaler(self, meta_info: Dict[str, Any]) -> Scaler:
-        """Restore scaler used during training
-
-        Parameters
-        ----------
-        meta_info : Dict[str, Any]
-            Meta info collected during training
-
-        Returns
-        -------
-        Scaler
-            Scaler
-        """
-        scaler_name = self.cfg.SCALER.NAME
-        scaler = SCALERS[scaler_name](cfg=self.cfg, **meta_info["scaler"])
-        return scaler
+    def predict(self, X: Tensor) -> Tensor:
+        device = self.cfg.DEVICE
+        X = X.to(device)
+        lookback = self.cfg.IO.LOOKBACK
+        num_in_feats = self.meta_info["num_in_feats"]
+        X_new = torch.zeros((1, lookback, num_in_feats))
+        X_new = X_new.to(device)
+        X_new[:, -X.size(0) :] = X[-lookback:]
+        X_mask = torch.zeros((1, lookback, num_in_feats))
+        X_mask = X_mask.to(device)
+        X_mask[:, -X.size(0) :] += 1.0
+        with torch.no_grad():
+            Z = self.model(X_new, X_mask)
+            Z = Z.squeeze(0)
+        return Z
 
     def fit(
         self,

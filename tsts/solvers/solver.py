@@ -1,11 +1,12 @@
+import json
 import os
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 from torch.optim import Optimizer
-from tsts.cfg import CfgNode as CN
 from tsts.cfg import get_cfg_defaults
 from tsts.collators import Collator, build_collator
+from tsts.core import SCALERS
 from tsts.dataloaders import DataLoader, build_dataloader
 from tsts.datasets import Dataset, build_dataset
 from tsts.loggers import Logger, build_logger
@@ -35,12 +36,67 @@ _FullRawDataset = Tuple[
 class Solver(object):
     """Base solver class."""
 
-    def __init__(self, cfg: Optional[CN] = None) -> None:
+    def __init__(self, cfg_path: Optional[str] = None) -> None:
         super(Solver, self).__init__()
-        if cfg is not None:
-            self.cfg = cfg
-        else:
-            self.cfg = get_cfg_defaults()
+        self.cfg = get_cfg_defaults()
+        if cfg_path is not None:
+            self.cfg.merge_from_file(cfg_path)
+        # Load pretrained model for inference
+        if self.log_dir_exist() is True:
+            self.meta_info = self._load_meta_info()
+            self.model = self._restore_model(self.meta_info)
+            self.scaler = self._restore_scaler(self.meta_info)
+        self.cfg_path = cfg_path
+
+    def _load_meta_info(self) -> Dict[str, Any]:
+        """Load meta info collected during training.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Meta info
+        """
+        log_dir = self.cfg.LOGGER.LOG_DIR
+        meta_info_path = os.path.join(log_dir, "meta.json")
+        with open(meta_info_path, "r") as f:
+            meta_info = json.load(f)
+        return meta_info
+
+    def _restore_model(self, meta_info: Dict[str, Any]) -> Module:
+        """Restore pretrained model by meta_info.
+
+        Parameters
+        ----------
+        meta_info : Dict[str, Any]
+            Meta info collected during training
+
+        Returns
+        -------
+        Module
+            Pretrained model
+        """
+        num_in_feats = meta_info["num_in_feats"]
+        num_out_feats = meta_info["num_out_feats"]
+        model = self.build_model(num_in_feats, num_out_feats)
+        model.eval()
+        return model
+
+    def _restore_scaler(self, meta_info: Dict[str, Any]) -> Scaler:
+        """Restore scaler used during training
+
+        Parameters
+        ----------
+        meta_info : Dict[str, Any]
+            Meta info collected during training
+
+        Returns
+        -------
+        Scaler
+            Scaler
+        """
+        scaler_name = self.cfg.SCALER.NAME
+        scaler = SCALERS[scaler_name](cfg=self.cfg, **meta_info["scaler"])
+        return scaler
 
     def infer_num_in_feats(self, X: RawDataset) -> int:
         num_in_feats = X[0].size(-1)
@@ -49,6 +105,10 @@ class Solver(object):
     def infer_num_out_feats(self, y: RawDataset) -> int:
         num_out_feats = self.infer_num_in_feats(y)
         return num_out_feats
+
+    def log_dir_exist(self) -> bool:
+        log_dir = self.cfg.LOGGER.LOG_DIR
+        return os.path.exists(log_dir)
 
     def build_model(
         self,
@@ -63,7 +123,7 @@ class Solver(object):
         device = self.cfg.DEVICE
         model.to(device)
         log_dir = self.cfg.LOGGER.LOG_DIR
-        if os.path.exists(log_dir) is True:
+        if self.log_dir_exist() is True:
             model_path = os.path.join(log_dir, "model.pth")
             state_dict = torch.load(model_path)
             model.load_state_dict(state_dict)
