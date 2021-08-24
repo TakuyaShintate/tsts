@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
@@ -36,17 +37,23 @@ _FullRawDataset = Tuple[
 class Solver(object):
     """Base solver class."""
 
-    def __init__(self, cfg_path: Optional[str] = None) -> None:
+    def __init__(self, cfg_path: Optional[str] = None, verbose: bool = True) -> None:
         super(Solver, self).__init__()
         self.cfg = get_cfg_defaults()
         if cfg_path is not None:
             self.cfg.merge_from_file(cfg_path)
         # Load pretrained model for inference
         if self.log_dir_exist() is True:
+            if verbose is True:
+                sys.stdout.write("Log directory found \n")
+                sys.stdout.write("Restoring state ...")
             self.meta_info = self._load_meta_info()
             self.model = self._restore_model(self.meta_info)
             self.scaler = self._restore_scaler(self.meta_info)
+            if verbose is True:
+                sys.stdout.write("\t [done] \n")
         self.cfg_path = cfg_path
+        self.verbose = verbose
 
     def _load_meta_info(self) -> Dict[str, Any]:
         """Load meta info collected during training.
