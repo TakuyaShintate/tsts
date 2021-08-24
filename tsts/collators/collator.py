@@ -10,6 +10,15 @@ __all__ = ["Collator"]
 class Collator(object):
     """Basic collator.
 
+    Padding works as the following example:
+
+    If lookback is 4 but the length of input time series is 2 e.g. [1, 2] (we remove feature
+    dimension for simplicity), it adds 0 paddings to the left i.e. [0, 0, 1, 2]. Instead of it, if
+    horizon is 4 but the length of output time series is 2 e.g. [1, 2], it adds 0 paddings to the
+    right i.e. [1, 2, 0, 0]. masks are used to specify which time steps are valid (not padded).
+    For the examples above, masks for padded input time series and output time series are [0, 0, 1,
+    1] and [1, 1, 0, 0].
+
     Parameters
     ----------
     lookback : int, optional

@@ -35,9 +35,9 @@ class DataLoader(_DataLoader):
         if image_set == "train":
             batch_size = cfg.DATALOADER.BATCH_SIZE_TRAIN
             shuffle = cfg.DATALOADER.SHUFFLE_TRAIN
-        elif image_set == "val":
-            batch_size = cfg.DATALOADER.BATCH_SIZE_VAL
-            shuffle = cfg.DATALOADER.SHUFFLE_VAL
+        elif image_set == "valid":
+            batch_size = cfg.DATALOADER.BATCH_SIZE_VALID
+            shuffle = cfg.DATALOADER.SHUFFLE_VALID
         else:
             raise ValueError
         dataloader = cls(

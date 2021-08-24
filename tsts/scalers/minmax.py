@@ -39,13 +39,9 @@ class MinMaxScaler(Scaler):
 
     @classmethod
     def from_cfg(cls, X_or_y: RawDataset, cfg: CN) -> "MinMaxScaler":
-        num_instances = len(X_or_y)
-        num_feats = X_or_y[0].size(-1)
-        min_v = torch.zeros(num_feats) + float("inf")
-        max_v = torch.zeros(num_feats) - float("inf")
-        for i in range(num_instances):
-            min_v = torch.minimum(min_v, X_or_y[i])
-            max_v = torch.maximum(max_v, X_or_y[i])
+        X_or_y_new = torch.cat(X_or_y)
+        min_v = X_or_y_new.min(0)[0]
+        max_v = X_or_y_new.max(0)[0]
         scaler = cls(min_v, max_v, cfg)
         return scaler
 

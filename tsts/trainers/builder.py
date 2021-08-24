@@ -19,8 +19,8 @@ def build_trainer(
     losses: List[Loss],
     metrics: List[Metric],
     optimizer: Optimizer,
-    train_dataloader: DataLoader,
-    val_dataloader: DataLoader,
+    train_dataloaders: List[DataLoader],
+    valid_dataloaders: List[DataLoader],
     scaler: Scaler,
     cfg: CN,
 ) -> Trainer:
@@ -31,8 +31,8 @@ def build_trainer(
         losses,
         metrics,
         optimizer,
-        train_dataloader,
-        val_dataloader,
+        train_dataloaders,
+        valid_dataloaders,
         scaler,
         cfg,
     )

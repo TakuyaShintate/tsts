@@ -13,9 +13,9 @@ _C.IO.LOOKBACK = 100
 _C.IO.HORIZON = 8
 
 _C.TRAINING = CN()
-# Ratio of training dataset over validation dataset
+# Ratio of training dataset over VALIDidation dataset
 _C.TRAINING.TRAIN_DATA_RATIO = 0.75
-# Number of epochs (epoch means a single iteration over whole training + validation dataset)
+# Number of epochs (epoch means a single iteration over whole training + VALIDidation dataset)
 _C.TRAINING.NUM_EPOCHS = 100
 
 _C.OPTIMIZER = CN()
@@ -64,7 +64,7 @@ _C.DATASET = CN()
 # Train dataset name
 _C.DATASET.NAME_TRAIN = "Dataset"
 # Validation dataset name
-_C.DATASET.NAME_VAL = "Dataset"
+_C.DATASET.NAME_VALID = "Dataset"
 
 _C.SCALER = CN()
 # Scaler name
@@ -77,15 +77,15 @@ _C.DATALOADER = CN()
 # Train dataloader name
 _C.DATALOADER.NAME_TRAIN = "DataLoader"
 # Validation dataloader name
-_C.DATALOADER.NAME_VAL = "DataLoader"
+_C.DATALOADER.NAME_VALID = "DataLoader"
 # Batch size for train dataset
 _C.DATALOADER.BATCH_SIZE_TRAIN = 100
-# Batch size for validation dataset
-_C.DATALOADER.BATCH_SIZE_VAL = 100
+# Batch size for Validation dataset
+_C.DATALOADER.BATCH_SIZE_VALID = 100
 # If True, shuffle train dataset for every epoch
 _C.DATALOADER.SHUFFLE_TRAIN = True
-# If True, shuffle validation dataset for every epoch
-_C.DATALOADER.SHUFFLE_VAL = False
+# If True, shuffle Validation dataset for every epoch
+_C.DATALOADER.SHUFFLE_VALID = False
 
 _C.LOGGER = CN()
 _C.LOGGER.NAME = "Logger"

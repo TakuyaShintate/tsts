@@ -4,7 +4,6 @@ from torch import Tensor
 from torch.utils.data import Dataset as _Dataset
 from tsts.cfg import CfgNode as CN
 from tsts.core import DATASETS
-from tsts.utils import infer_dataset_type
 
 __all__ = ["Dataset"]
 
@@ -17,7 +16,7 @@ class Dataset(_Dataset):
 
     Parameters
     ----------
-    X : Tensor (L, M, N) or (M, N)
+    X : Tensor (M, N)
         Time series
 
     y : Tensor, optional
@@ -66,16 +65,12 @@ class Dataset(_Dataset):
         return num_instances
 
     def __getitem__(self, i: int) -> Tuple[Tensor, Tensor]:
-        dataset_type = infer_dataset_type(self.X)
-        if dataset_type == "mn":
-            start = max(0, i - self.lookback + 1)
-            mid = i + 1
-            end = i + 1 + self.horizon
-            X = self.X[start:mid]
-            if self.y is not None:
-                y = self.y[mid:end]
-            else:
-                y = self.X[mid:end]
+        start = max(0, i - self.lookback + 1)
+        mid = i + 1
+        end = i + 1 + self.horizon
+        X = self.X[start:mid]
+        if self.y is not None:
+            y = self.y[mid:end]
         else:
-            raise NotImplementedError
+            y = self.X[mid:end]
         return (X, y)
