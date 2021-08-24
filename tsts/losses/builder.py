@@ -9,6 +9,18 @@ __all__ = ["build_losses"]
 
 
 def build_losses(cfg: CN) -> List[Loss]:
+    """Build a list of loss functions.
+
+    Parameters
+    ----------
+    cfg : CN
+        Global configuration
+
+    Returns
+    -------
+    List[Loss]
+        List of loss functions
+    """
     losses = []
     num_losses = len(cfg.LOSSES.NAMES)
     for i in range(num_losses):

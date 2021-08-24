@@ -9,6 +9,17 @@ __all__ = ["Adam"]
 
 @OPTIMIZERS.register()
 class Adam(_Adam):
+    """Adam implementation.
+
+    Example
+    -------
+    .. code-block:: python
+
+        OPTIMIZER:
+          NAME: "Adam"
+          LR: 0.001
+    """
+
     @classmethod
     def from_cfg(cls, params: Iterable, cfg: CN) -> "Adam":
         lr = cfg.OPTIMIZER.LR

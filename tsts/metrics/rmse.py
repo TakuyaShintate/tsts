@@ -10,6 +10,16 @@ __all__ = ["RMSE"]
 
 @METRICS.register()
 class RMSE(Metric):
+    """RMSE implementation.
+
+    Example
+    -------
+    .. code-block:: yaml
+
+        METRICS:
+          NAMES: ["RMSE"]
+    """
+
     def __init__(self) -> None:
         super(RMSE, self).__init__()
 
@@ -28,6 +38,13 @@ class RMSE(Metric):
         self.total_instances += instances
 
     def forward(self) -> float:
+        """Return averaged score.
+
+        Returns
+        -------
+        float
+            Averaged score
+        """
         ave_score = self.total_score / self.total_instances
         self._reset_internal_state()
         return ave_score

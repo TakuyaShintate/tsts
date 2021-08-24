@@ -28,3 +28,7 @@ Getting Started
     :caption: Modules
 
     collators/collator
+    losses/loss
+    metrics/metric
+    models/model
+    optimizers/optimizer
