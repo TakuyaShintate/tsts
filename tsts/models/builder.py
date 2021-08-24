@@ -10,7 +10,7 @@ def build_model(
     num_out_feats: int,
     cfg: CN,
 ) -> Module:
-    """Build forecasting model.
+    """Build model.
 
     Parameters
     ----------

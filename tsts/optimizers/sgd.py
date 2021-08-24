@@ -9,6 +9,18 @@ __all__ = ["SGD"]
 
 @OPTIMIZERS.register()
 class SGD(_SGD):
+    """SGD implementation.
+
+    Example
+    -------
+    .. code-block:: python
+
+        OPTIMIZER:
+          NAME: "SGD"
+          LR: 0.01
+          MOMENTUM: 0.9
+    """
+
     @classmethod
     def from_cfg(cls, params: Iterable, cfg: CN) -> "SGD":
         lr = cfg.OPTIMIZER.LR

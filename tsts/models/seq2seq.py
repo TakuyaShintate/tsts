@@ -13,6 +13,14 @@ from .module import Module
 class Seq2Seq(Module):
     """Seq2Seq implementation.
 
+    Example
+    -------
+    .. code-block:: yaml
+
+        MODEL:
+          NAME: "Seq2Seq"
+          NUM_H_UNITS: 64
+
     Parameters
     ----------
     num_in_feats : int
@@ -121,6 +129,21 @@ class Seq2Seq(Module):
         return mb_preds
 
     def forward(self, X: Tensor, X_mask: Tensor) -> Tensor:
+        """Return prediction.
+
+        Parameters
+        ----------
+        X : Tensor
+            Input time series
+
+        X_mask : Tensor
+            Input time series mask
+
+        Returns
+        -------
+        Tensor
+            Prediction
+        """
         mb_feats = self._run_encoder(X)
         mb_feats = self._run_decoder(mb_feats)
         mb_preds = self._run_regressor(mb_feats)

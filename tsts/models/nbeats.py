@@ -84,6 +84,16 @@ class Block(Module):
 class NBeats(Module):
     """N-Beats implementation.
 
+
+    Example
+    -------
+    .. code-block:: yaml
+
+        MODEL:
+          NAME: "NBeats"
+          NUM_H_UNITS: 512
+          NUM_STACKS: 30
+
     Parameters
     ----------
     num_in_feats : int
@@ -164,6 +174,21 @@ class NBeats(Module):
             )
 
     def forward(self, X: Tensor, X_mask: Tensor) -> Tensor:
+        """Return prediction.
+
+        Parameters
+        ----------
+        X : Tensor
+            Input time series
+
+        X_mask : Tensor
+            Input time series mask
+
+        Returns
+        -------
+        Tensor
+            Prediction
+        """
         batch_size = X.size(0)
         X = X.reshape(batch_size, -1)
         X_mask = X_mask.reshape(batch_size, -1)

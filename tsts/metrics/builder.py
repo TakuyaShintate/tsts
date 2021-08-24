@@ -9,6 +9,18 @@ __all__ = ["build_metrics"]
 
 
 def build_metrics(cfg: CN) -> List[Metric]:
+    """Build a list of metrics.
+
+    Parameters
+    ----------
+    cfg : CN
+        Global configuration
+
+    Returns
+    -------
+    List[Metric]
+        List of metrics
+    """
     metrics = []
     num_metrics = len(cfg.METRICS.NAMES)
     for i in range(num_metrics):

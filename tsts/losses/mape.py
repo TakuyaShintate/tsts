@@ -11,12 +11,40 @@ __all__ = ["MAPE"]
 
 @LOSSES.register()
 class MAPE(Loss):
+    """MAPE implementation.
+
+    Example
+    -------
+    .. code-block:: yaml
+
+        LOSSES:
+          NAMES: ["MAPE"]
+    """
+
     @classmethod
     def from_cfg(cls, cfg: CN, **loss_args: Any) -> "MAPE":
         loss = cls(**loss_args)
         return loss
 
     def forward(self, Z: Tensor, y: Tensor, y_mask: Tensor) -> Tensor:
+        """Return loss value.
+
+        Parameters
+        ----------
+        Z : Tensor
+            Prediction
+
+        y : Tensor
+            Target time series
+
+        y_mask : Tensor
+            Target time series mask
+
+        Returns
+        -------
+        Tensor
+            Loss value
+        """
         Z = Z[y_mask.bool()]
         y = y[y_mask.bool()]
         # Remove invalid elements

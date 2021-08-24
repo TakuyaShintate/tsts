@@ -17,10 +17,11 @@ class DILATE(Loss):
 
     Example
     -------
-    Add "DILATE" to loss section of your config.
+    .. code-block:: yaml
 
-    LOSSES:
-      NAMES: ["DILATE"]
+        LOSSES:
+          NAMES: ["DILATE"]
+          ARGS: [{"alpha": 0.5, "gamma": 0.001}]
 
     Parameters
     ----------
@@ -46,6 +47,24 @@ class DILATE(Loss):
         return loss
 
     def forward(self, Z: Tensor, y: Tensor, y_mask: Tensor) -> Tensor:
+        """Return loss value.
+
+        Parameters
+        ----------
+        Z : Tensor
+            Prediction
+
+        y : Tensor
+            Target time series
+
+        y_mask : Tensor
+            Target time series mask
+
+        Returns
+        -------
+        Tensor
+            Loss value
+        """
         (batch_size, horizon, num_out_feats) = Z.size()
         device = Z.device
         pair_dist_mat = torch.zeros((batch_size, horizon, horizon))
