@@ -2,7 +2,6 @@ import os
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
-from torch import Tensor
 from torch.optim import Optimizer
 from tsts.cfg import CfgNode as CN
 from tsts.cfg import get_cfg_defaults
@@ -17,20 +16,19 @@ from tsts.models import Module, build_model
 from tsts.optimizers import build_optimizer
 from tsts.scalers import Scaler, build_scaler
 from tsts.trainers import Trainer, build_trainer
-from tsts.types import RawDataset
-from tsts.utils import infer_dataset_type
+from tsts.types import MaybeRawDataset, RawDataset
 
 __all__ = ["Solver"]
 
 
 _TRAIN_INDEX = 0
-_VAL_INDEX = 1
+_VALID_INDEX = 1
 _INVALID_INDEX = -1
 _FullRawDataset = Tuple[
     RawDataset,
     RawDataset,
-    Optional[RawDataset],
-    Optional[RawDataset],
+    MaybeRawDataset,
+    MaybeRawDataset,
 ]
 
 
@@ -45,7 +43,7 @@ class Solver(object):
             self.cfg = get_cfg_defaults()
 
     def infer_num_in_feats(self, X: RawDataset) -> int:
-        num_in_feats = X[0].size(0)
+        num_in_feats = X[0].size(-1)
         return num_in_feats
 
     def infer_num_out_feats(self, y: RawDataset) -> int:
@@ -89,102 +87,124 @@ class Solver(object):
         optimizer = build_optimizer(model.parameters(), self.cfg)
         return optimizer
 
-    def split_train_and_val_data(
+    def split_train_and_valid_data(
         self,
         X: RawDataset,
         y: Optional[RawDataset],
     ) -> _FullRawDataset:
-        dataset_type = infer_dataset_type(X)
         train_data_ratio = self.cfg.TRAINING.TRAIN_DATA_RATIO
         lookback = self.cfg.IO.LOOKBACK
-        if dataset_type == "mn":
-            num_samples = len(X)
+        device = self.cfg.DEVICE
+        X_train = []
+        X_valid = []
+        y_train: MaybeRawDataset = []
+        y_valid: MaybeRawDataset = []
+        num_datasets = len(X)
+        for i in range(num_datasets):
+            num_samples = len(X[i])
             num_train_samples = int(train_data_ratio * num_samples)
-            device = self.cfg.DEVICE
             indices = torch.zeros(num_samples, device=device)
             offset = num_train_samples
-            indices[offset + lookback :] += _VAL_INDEX
+            indices[offset + lookback :] += _VALID_INDEX
             indices[offset : offset + lookback] += _INVALID_INDEX
-        else:
-            raise NotImplementedError
-        X_train = X[indices == _TRAIN_INDEX]
-        X_val = X[indices == _VAL_INDEX]
-        if y is not None:
-            y_train: Optional[Tensor] = y[indices == _TRAIN_INDEX]
-            y_val: Optional[Tensor] = y[indices == _VAL_INDEX]
-        else:
-            y_train = None
-            y_val = None
-        return (X_train, X_val, y_train, y_val)
+            X_train.append(X[i][indices == _TRAIN_INDEX])
+            X_valid.append(X[i][indices == _VALID_INDEX])
+            if y is not None:
+                y_train.append(y[i][indices == _TRAIN_INDEX])
+                y_valid.append(y[i][indices == _VALID_INDEX])
+            else:
+                y_train.append(None)
+                y_valid.append(None)
+        return (X_train, X_valid, y_train, y_valid)
 
     def build_scaler(self, X_or_y: RawDataset) -> Scaler:
         scaler = build_scaler(X_or_y, self.cfg)
         return scaler
 
-    def build_train_dataset(
+    def build_train_datasets(
         self,
         X: RawDataset,
-        y: Optional[RawDataset],
-    ) -> Dataset:
-        train_dataset = build_dataset(
-            X,
-            y,
-            "train",
-            self.cfg,
-        )
-        return train_dataset
+        y: MaybeRawDataset,
+    ) -> List[Dataset]:
+        train_datasets = []
+        num_datasets = len(X)
+        for i in range(num_datasets):
+            td = build_dataset(
+                X[i],
+                y[i],
+                "train",
+                self.cfg,
+            )
+            train_datasets.append(td)
+        return train_datasets
 
-    def build_val_dataset(
+    def build_valid_datasets(
         self,
         X: RawDataset,
-        y: Optional[RawDataset],
-    ) -> Dataset:
-        val_dataset = build_dataset(
-            X,
-            y,
-            "val",
-            self.cfg,
-        )
-        return val_dataset
+        y: MaybeRawDataset,
+    ) -> List[Dataset]:
+        valid_datasets = []
+        num_datasets = len(X)
+        for i in range(num_datasets):
+            vd = build_dataset(
+                X[i],
+                y[i],
+                "valid",
+                self.cfg,
+            )
+            valid_datasets.append(vd)
+        return valid_datasets
 
-    def build_test_dataset(self, X: RawDataset) -> Dataset:
-        test_dataset = build_dataset(
-            X,
-            None,
-            "val",
-            self.cfg,
-        )
-        return test_dataset
+    def build_test_dataset(self, X: RawDataset) -> List[Dataset]:
+        test_datasets = []
+        num_datasets = len(X)
+        for i in range(num_datasets):
+            td = build_dataset(
+                X[i],
+                None,
+                "test",
+                self.cfg,
+            )
+            test_datasets.append(td)
+        return test_datasets
 
     def build_collator(self) -> Collator:
         collator = build_collator(self.cfg)
         return collator
 
-    def build_train_dataloader(
+    def build_train_dataloaders(
         self,
-        train_dataset: Dataset,
+        train_datasets: List[Dataset],
         collator: Collator,
-    ) -> DataLoader:
-        train_dataloader = build_dataloader(
-            train_dataset,
-            "train",
-            collator,
-            self.cfg,
-        )
-        return train_dataloader
+    ) -> List[DataLoader]:
+        train_dataloaders = []
+        num_datasets = len(train_datasets)
+        for i in range(num_datasets):
+            td = build_dataloader(
+                train_datasets[i],
+                "train",
+                collator,
+                self.cfg,
+            )
+            train_dataloaders.append(td)
+        return train_dataloaders
 
-    def build_val_dataloader(
+    def build_valid_dataloaders(
         self,
-        val_dataset: Dataset,
+        valid_datasets: List[Dataset],
         collator: Collator,
-    ) -> DataLoader:
-        val_dataloader = build_dataloader(
-            val_dataset,
-            "val",
-            collator,
-            self.cfg,
-        )
-        return val_dataloader
+    ) -> List[DataLoader]:
+        valid_dataloaders = []
+        num_datasets = len(valid_datasets)
+        for i in range(num_datasets):
+            vd = build_dataloader(
+                valid_datasets[i],
+                "valid",
+                collator,
+                self.cfg,
+            )
+            valid_dataloaders.append(vd)
+        return valid_dataloaders
 
     def build_trainer(
         self,
@@ -192,8 +212,8 @@ class Solver(object):
         losses: List[Loss],
         metrics: List[Metric],
         optimizer: Optimizer,
-        train_dataloader: DataLoader,
-        val_dataloader: DataLoader,
+        train_dataloaders: List[DataLoader],
+        valid_dataloaders: List[DataLoader],
         scaler: Scaler,
     ) -> Trainer:
         trainer = build_trainer(
@@ -201,8 +221,8 @@ class Solver(object):
             losses,
             metrics,
             optimizer,
-            train_dataloader,
-            val_dataloader,
+            train_dataloaders,
+            valid_dataloaders,
             scaler,
             self.cfg,
         )

@@ -53,9 +53,12 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> tsts
+            <a href="../../../index.html">
           
 
+          
+            
+            <img src="../../../_static/tsts-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -163,6 +166,13 @@
 <div class="viewcode-block" id="Collator"><a class="viewcode-back" href="../../../collators/collator.html#tsts.collators.Collator">[docs]</a><span class="nd">@COLLATORS</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">Collator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Basic collator.</span>
+
+<span class="sd">    If lookback is 4 but the length of input time series is 2 i.e. [1, 2] (we remove feature</span>
+<span class="sd">    dimension for simplicity), it adds 0 paddings to the left i.e. [0, 0, 1, 2]. Instead of it, if</span>
+<span class="sd">    horizon is 4 but the length of output time series is 2 i.e. [1, 2], it adds 0 paddings ti the</span>
+<span class="sd">    right i.e. [1, 2, 0, 0]. masks are used to specify which time steps are valid (not padded).</span>
+<span class="sd">    For the examples above, masks for padded input time series and output time series are [0, 0, 1,</span>
+<span class="sd">    1] and [0, 0, 1, 1].</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

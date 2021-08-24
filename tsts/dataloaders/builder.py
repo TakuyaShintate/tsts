@@ -17,7 +17,7 @@ def build_dataloader(
     if image_set == "train":
         dataloader_name = cfg.DATALOADER.NAME_TRAIN
     else:
-        dataloader_name = cfg.DATALOADER.NAME_VAL
+        dataloader_name = cfg.DATALOADER.NAME_VALID
     cls = DATALOADERS[dataloader_name]
     dataloader = cls.from_cfg(
         dataset,

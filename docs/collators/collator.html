@@ -40,7 +40,7 @@
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="API" href="../index.html" /> 
+    <link rel="prev" title="&lt;no title&gt;" href="../getting-started/train.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -196,6 +196,12 @@ written in global configuration, refer to <cite>from_cfg method</cite> of each c
 <dt class="sig sig-object py" id="tsts.collators.Collator">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsts.collators.</span></span><span class="sig-name descname"><span class="pre">Collator</span></span><a class="reference internal" href="../_modules/tsts/collators/collator.html#Collator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.collators.Collator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic collator.</p>
+<p>If lookback is 4 but the length of input time series is 2 i.e. [1, 2] (we remove feature
+dimension for simplicity), it adds 0 paddings to the left i.e. [0, 0, 1, 2]. Instead of it, if
+horizon is 4 but the length of output time series is 2 i.e. [1, 2], it adds 0 paddings ti the
+right i.e. [1, 2, 0, 0]. masks are used to specify which time steps are valid (not padded).
+For the examples above, masks for padded input time series and output time series are [0, 0, 1,
+1] and [0, 0, 1, 1].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -237,7 +243,7 @@ written in global configuration, refer to <cite>from_cfg method</cite> of each c
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="../index.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../getting-started/train.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

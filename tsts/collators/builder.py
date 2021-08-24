@@ -7,7 +7,7 @@ __all__ = ["build_collator"]
 
 
 def build_collator(cfg: CN) -> Collator:
-    """Built collator.
+    """Build collator.
 
     To configure collator, change lines which start with "_CN.COLLATOR". For other settings not
     written in global configuration, refer to `from_cfg method` of each class.
