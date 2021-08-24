@@ -104,7 +104,10 @@
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../collators/collator.html">tsts.collators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../losses/loss.html">tsts.losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics/metric.html">tsts.metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../models/model.html">tsts.models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optimizers/optimizer.html">tsts.optimizers</a></li>
 </ul>
 
             
@@ -179,10 +182,10 @@
 <span class="nt">DEVICE</span><span class="p">:</span> <span class="s">&quot;cuda:0&quot;</span>
 </pre></div>
 </div>
-<p>Initialize <strong>Forecaster</strong> with the config file.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">Forecaster</span>
+<p>Initialize <strong>TimeSeriesForecaster</strong> with the config file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">TimeSeriesForecaster</span>
 
-<span class="n">forecaster</span> <span class="o">=</span> <span class="n">Forecaster</span><span class="p">(</span><span class="s2">&quot;gpu-training.yml&quot;</span><span class="p">)</span>
+<span class="n">forecaster</span> <span class="o">=</span> <span class="n">TimeSeriesForecaster</span><span class="p">(</span><span class="s2">&quot;gpu-training.yml&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

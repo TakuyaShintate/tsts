@@ -1,3 +1,5 @@
+from codecs import open
+from os import path
 from typing import Any, List
 
 from pkg_resources import DistributionNotFound, get_distribution
@@ -30,13 +32,26 @@ def install_requires() -> List[str]:
     return requires
 
 
+here = path.abspath(path.dirname(__file__))
+with open(path.join(here, "README.md"), encoding="utf-8") as f:
+    long_description = f.read()
+
+
 setup(
     name="tsts",
     packages=[p for p in find_packages() if p.startswith("tsts")],
+    license="GNU General Public License v3.0",
     install_requires=get_install_requirements(
         install_requires(),
         [],
     ),
+    author="Takuya Shintate",
+    author_email="kmdbn2hs@gmail.com",
+    url="https://github.com/TakuyaShintate/tsts",
+    description="toolset for time series forecasting",
     version="0.0.1",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    keywords="tsts",
     include_package_data=True,
 )

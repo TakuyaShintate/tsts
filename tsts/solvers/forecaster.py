@@ -6,10 +6,10 @@ from tsts.types import RawDataset
 
 from .solver import Solver
 
-__all__ = ["Forecaster"]
+__all__ = ["TimeSeriesForecaster"]
 
 
-class Forecaster(Solver):
+class TimeSeriesForecaster(Solver):
     """Tool to solve time series forecasting."""
 
     def predict(self, X: Tensor) -> Tensor:
