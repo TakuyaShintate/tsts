@@ -20,12 +20,14 @@ class TimeSeriesForecaster(Solver):
         X_new = torch.zeros((1, lookback, num_in_feats))
         X_new = X_new.to(device)
         X_new[:, -X.size(0) :] = X[-lookback:]
+        X_new = self.scaler.transform([X_new])[0]
         X_mask = torch.zeros((1, lookback, num_in_feats))
         X_mask = X_mask.to(device)
         X_mask[:, -X.size(0) :] += 1.0
         with torch.no_grad():
             Z = self.model(X_new, X_mask)
             Z = Z.squeeze(0)
+        Z = self.scaler.inv_transform([Z])[0]
         return Z
 
     def fit(
