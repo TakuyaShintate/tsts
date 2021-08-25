@@ -28,6 +28,7 @@ def install_requires() -> List[str]:
         "numpy",
         "torch",
         "tqdm",
+        "yacs",
     ]
     return requires
 
