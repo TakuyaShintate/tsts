@@ -14,5 +14,8 @@ Functions
 Classes
 =======
 
+.. autoclass:: tsts.metrics.MAPE()
+    :members:
+
 .. autoclass:: tsts.metrics.RMSE()
     :members:
