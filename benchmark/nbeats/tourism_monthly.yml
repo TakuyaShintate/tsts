@@ -1,0 +1,24 @@
+DEVICE: "cuda:0"
+
+IO:
+  LOOKBACK: 48
+  HORIZON: 24
+
+TRAINING:
+  TRAIN_DATA_SPLIT: "row"
+
+MODEL:
+  NAME: "NBeats"
+  NUM_H_UNITS: 512
+
+LOSSES:
+  NAMES: ["MAPE"]
+
+METRICS:
+  NAMES: ["MAPE"]
+
+SCALER:
+  NAME: "IdentityScaler"
+
+LOGGER:
+  LOG_DIR: "nbeats-tourism-monthly"

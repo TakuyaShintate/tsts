@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 from torch.optim import Optimizer
+from torch.utils.data import ConcatDataset
 from tsts.cfg import get_cfg_defaults
 from tsts.collators import Collator, build_collator
 from tsts.core import SCALERS
@@ -166,33 +167,47 @@ class Solver(object):
         X_valid = []
         y_train: MaybeRawDataset = []
         y_valid: MaybeRawDataset = []
+        train_data_split = self.cfg.TRAINING.TRAIN_DATA_SPLIT
         num_datasets = len(X)
-        for i in range(num_datasets):
-            num_samples = len(X[i])
-            num_train_samples = int(train_data_ratio * num_samples)
-            indices = torch.zeros(num_samples, device=device)
-            offset = num_train_samples
-            indices[offset + lookback :] += _VALID_INDEX
-            indices[offset : offset + lookback] += _INVALID_INDEX
-            X_train.append(X[i][indices == _TRAIN_INDEX])
-            X_valid.append(X[i][indices == _VALID_INDEX])
+        if train_data_split == "col":
+            for i in range(num_datasets):
+                num_samples = len(X[i])
+                num_train_samples = int(train_data_ratio * num_samples)
+                indices = torch.zeros(num_samples, device=device)
+                offset = num_train_samples
+                indices[offset + lookback :] += _VALID_INDEX
+                indices[offset : offset + lookback] += _INVALID_INDEX
+                X_train.append(X[i][indices == _TRAIN_INDEX])
+                X_valid.append(X[i][indices == _VALID_INDEX])
+                if y is not None:
+                    y_train.append(y[i][indices == _TRAIN_INDEX])
+                    y_valid.append(y[i][indices == _VALID_INDEX])
+                else:
+                    y_train.append(None)
+                    y_valid.append(None)
+        elif train_data_split == "row":
+            num_train_samples = int(train_data_ratio * num_datasets)
+            X_train = X[:num_train_samples]
+            X_valid = X[num_train_samples:]
             if y is not None:
-                y_train.append(y[i][indices == _TRAIN_INDEX])
-                y_valid.append(y[i][indices == _VALID_INDEX])
+                y_train = y[:num_train_samples]  # type: ignore
+                y_valid = y[num_train_samples:]  # type: ignore
             else:
-                y_train.append(None)
-                y_valid.append(None)
+                y_train = [None for _ in range(len(X_train))]
+                y_valid = [None for _ in range(len(X_valid))]
+        else:
+            raise ValueError(f"Invalid train_data_split: {train_data_split}")
         return (X_train, X_valid, y_train, y_valid)
 
     def build_scaler(self, X_or_y: RawDataset) -> Scaler:
         scaler = build_scaler(X_or_y, self.cfg)
         return scaler
 
-    def build_train_datasets(
+    def build_train_dataset(
         self,
         X: RawDataset,
         y: MaybeRawDataset,
-    ) -> List[Dataset]:
+    ) -> Dataset:
         train_datasets = []
         num_datasets = len(X)
         for i in range(num_datasets):
@@ -203,13 +218,14 @@ class Solver(object):
                 self.cfg,
             )
             train_datasets.append(td)
-        return train_datasets
+        train_dataset = ConcatDataset(train_datasets)  # type: ignore
+        return train_dataset  # type: ignore
 
-    def build_valid_datasets(
+    def build_valid_dataset(
         self,
         X: RawDataset,
         y: MaybeRawDataset,
-    ) -> List[Dataset]:
+    ) -> Dataset:
         valid_datasets = []
         num_datasets = len(X)
         for i in range(num_datasets):
@@ -220,58 +236,38 @@ class Solver(object):
                 self.cfg,
             )
             valid_datasets.append(vd)
-        return valid_datasets
-
-    def build_test_dataset(self, X: RawDataset) -> List[Dataset]:
-        test_datasets = []
-        num_datasets = len(X)
-        for i in range(num_datasets):
-            td = build_dataset(
-                X[i],
-                None,
-                "test",
-                self.cfg,
-            )
-            test_datasets.append(td)
-        return test_datasets
+        valid_dataset = ConcatDataset(valid_datasets)  # type: ignore
+        return valid_dataset  # type: ignore
 
     def build_collator(self) -> Collator:
         collator = build_collator(self.cfg)
         return collator
 
-    def build_train_dataloaders(
+    def build_train_dataloader(
         self,
-        train_datasets: List[Dataset],
+        train_dataset: Dataset,
         collator: Collator,
-    ) -> List[DataLoader]:
-        train_dataloaders = []
-        num_datasets = len(train_datasets)
-        for i in range(num_datasets):
-            td = build_dataloader(
-                train_datasets[i],
-                "train",
-                collator,
-                self.cfg,
-            )
-            train_dataloaders.append(td)
-        return train_dataloaders
+    ) -> DataLoader:
+        train_dataloader = build_dataloader(
+            train_dataset,
+            "train",
+            collator,
+            self.cfg,
+        )
+        return train_dataloader
 
-    def build_valid_dataloaders(
+    def build_valid_dataloader(
         self,
-        valid_datasets: List[Dataset],
+        valid_dataset: Dataset,
         collator: Collator,
-    ) -> List[DataLoader]:
-        valid_dataloaders = []
-        num_datasets = len(valid_datasets)
-        for i in range(num_datasets):
-            vd = build_dataloader(
-                valid_datasets[i],
-                "valid",
-                collator,
-                self.cfg,
-            )
-            valid_dataloaders.append(vd)
-        return valid_dataloaders
+    ) -> DataLoader:
+        valid_dataloader = build_dataloader(
+            valid_dataset,
+            "valid",
+            collator,
+            self.cfg,
+        )
+        return valid_dataloader
 
     def build_trainer(
         self,
@@ -279,8 +275,8 @@ class Solver(object):
         losses: List[Loss],
         metrics: List[Metric],
         optimizer: Optimizer,
-        train_dataloaders: List[DataLoader],
-        valid_dataloaders: List[DataLoader],
+        train_dataloader: DataLoader,
+        valid_dataloader: DataLoader,
         scaler: Scaler,
     ) -> Trainer:
         trainer = build_trainer(
@@ -288,8 +284,8 @@ class Solver(object):
             losses,
             metrics,
             optimizer,
-            train_dataloaders,
-            valid_dataloaders,
+            train_dataloader,
+            valid_dataloader,
             scaler,
             self.cfg,
         )

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tsts.losses.mape &mdash; tsts  documentation</title>
+  <title>tsts.metrics.mape &mdash; tsts  documentation</title>
   
 
   
@@ -150,7 +150,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>tsts.losses.mape</li>
+      <li>tsts.metrics.mape</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -165,63 +165,59 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for tsts.losses.mape</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
-
+  <h1>Source code for tsts.metrics.mape</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
 <span class="kn">from</span> <span class="nn">tsts.cfg</span> <span class="kn">import</span> <span class="n">CfgNode</span> <span class="k">as</span> <span class="n">CN</span>
-<span class="kn">from</span> <span class="nn">tsts.core</span> <span class="kn">import</span> <span class="n">LOSSES</span>
+<span class="kn">from</span> <span class="nn">tsts.core</span> <span class="kn">import</span> <span class="n">METRICS</span>
 
-<span class="kn">from</span> <span class="nn">.loss</span> <span class="kn">import</span> <span class="n">Loss</span>
+<span class="kn">from</span> <span class="nn">.metric</span> <span class="kn">import</span> <span class="n">Metric</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MAPE&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="MAPE"><a class="viewcode-back" href="../../../losses/loss.html#tsts.losses.MAPE">[docs]</a><span class="nd">@LOSSES</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">MAPE</span><span class="p">(</span><span class="n">Loss</span><span class="p">):</span>
+<div class="viewcode-block" id="MAPE"><a class="viewcode-back" href="../../../metrics/metric.html#tsts.metrics.MAPE">[docs]</a><span class="nd">@METRICS</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">MAPE</span><span class="p">(</span><span class="n">Metric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;MAPE implementation.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    .. code-block:: yaml</span>
 
-<span class="sd">        LOSSES:</span>
+<span class="sd">        METRICS:</span>
 <span class="sd">          NAMES: [&quot;MAPE&quot;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MAPE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_cfg</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">CN</span><span class="p">,</span> <span class="o">**</span><span class="n">loss_args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MAPE&quot;</span><span class="p">:</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">loss_args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">loss</span>
+    <span class="k">def</span> <span class="nf">from_cfg</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">CN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MAPE&quot;</span><span class="p">:</span>
+        <span class="n">metric</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">metric</span>
 
-<div class="viewcode-block" id="MAPE.forward"><a class="viewcode-back" href="../../../losses/loss.html#tsts.losses.MAPE.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Z</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">y_mask</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return loss value.</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Z</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">y_mask</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">y_mask</span> <span class="o">/</span> <span class="n">y</span>
+        <span class="n">c</span><span class="p">[</span><span class="n">c</span> <span class="o">!=</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">c</span><span class="p">[</span><span class="n">c</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">mape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">Z</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">mape</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_score</span> <span class="o">+=</span> <span class="n">score</span>
+        <span class="n">instances</span> <span class="o">=</span> <span class="n">y_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_instances</span> <span class="o">+=</span> <span class="n">instances</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        Z : Tensor</span>
-<span class="sd">            Prediction</span>
-
-<span class="sd">        y : Tensor</span>
-<span class="sd">            Target time series</span>
-
-<span class="sd">        y_mask : Tensor</span>
-<span class="sd">            Target time series mask</span>
+<div class="viewcode-block" id="MAPE.forward"><a class="viewcode-back" href="../../../metrics/metric.html#tsts.metrics.MAPE.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return averaged score.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Tensor</span>
-<span class="sd">            Loss value</span>
+<span class="sd">        float</span>
+<span class="sd">            Averaged score</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Z</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">y_mask</span><span class="o">.</span><span class="n">bool</span><span class="p">()]</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">y_mask</span><span class="o">.</span><span class="n">bool</span><span class="p">()]</span>
-        <span class="c1"># Remove invalid elements</span>
-        <span class="n">Z</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">y</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">]</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">y</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">]</span>
-        <span class="n">loss_val</span> <span class="o">=</span> <span class="p">((</span><span class="n">Z</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
-        <span class="n">loss_val</span> <span class="o">=</span> <span class="n">loss_val</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="n">loss_val</span> <span class="o">/=</span> <span class="n">y_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">loss_val</span></div></div>
+        <span class="n">ave_score</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_score</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_instances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_internal_state</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ave_score</span></div></div>
 </pre></div>
 
            </div>
