@@ -13,6 +13,7 @@ class TimeSeriesForecaster(Solver):
     """Tool to solve time series forecasting."""
 
     def predict(self, X: Tensor) -> Tensor:
+        src_device = X.device
         device = self.cfg.DEVICE
         X = X.to(device)
         lookback = self.cfg.IO.LOOKBACK
@@ -28,7 +29,7 @@ class TimeSeriesForecaster(Solver):
             Z = self.model(X_new, X_mask)
             Z = Z.squeeze(0)
         Z = self.scaler.inv_transform([Z])[0]
-        return Z
+        return Z.to(src_device)
 
     def fit(
         self,
@@ -69,19 +70,19 @@ class TimeSeriesForecaster(Solver):
             y_train = scaler.transform(y_train)  # type: ignore
             y_valid = scaler.transform(y_valid)  # type: ignore
         meta_info["scaler"] = scaler.meta_info
-        train_datasets = self.build_train_datasets(X_train, y_train)
-        valid_datasets = self.build_valid_datasets(X_valid, y_valid)
+        train_dataset = self.build_train_dataset(X_train, y_train)
+        valid_dataset = self.build_valid_dataset(X_valid, y_valid)
         collator = self.build_collator()
-        train_dataloaders = self.build_train_dataloaders(train_datasets, collator)
-        valid_dataloaders = self.build_valid_dataloaders(valid_datasets, collator)
+        train_dataloader = self.build_train_dataloader(train_dataset, collator)
+        valid_dataloader = self.build_valid_dataloader(valid_dataset, collator)
         logger = self.build_logger(model, losses, metrics, meta_info)
         trainer = self.build_trainer(
             model,
             losses,
             metrics,
             optimizer,
-            train_dataloaders,
-            valid_dataloaders,
+            train_dataloader,
+            valid_dataloader,
             scaler,
         )
         num_epochs = self.cfg.TRAINING.NUM_EPOCHS

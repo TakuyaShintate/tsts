@@ -22,8 +22,8 @@ class Trainer(object):
         weight_per_loss: List[float],
         metrics: List[Metric],
         optimizer: Optimizer,
-        train_dataloaders: List[DataLoader],
-        valid_dataloaders: List[DataLoader],
+        train_dataloader: DataLoader,
+        valid_dataloader: DataLoader,
         max_grad_norm: float,
         device: str,
         scaler: Scaler,
@@ -33,8 +33,8 @@ class Trainer(object):
         self.weight_per_loss = weight_per_loss
         self.metrics = metrics
         self.optimizer = optimizer
-        self.train_dataloaders = train_dataloaders
-        self.valid_dataloaders = valid_dataloaders
+        self.train_dataloader = train_dataloader
+        self.valid_dataloader = valid_dataloader
         self.max_grad_norm = max_grad_norm
         self.device = device
         self.scaler = scaler
@@ -60,8 +60,8 @@ class SupervisedTrainer(Trainer):
         losses: List[Loss],
         metrics: List[Metric],
         optimizer: Optimizer,
-        train_dataloaders: List[DataLoader],
-        valid_dataloaders: List[DataLoader],
+        train_dataloader: DataLoader,
+        valid_dataloader: DataLoader,
         scaler: Scaler,
         cfg: CN,
     ) -> "SupervisedTrainer":
@@ -74,8 +74,8 @@ class SupervisedTrainer(Trainer):
             weight_per_loss,
             metrics,
             optimizer,
-            train_dataloaders,
-            valid_dataloaders,
+            train_dataloader,
+            valid_dataloader,
             max_grad_norm,
             device,
             scaler,
@@ -85,37 +85,33 @@ class SupervisedTrainer(Trainer):
     def on_train(self) -> List[float]:
         self.model.train()
         ave_loss_vs = [0.0 for _ in range(len(self.losses))]
-        num_dataloaders = len(self.train_dataloaders)
-        num_samples = 0.0
-        for i in range(num_dataloaders):
-            for (X, y, X_mask, y_mask) in tqdm(self.train_dataloaders[i]):
-                X = X.to(self.device)
-                y = y.to(self.device)
-                X_mask = X_mask.to(self.device)
-                y_mask = y_mask.to(self.device)
-                Z = self.model(X, X_mask)
-                self.optimizer.zero_grad()
-                device = Z.device
-                total_loss_v = torch.tensor(
-                    0.0,
-                    dtype=torch.float32,
-                    device=device,
+        for (X, y, X_mask, y_mask) in tqdm(self.train_dataloader):
+            X = X.to(self.device)
+            y = y.to(self.device)
+            X_mask = X_mask.to(self.device)
+            y_mask = y_mask.to(self.device)
+            Z = self.model(X, X_mask)
+            self.optimizer.zero_grad()
+            device = Z.device
+            total_loss_v = torch.tensor(
+                0.0,
+                dtype=torch.float32,
+                device=device,
+            )
+            for (i, loss) in enumerate(self.losses):
+                weight = self.weight_per_loss[i]
+                loss_v = loss(Z, y, y_mask)
+                total_loss_v += weight * loss_v
+                ave_loss_vs[i] += loss_v.item()
+            total_loss_v.backward()
+            if self.max_grad_norm > 0:
+                torch.nn.utils.clip_grad_norm_(
+                    self.model.parameters(),
+                    self.max_grad_norm,
                 )
-                for (i, loss) in enumerate(self.losses):
-                    weight = self.weight_per_loss[i]
-                    loss_v = loss(Z, y, y_mask)
-                    total_loss_v += weight * loss_v
-                    ave_loss_vs[i] += loss_v.item()
-                total_loss_v.backward()
-                if self.max_grad_norm > 0:
-                    torch.nn.utils.clip_grad_norm_(
-                        self.model.parameters(),
-                        self.max_grad_norm,
-                    )
-                self.optimizer.step()
-            num_samples += len(self.train_dataloaders[i])
+            self.optimizer.step()
         for i in range(len(self.losses)):
-            ave_loss_vs[i] /= num_samples
+            ave_loss_vs[i] /= len(self.train_dataloader)
         return ave_loss_vs
 
     def on_val(self) -> List[float]:
@@ -132,20 +128,17 @@ class SupervisedTrainer(Trainer):
             List of averaged scores
         """
         self.model.eval()
-        num_dataloaders = len(self.valid_dataloaders)
-        for i in range(num_dataloaders):
-            dataloader = self.valid_dataloaders[i]
-            for (X, y, X_mask, y_mask) in tqdm(dataloader):
-                X = X.to(self.device)
-                y = y.to(self.device)
-                X_mask = X_mask.to(self.device)
-                y_mask = y_mask.to(self.device)
-                with torch.no_grad():
-                    Z = self.model(X, X_mask)
-                Z = self.scaler.inv_transform(Z)
-                y = self.scaler.inv_transform(y)
-                for metric in self.metrics:
-                    metric.update(Z, y, y_mask)
+        for (X, y, X_mask, y_mask) in tqdm(self.valid_dataloader):
+            X = X.to(self.device)
+            y = y.to(self.device)
+            X_mask = X_mask.to(self.device)
+            y_mask = y_mask.to(self.device)
+            with torch.no_grad():
+                Z = self.model(X, X_mask)
+            Z = self.scaler.inv_transform(Z)
+            y = self.scaler.inv_transform(y)
+            for metric in self.metrics:
+                metric.update(Z, y, y_mask)
         ave_scores = []
         for metric in self.metrics:
             ave_score = metric()

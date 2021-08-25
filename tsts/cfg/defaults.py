@@ -13,6 +13,8 @@ _C.IO.LOOKBACK = 100
 _C.IO.HORIZON = 8
 
 _C.TRAINING = CN()
+# How to split train dataset {"col" or "row"}
+_C.TRAINING.TRAIN_DATA_SPLIT = "col"
 # Ratio of training dataset over VALIDidation dataset
 _C.TRAINING.TRAIN_DATA_RATIO = 0.75
 # Number of epochs (epoch means a single iteration over whole training + VALIDidation dataset)
