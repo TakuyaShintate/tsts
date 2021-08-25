@@ -9,7 +9,7 @@ tsts is an opensource easy-to-use toolset for time series forecasting.
 ## Installation
 
 ```
-pip install tsts==0.0.1
+pip install tsts
 ```
 
 ## Getting Started
