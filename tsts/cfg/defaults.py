@@ -47,6 +47,10 @@ _C.MODEL.NUM_H_UNITS = 64
 _C.MODEL.DEPTH = 2
 # Stack size of NBeats
 _C.MODEL.STACK_SIZE = 30
+# Block type of NBeats {"identity", "trend", "seasonal"}
+_C.MODEL.BLOCK_TYPE = "identity"
+# Polynomial degree
+_C.MODEL.DEGREE = 2
 
 _C.LOSSES = CN()
 # Loss function names
