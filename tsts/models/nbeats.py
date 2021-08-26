@@ -1,5 +1,7 @@
-from typing import Tuple
+from typing import Tuple, Type, Union
 
+import numpy as np
+import torch
 from torch import Tensor
 from torch.nn import Linear, Module, ModuleList, ReLU
 from tsts.cfg import CfgNode as CN
@@ -13,6 +15,9 @@ class IdentityBasis(Module):
         self,
         backcast_size: int,
         forecast_size: int,
+        num_in_feats: int,
+        num_out_feats: int,
+        degree: int = 2,
     ) -> None:
         super(IdentityBasis, self).__init__()
         self.backcast_size = backcast_size
@@ -25,6 +30,54 @@ class IdentityBasis(Module):
         )
 
 
+class TrendBasis(Module):
+    def __init__(
+        self,
+        backcast_size: int,
+        forecast_size: int,
+        num_in_feats: int,
+        num_out_feats: int,
+        degree: int = 2,
+    ) -> None:
+        super(TrendBasis, self).__init__()
+        self.backcast_size = backcast_size
+        self.forecast_size = forecast_size
+        self.num_in_feats = num_in_feats
+        self.num_out_feats = num_out_feats
+        self.degree = degree
+        self.p = degree + 1
+        self._init_t()
+
+    def _init_t(self) -> None:
+        actual_backcast_size = self.backcast_size // self.num_in_feats
+        actual_forecast_size = self.forecast_size // self.num_out_feats
+        backcast_T = []
+        forecast_T = []
+        for i in range(3):
+            backcast_t = np.arange(actual_backcast_size, dtype=np.float32)
+            backcast_t = backcast_t / actual_backcast_size
+            backcast_t = np.power(backcast_t, i)
+            backcast_t = np.concatenate([backcast_t for _ in range(self.num_in_feats)])
+            backcast_T.append(backcast_t[None, :])
+            forecast_t = np.arange(actual_forecast_size, dtype=np.float32)
+            forecast_t = forecast_t / actual_forecast_size
+            forecast_t = np.power(forecast_t, i)
+            forecast_t = np.concatenate([forecast_t for _ in range(self.num_out_feats)])
+            forecast_T.append(forecast_t[None, :])
+        _backcast_T = torch.tensor(np.concatenate(backcast_T))
+        _forecast_T = torch.tensor(np.concatenate(forecast_T))
+        self.register_buffer("backcast_T", _backcast_T)
+        self.register_buffer("forecast_T", _forecast_T)
+
+    def forward(self, mb_feats: Tensor) -> Tuple[Tensor, Tensor]:
+        device = mb_feats.device
+        bt = self.backcast_T[None, :, :].to(device)  # type: ignore
+        ft = self.forecast_T[None, :, :].to(device)  # type: ignore
+        backcast = (mb_feats[:, None, : self.backcast_size] * bt).sum(1)
+        forecast = (mb_feats[:, None, -self.forecast_size :] * ft).sum(1)
+        return (backcast, forecast)
+
+
 class Block(Module):
     """Main component of N-Beats."""
 
@@ -34,6 +87,10 @@ class Block(Module):
         num_out_steps: int,
         num_h_units: int,
         depth: int,
+        block_type: str,
+        num_in_feats: int,
+        num_out_feats: int,
+        degree: int = 2,
     ) -> None:
         assert depth > 0
         super(Block, self).__init__()
@@ -41,11 +98,12 @@ class Block(Module):
         self.num_out_steps = num_out_steps
         self.num_h_units = num_h_units
         self.depth = depth
-        self.basis_fn = IdentityBasis(
-            num_in_steps,
-            num_out_steps,
-        )
+        self.block_type = block_type
+        self.num_in_feats = num_in_feats
+        self.num_out_feats = num_out_feats
+        self.degree = degree
         self._init_layers()
+        self._init_basis()
 
     def _init_layers(self) -> None:
         self.layers = ModuleList(
@@ -72,6 +130,21 @@ class Block(Module):
             )
         )
 
+    def _init_basis(self) -> None:
+        if self.block_type == "identity":
+            basis: Union[Type[IdentityBasis], Type[TrendBasis]] = IdentityBasis
+        elif self.block_type == "trend":
+            basis = TrendBasis
+        else:
+            ValueError("Currently, NBeats supports IdentityBasis and TrendBasis only")
+        self.basis_fn = basis(
+            self.num_in_steps,
+            self.num_out_steps,
+            self.num_in_feats,
+            self.num_out_feats,
+            self.degree,
+        )
+
     def forward(self, mb_feats: Tensor) -> Tuple[Tensor, Tensor]:
         for i in range(self.depth):
             mb_feats = self.layers[i](mb_feats)
@@ -83,7 +156,6 @@ class Block(Module):
 @MODELS.register()
 class NBeats(Module):
     """N-Beats implementation.
-
 
     Example
     -------
@@ -127,6 +199,8 @@ class NBeats(Module):
         num_h_units: int = 512,
         depth: int = 2,
         stack_size: int = 30,
+        block_type: str = "identity",
+        degree: int = 2,
     ) -> None:
         super(NBeats, self).__init__()
         self.num_in_feats = num_in_feats
@@ -136,6 +210,8 @@ class NBeats(Module):
         self.num_h_units = num_h_units
         self.depth = depth
         self.stack_size = stack_size
+        self.block_type = block_type
+        self.degree = degree
         self._init_stack()
 
     @classmethod
@@ -150,6 +226,8 @@ class NBeats(Module):
         num_h_units = cfg.MODEL.NUM_H_UNITS
         depth = cfg.MODEL.DEPTH
         stack_size = cfg.MODEL.STACK_SIZE
+        block_type = cfg.MODEL.BLOCK_TYPE
+        degree = cfg.MODEL.DEGREE
         model = cls(
             num_in_feats,
             num_out_feats,
@@ -158,6 +236,8 @@ class NBeats(Module):
             num_h_units,
             depth,
             stack_size,
+            block_type,
+            degree,
         )
         return model
 
@@ -170,6 +250,10 @@ class NBeats(Module):
                     self.num_out_feats * self.horizon,
                     self.num_h_units,
                     self.depth,
+                    self.block_type,
+                    self.num_in_feats,
+                    self.num_out_feats,
+                    self.degree,
                 )
             )
 
