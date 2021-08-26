@@ -41,16 +41,18 @@ class StandardScaler(Scaler):
 
     @classmethod
     def from_cfg(cls, X_or_y: RawDataset, cfg: CN) -> "StandardScaler":
-        num_instances = len(X_or_y)
         num_feats = X_or_y[0].size(-1)
         mean = torch.zeros(num_feats)
         std = torch.zeros(num_feats)
-        for i in range(num_instances):
-            mean += X_or_y[i]
+        num_instances = 0.0
+        for i in range(len(X_or_y)):
+            mean += X_or_y[i].sum(0)
+            num_instances += float(X_or_y[i].size(0))
         mean /= num_instances
-        for i in range(num_instances):
-            std += (X_or_y[i] - mean) ** 2
+        for i in range(len(X_or_y)):
+            std += ((X_or_y[i] - mean) ** 2).sum(0)
         std /= num_instances
+        std = std.sqrt()
         scaler = cls(mean, std, cfg)
         return scaler
 

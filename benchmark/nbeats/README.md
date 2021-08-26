@@ -19,5 +19,5 @@ Download the datasets [here](https://robjhyndman.com/data/27-3-Athanasopoulos1.z
 
 | Season | Horizon | MAPE | Ensemble | Script |
 |:---:|:---:|:---:|:---:|:---:|
-| Monthly | 2 | 21.30 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/nbeats/train_nbeats_tourism_monthly.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/nbeats/test_nbeats_tourism_monthly.py) |
+| Monthly | 2 | 21.30 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/nbeats/train_tourism_monthly.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/nbeats/test_tourism_monthly.py) |
 
