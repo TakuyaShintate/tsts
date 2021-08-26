@@ -2,7 +2,8 @@ from typing import List, Tuple
 
 import torch
 from torch import Tensor
-from torch.nn import Linear, LSTMCell, ModuleList
+from torch.nn import Linear, LSTMCell, ModuleList, ReLU
+from torch.nn.modules.container import Sequential
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
 
@@ -79,10 +80,10 @@ class Seq2Seq(Module):
             self.decoder.append(LSTMCell(self.num_h_units, self.num_h_units))
 
     def _init_regressor(self) -> None:
-        self.regressor = Linear(
-            self.num_h_units,
-            self.num_out_feats,
-            bias=False,
+        self.regressor = Sequential(
+            Linear(self.num_h_units, self.num_h_units),
+            ReLU(),
+            Linear(self.num_h_units, self.num_out_feats),
         )
 
     def _init_memory(
@@ -95,7 +96,7 @@ class Seq2Seq(Module):
             c.append(torch.randn(batch_size, self.num_h_units, device=device))
         return (h, c)
 
-    def _run_encoder(self, mb_feats: Tensor) -> Tensor:
+    def _run_encoder(self, mb_feats: Tensor) -> Tuple[Tensor, List[Tensor]]:
         batch_size = mb_feats.size(0)
         device = mb_feats.device
         (h, c) = self._init_memory(batch_size, device)
@@ -106,12 +107,12 @@ class Seq2Seq(Module):
                 (h_t, c_t) = self.encoder[i](h_t, (h[i], c[i]))
                 h[i] = h_t
                 c[i] = c_t
-        return h_t
+        return (h_t, h)
 
-    def _run_decoder(self, mb_feats: Tensor) -> Tensor:
+    def _run_decoder(self, mb_feats: Tensor, h: List[Tensor]) -> Tensor:
         batch_size = mb_feats.size(0)
         device = mb_feats.device
-        (h, c) = self._init_memory(batch_size, device)
+        (_, c) = self._init_memory(batch_size, device)
         hs = [mb_feats.unsqueeze(1)]
         for _ in range(self.horizon):
             h_t = hs[-1].squeeze(1)
@@ -125,7 +126,6 @@ class Seq2Seq(Module):
 
     def _run_regressor(self, mb_feats: Tensor) -> Tensor:
         mb_preds = self.regressor(mb_feats)
-        mb_preds = mb_preds
         return mb_preds
 
     def forward(self, X: Tensor, X_mask: Tensor) -> Tensor:
@@ -144,7 +144,7 @@ class Seq2Seq(Module):
         Tensor
             Prediction
         """
-        mb_feats = self._run_encoder(X)
-        mb_feats = self._run_decoder(mb_feats)
+        (mb_feats, h) = self._run_encoder(X)
+        mb_feats = self._run_decoder(mb_feats, h)
         mb_preds = self._run_regressor(mb_feats)
         return mb_preds
