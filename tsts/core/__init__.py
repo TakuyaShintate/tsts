@@ -8,6 +8,7 @@ from tsts.core.registry import (
     MODELS,
     OPTIMIZERS,
     SCALERS,
+    SCHEDULERS,
     TRAINERS,
 )
 
@@ -21,5 +22,6 @@ __all__ = [
     "MODELS",
     "OPTIMIZERS",
     "SCALERS",
+    "SCHEDULERS",
     "TRAINERS",
 ]

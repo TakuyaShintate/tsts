@@ -201,6 +201,7 @@ class NBeats(Module):
         stack_size: int = 30,
         block_type: str = "identity",
         degree: int = 2,
+        add_last_step_val: bool = True,
     ) -> None:
         super(NBeats, self).__init__()
         self.num_in_feats = num_in_feats
@@ -212,6 +213,7 @@ class NBeats(Module):
         self.stack_size = stack_size
         self.block_type = block_type
         self.degree = degree
+        self.add_last_step_val = add_last_step_val
         self._init_stack()
 
     @classmethod
@@ -228,6 +230,7 @@ class NBeats(Module):
         stack_size = cfg.MODEL.STACK_SIZE
         block_type = cfg.MODEL.BLOCK_TYPE
         degree = cfg.MODEL.DEGREE
+        add_last_step_val = cfg.MODEL.ADD_LAST_STEP_VAL
         model = cls(
             num_in_feats,
             num_out_feats,
@@ -238,6 +241,7 @@ class NBeats(Module):
             stack_size,
             block_type,
             degree,
+            add_last_step_val,
         )
         return model
 
@@ -278,7 +282,10 @@ class NBeats(Module):
         X_mask = X_mask.reshape(batch_size, -1)
         X_mask = X_mask.flip(dims=(1,))
         # Predict offset
-        mb_total_preds = X[:, -1:]
+        if self.add_last_step_val is True:
+            mb_total_preds = X[:, -1:]
+        else:
+            mb_total_preds = torch.zeros_like(X[:, -1:])
         mb_feats = X.flip(dims=(1,))
         for i in range(self.stack_size):
             (current_mb_feats, mb_preds) = self.stack[i](mb_feats)

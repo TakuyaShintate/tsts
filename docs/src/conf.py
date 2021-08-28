@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, os.path.abspath("../tsts"))
 
 project = "tsts"
-version = "v0.1.1"
+version = "v0.2.1"
 copyright = "2021, tsts Development Team"
 author = "tsts Development Team"
 extensions = [

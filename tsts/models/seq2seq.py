@@ -38,6 +38,9 @@ class Seq2Seq(Module):
 
     depth : int, optional
         Number of hidden layers, bu default 2
+
+    add_last_step_val : bool, optional
+        If True, Add x_t (the last value of input time series) to every output, by default False
     """
 
     def __init__(
@@ -47,6 +50,7 @@ class Seq2Seq(Module):
         horizon: int = 1,
         num_h_units: int = 64,
         depth: int = 2,
+        add_last_step_val: bool = False,
     ) -> None:
         super(Seq2Seq, self).__init__()
         self.num_in_feats = num_in_feats
@@ -54,6 +58,7 @@ class Seq2Seq(Module):
         self.horizon = horizon
         self.num_h_units = num_h_units
         self.depth = depth
+        self.add_last_step_val = add_last_step_val
         self._init_hidden_layers()
         self._init_regressor()
 
@@ -62,12 +67,14 @@ class Seq2Seq(Module):
         horizon = cfg.IO.HORIZON
         num_h_units = cfg.MODEL.NUM_H_UNITS
         depth = cfg.MODEL.DEPTH
+        add_last_step_val = cfg.MODEL.ADD_LAST_STEP_VAL
         model = cls(
             num_in_feats,
             num_out_feats,
             horizon=horizon,
             num_h_units=num_h_units,
             depth=depth,
+            add_last_step_val=add_last_step_val,
         )
         return model
 
@@ -75,8 +82,8 @@ class Seq2Seq(Module):
         self.encoder = ModuleList([LSTMCell(self.num_in_feats, self.num_h_units)])
         for _ in range(self.depth - 1):
             self.encoder.append(LSTMCell(self.num_h_units, self.num_h_units))
-        self.decoder = ModuleList()
-        for _ in range(self.depth):
+        self.decoder = ModuleList([LSTMCell(self.num_in_feats, self.num_h_units)])
+        for _ in range(self.depth - 1):
             self.decoder.append(LSTMCell(self.num_h_units, self.num_h_units))
 
     def _init_regressor(self) -> None:
@@ -92,41 +99,40 @@ class Seq2Seq(Module):
         h = []
         c = []
         for _ in range(self.depth):
-            h.append(torch.randn(batch_size, self.num_h_units, device=device))
-            c.append(torch.randn(batch_size, self.num_h_units, device=device))
+            h.append(torch.zeros((batch_size, self.num_h_units), device=device))
+            c.append(torch.zeros((batch_size, self.num_h_units), device=device))
         return (h, c)
 
-    def _run_encoder(self, mb_feats: Tensor) -> Tuple[Tensor, List[Tensor]]:
-        batch_size = mb_feats.size(0)
-        device = mb_feats.device
+    def _run_encoder(self, X: Tensor) -> List[Tensor]:
+        batch_size = X.size(0)
+        device = X.device
         (h, c) = self._init_memory(batch_size, device)
-        num_in_steps = mb_feats.size(1)
+        num_in_steps = X.size(1)
         for t in range(num_in_steps):
-            h_t = mb_feats[:, t]
+            h_t = X[:, t]
             for i in range(self.depth):
                 (h_t, c_t) = self.encoder[i](h_t, (h[i], c[i]))
                 h[i] = h_t
                 c[i] = c_t
-        return (h_t, h)
+        return h
 
-    def _run_decoder(self, mb_feats: Tensor, h: List[Tensor]) -> Tensor:
-        batch_size = mb_feats.size(0)
-        device = mb_feats.device
+    def _run_decoder(self, x_t: Tensor, h: List[Tensor]) -> Tensor:
+        batch_size = x_t.size(0)
+        device = x_t.device
         (_, c) = self._init_memory(batch_size, device)
-        hs = [mb_feats.unsqueeze(1)]
+        mb_preds = []
+        y_t = torch.zeros_like(x_t)
         for _ in range(self.horizon):
-            h_t = hs[-1].squeeze(1)
+            h_t = y_t
             for i in range(self.depth):
                 (h_t, c_t) = self.decoder[i](h_t, (h[i], c[i]))
                 h[i] = h_t
                 c[i] = c_t
-            hs.append(h_t.unsqueeze(1))
-        mb_feats = torch.cat(hs[1:], dim=1)
-        return mb_feats
-
-    def _run_regressor(self, mb_feats: Tensor) -> Tensor:
-        mb_preds = self.regressor(mb_feats)
-        return mb_preds
+            y_t = self.regressor(h_t)
+            if self.add_last_step_val is True:
+                y_t = y_t + x_t
+            mb_preds.append(y_t.unsqueeze(1))
+        return torch.cat(mb_preds, dim=1)
 
     def forward(self, X: Tensor, X_mask: Tensor) -> Tensor:
         """Return prediction.
@@ -144,7 +150,6 @@ class Seq2Seq(Module):
         Tensor
             Prediction
         """
-        (mb_feats, h) = self._run_encoder(X)
-        mb_feats = self._run_decoder(mb_feats, h)
-        mb_preds = self._run_regressor(mb_feats)
+        h = self._run_encoder(X)
+        mb_preds = self._run_decoder(X[:, -1], h)
         return mb_preds
