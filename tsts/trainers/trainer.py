@@ -10,6 +10,7 @@ from tsts.losses import Loss
 from tsts.metrics import Metric
 from tsts.optimizers import Optimizer
 from tsts.scalers import Scaler
+from tsts.schedulers import Scheduler
 
 __all__ = ["SupervisedTrainer", "Trainer"]
 
@@ -22,6 +23,7 @@ class Trainer(object):
         weight_per_loss: List[float],
         metrics: List[Metric],
         optimizer: Optimizer,
+        scheduler: Scheduler,
         train_dataloader: DataLoader,
         valid_dataloader: DataLoader,
         max_grad_norm: float,
@@ -33,6 +35,7 @@ class Trainer(object):
         self.weight_per_loss = weight_per_loss
         self.metrics = metrics
         self.optimizer = optimizer
+        self.scheduler = scheduler
         self.train_dataloader = train_dataloader
         self.valid_dataloader = valid_dataloader
         self.max_grad_norm = max_grad_norm
@@ -60,6 +63,7 @@ class SupervisedTrainer(Trainer):
         losses: List[Loss],
         metrics: List[Metric],
         optimizer: Optimizer,
+        scheduler: Scheduler,
         train_dataloader: DataLoader,
         valid_dataloader: DataLoader,
         scaler: Scaler,
@@ -74,6 +78,7 @@ class SupervisedTrainer(Trainer):
             weight_per_loss,
             metrics,
             optimizer,
+            scheduler,
             train_dataloader,
             valid_dataloader,
             max_grad_norm,
@@ -110,6 +115,7 @@ class SupervisedTrainer(Trainer):
                     self.max_grad_norm,
                 )
             self.optimizer.step()
+        self.scheduler.step()
         for i in range(len(self.losses)):
             ave_loss_vs[i] /= len(self.train_dataloader)
         return ave_loss_vs

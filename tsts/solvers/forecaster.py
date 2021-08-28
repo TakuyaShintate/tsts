@@ -59,6 +59,7 @@ class TimeSeriesForecaster(Solver):
         losses = self.build_losses()
         metrics = self.build_metrics()
         optimizer = self.build_optimizer(model)
+        scheduler = self.build_scheduler(optimizer)
         (X_train, X_valid, y_train, y_valid) = self.split_train_and_valid_data(X, y)
         if y_train[0] is not None:
             scaler = self.build_scaler(y_train)  # type: ignore
@@ -81,6 +82,7 @@ class TimeSeriesForecaster(Solver):
             losses,
             metrics,
             optimizer,
+            scheduler,
             train_dataloader,
             valid_dataloader,
             scaler,

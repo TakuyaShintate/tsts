@@ -8,6 +8,7 @@ from tsts.metrics import Metric
 from tsts.models import Module
 from tsts.optimizers import Optimizer
 from tsts.scalers import Scaler
+from tsts.schedulers import Scheduler
 
 from .trainer import Trainer
 
@@ -19,6 +20,7 @@ def build_trainer(
     losses: List[Loss],
     metrics: List[Metric],
     optimizer: Optimizer,
+    scheduler: Scheduler,
     train_dataloader: DataLoader,
     valid_dataloader: DataLoader,
     scaler: Scaler,
@@ -31,6 +33,7 @@ def build_trainer(
         losses,
         metrics,
         optimizer,
+        scheduler,
         train_dataloader,
         valid_dataloader,
         scaler,

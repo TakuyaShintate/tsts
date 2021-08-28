@@ -10,6 +10,7 @@ __all__ = [
     "MODELS",
     "OPTIMIZERS",
     "SCALERS",
+    "SCHEDULERS",
     "TRAINERS",
 ]
 
@@ -55,4 +56,5 @@ METRICS = Registry()
 MODELS = Registry()
 OPTIMIZERS = Registry()
 SCALERS = Registry()
+SCHEDULERS = Registry()
 TRAINERS = Registry()
