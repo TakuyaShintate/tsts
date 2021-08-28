@@ -54,7 +54,7 @@ class Solver(object):
                 sys.stdout.write("Restoring state ...")
             self.meta_info = self._load_meta_info()
             self.model = self._restore_model(self.meta_info)
-            self.scaler = self._restore_scaler(self.meta_info)
+            (self.X_scaler, self.y_scaler) = self._restore_scaler(self.meta_info)
             if verbose is True:
                 sys.stdout.write("\t [done] \n")
         self.cfg_path = cfg_path
@@ -93,7 +93,7 @@ class Solver(object):
         model.eval()
         return model
 
-    def _restore_scaler(self, meta_info: Dict[str, Any]) -> Scaler:
+    def _restore_scaler(self, meta_info: Dict[str, Any]) -> Tuple[Scaler, Scaler]:
         """Restore scaler used during training
 
         Parameters
@@ -107,8 +107,9 @@ class Solver(object):
             Scaler
         """
         scaler_name = self.cfg.SCALER.NAME
-        scaler = SCALERS[scaler_name](cfg=self.cfg, **meta_info["scaler"])
-        return scaler
+        X_scaler = SCALERS[scaler_name](cfg=self.cfg, **meta_info["X_scaler"])
+        y_scaler = SCALERS[scaler_name](cfg=self.cfg, **meta_info["y_scaler"])
+        return (X_scaler, y_scaler)
 
     def infer_num_in_feats(self, X: RawDataset) -> int:
         num_in_feats = X[0].size(-1)

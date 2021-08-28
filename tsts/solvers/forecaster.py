@@ -21,14 +21,14 @@ class TimeSeriesForecaster(Solver):
         X_new = torch.zeros((1, lookback, num_in_feats))
         X_new = X_new.to(device)
         X_new[:, -X.size(0) :] = X[-lookback:]
-        X_new = self.scaler.transform([X_new])[0]
+        X_new = self.X_scaler.transform([X_new])[0]
         X_mask = torch.zeros((1, lookback, num_in_feats))
         X_mask = X_mask.to(device)
         X_mask[:, -X.size(0) :] += 1.0
         with torch.no_grad():
             Z = self.model(X_new, X_mask)
             Z = Z.squeeze(0)
-        Z = self.scaler.inv_transform([Z])[0]
+        Z = self.y_scaler.inv_transform([Z])[0]
         return Z.to(src_device)
 
     def fit(
@@ -61,16 +61,18 @@ class TimeSeriesForecaster(Solver):
         optimizer = self.build_optimizer(model)
         scheduler = self.build_scheduler(optimizer)
         (X_train, X_valid, y_train, y_valid) = self.split_train_and_valid_data(X, y)
+        X_scaler = self.build_scaler(X_train)
         if y_train[0] is not None:
-            scaler = self.build_scaler(y_train)  # type: ignore
+            y_scaler = self.build_scaler(y_train)  # type: ignore
         else:
-            scaler = self.build_scaler(X_train)
-        X_train = scaler.transform(X_train)
-        X_valid = scaler.transform(X_valid)
+            y_scaler = self.build_scaler(X_train)
+        X_train = X_scaler.transform(X_train)
+        X_valid = X_scaler.transform(X_valid)
         if y_train[0] is not None and y_valid[0] is not None:
-            y_train = scaler.transform(y_train)  # type: ignore
-            y_valid = scaler.transform(y_valid)  # type: ignore
-        meta_info["scaler"] = scaler.meta_info
+            y_train = y_scaler.transform(y_train)  # type: ignore
+            y_valid = y_scaler.transform(y_valid)  # type: ignore
+        meta_info["X_scaler"] = X_scaler.meta_info
+        meta_info["y_scaler"] = y_scaler.meta_info
         train_dataset = self.build_train_dataset(X_train, y_train)
         valid_dataset = self.build_valid_dataset(X_valid, y_valid)
         collator = self.build_collator()
@@ -85,7 +87,7 @@ class TimeSeriesForecaster(Solver):
             scheduler,
             train_dataloader,
             valid_dataloader,
-            scaler,
+            y_scaler,
         )
         num_epochs = self.cfg.TRAINING.NUM_EPOCHS
         for i in range(num_epochs):

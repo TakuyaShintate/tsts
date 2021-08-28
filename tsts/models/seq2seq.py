@@ -82,8 +82,8 @@ class Seq2Seq(Module):
         self.encoder = ModuleList([LSTMCell(self.num_in_feats, self.num_h_units)])
         for _ in range(self.depth - 1):
             self.encoder.append(LSTMCell(self.num_h_units, self.num_h_units))
-        self.decoder = ModuleList([LSTMCell(self.num_in_feats, self.num_h_units)])
-        for _ in range(self.depth - 1):
+        self.decoder = ModuleList()
+        for _ in range(self.depth):
             self.decoder.append(LSTMCell(self.num_h_units, self.num_h_units))
 
     def _init_regressor(self) -> None:
@@ -121,9 +121,8 @@ class Seq2Seq(Module):
         device = x_t.device
         (_, c) = self._init_memory(batch_size, device)
         mb_preds = []
-        y_t = torch.zeros_like(x_t)
+        h_t = h[-1]
         for _ in range(self.horizon):
-            h_t = y_t
             for i in range(self.depth):
                 (h_t, c_t) = self.decoder[i](h_t, (h[i], c[i]))
                 h[i] = h_t

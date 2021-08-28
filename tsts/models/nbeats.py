@@ -283,7 +283,8 @@ class NBeats(Module):
         X_mask = X_mask.flip(dims=(1,))
         # Predict offset
         if self.add_last_step_val is True:
-            mb_total_preds = X[:, -1:]
+            mb_total_preds = X[:, -self.num_out_feats :]
+            mb_total_preds = mb_total_preds.repeat(1, self.horizon)
         else:
             mb_total_preds = torch.zeros_like(X[:, -1:])
         mb_feats = X.flip(dims=(1,))
