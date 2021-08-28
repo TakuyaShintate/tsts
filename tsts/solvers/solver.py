@@ -18,8 +18,10 @@ from tsts.metrics import Metric, build_metrics
 from tsts.models import Module, build_model
 from tsts.optimizers import build_optimizer
 from tsts.scalers import Scaler, build_scaler
+from tsts.schedulers import Scheduler, build_scheduler
 from tsts.trainers import Trainer, build_trainer
 from tsts.types import MaybeRawDataset, RawDataset
+from tsts.utils import set_random_seed
 
 __all__ = ["Solver"]
 
@@ -43,6 +45,8 @@ class Solver(object):
         self.cfg = get_cfg_defaults()
         if cfg_path is not None:
             self.cfg.merge_from_file(cfg_path)
+        seed = self.cfg.SEED
+        set_random_seed(seed)
         # Load pretrained model for inference
         if self.log_dir_exist() is True:
             if verbose is True:
@@ -154,6 +158,10 @@ class Solver(object):
     def build_optimizer(self, model: Module) -> Optimizer:
         optimizer = build_optimizer(model.parameters(), self.cfg)
         return optimizer
+
+    def build_scheduler(self, optimizer: Optimizer) -> Scheduler:
+        scheduler = build_scheduler(optimizer, self.cfg)
+        return scheduler
 
     def split_train_and_valid_data(
         self,
@@ -275,6 +283,7 @@ class Solver(object):
         losses: List[Loss],
         metrics: List[Metric],
         optimizer: Optimizer,
+        scheduler: Scheduler,
         train_dataloader: DataLoader,
         valid_dataloader: DataLoader,
         scaler: Scaler,
@@ -284,6 +293,7 @@ class Solver(object):
             losses,
             metrics,
             optimizer,
+            scheduler,
             train_dataloader,
             valid_dataloader,
             scaler,

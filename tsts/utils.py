@@ -1,25 +1,24 @@
-from .types import RawDataset
+import os
+import random
 
-__all__ = ["infer_dataset_type"]
+import numpy as np
+import torch
+
+__all__ = ["set_random_seed"]
 
 
-def infer_dataset_type(X: RawDataset) -> str:
-    """Return dataset type.
+def set_random_seed(seed: int = 42) -> None:
+    """Enforce deterministic behavior.
 
     Parameters
     ----------
-    X : DatasetType
-        Dataset
-
-    Returns
-    -------
-    str
-        Dataset type
+    seed : int, optional
+        Random seed, by default 42
     """
-    num_dims = X[0].dim() + 1
-    if num_dims == 2:
-        return "mn"
-    elif num_dims == 3:
-        return "lmn"
-    else:
-        raise ValueError("Invalid dataset")
+    random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False

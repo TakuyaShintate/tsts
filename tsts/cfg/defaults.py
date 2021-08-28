@@ -5,6 +5,8 @@ __all__ = ["get_cfg_defaults"]
 _C = CN()
 # Main device
 _C.DEVICE = "cpu"
+# Random seed
+_C.SEED = 42
 
 _C.IO = CN()
 # Number of input time steps
@@ -21,12 +23,20 @@ _C.TRAINING.TRAIN_DATA_RATIO = 0.75
 _C.TRAINING.NUM_EPOCHS = 100
 
 _C.OPTIMIZER = CN()
-# OPTIM name
+# Optimizer name
 _C.OPTIMIZER.NAME = "Adam"
 # Learning rate
 _C.OPTIMIZER.LR = 0.001
 # L2 penalty factor
 _C.OPTIMIZER.WEIGHT_DECAY = 1e-4
+
+_C.SCHEDULER = CN()
+# Scheduler name
+_C.SCHEDULER.NAME = "CosineAnnealing"
+# Maximum number of iterations (it comes from torch)
+_C.SCHEDULER.T_MAX = 10
+# Minimum learning rate (it comes from torch)
+_C.SCHEDULER.ETA_MIN = 0.0
 
 _C.TRAINER = CN()
 # Trainer name
@@ -41,6 +51,9 @@ _C.SOLVER.NAME = "Forecaster"
 _C.MODEL = CN()
 # Model name
 _C.MODEL.NAME = "Seq2Seq"
+# If True, Add x_t (the last value of input time series) to every output
+# Set it to True when dataset has high varience
+_C.MODEL.ADD_LAST_STEP_VAL = False
 # Number of hidden units in encoder and decoder
 _C.MODEL.NUM_H_UNITS = 64
 # Number of hidden layers in encoder and decoder
