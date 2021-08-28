@@ -2,6 +2,9 @@
   <img src="img/tsts-logo.png" width="600"/>
 </div>
 
+[![pypI](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.2.2/)
+![license](https://img.shields.io/github/license/TakuyaShintate/tsts?style=flat)
+
 [Docs](https://takuyashintate.github.io/tsts/)・[Benchmark](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/)
 
 ## Introduction
