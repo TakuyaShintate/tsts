@@ -1,4 +1,6 @@
-![tsts-logo](img/tsts-logo.png)
+<div align="center">
+  <img src="img/tsts-logo.png" width="600"/>
+</div>
 
 [Docs](https://takuyashintate.github.io/tsts/)・[Benchmark](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/)
 
