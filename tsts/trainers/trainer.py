@@ -123,11 +123,6 @@ class SupervisedTrainer(Trainer):
     def on_val(self) -> List[float]:
         """Evaluate model on validation dataset.
 
-        Notes
-        -----
-        Currently, it evaluates model per instance (not whole time series) and averages the score.
-        Evaluation on whole time series is the future work.
-
         Returns
         -------
         List[float]
