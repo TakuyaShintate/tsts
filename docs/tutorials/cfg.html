@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview: module code &mdash; tsts  documentation</title>
+  <title>Config &mdash; tsts  documentation</title>
   
 
   
@@ -39,7 +39,9 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Training" href="train.html" />
+    <link rel="prev" title="API" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,11 +89,15 @@
             
             
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/cfg.html">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/infer.html">Inference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gpu.html">GPU Training</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Config</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#config-file">Config File</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infer.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">GPU Training</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
@@ -100,7 +106,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../metrics/metric.html">tsts.metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../models/model.html">tsts.models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../optimizers/optimizer.html">tsts.optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../schedulers/scheduler.html">tsts.schedulers</a></li>
 </ul>
 
             
@@ -146,10 +151,14 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Overview: module code</li>
+      <li>Config</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorials/cfg.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -161,31 +170,40 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="tsts/collators/builder.html">tsts.collators.builder</a></li>
-<li><a href="tsts/collators/collator.html">tsts.collators.collator</a></li>
-<li><a href="tsts/losses/builder.html">tsts.losses.builder</a></li>
-<li><a href="tsts/losses/dilate.html">tsts.losses.dilate</a></li>
-<li><a href="tsts/losses/mape.html">tsts.losses.mape</a></li>
-<li><a href="tsts/losses/mse.html">tsts.losses.mse</a></li>
-<li><a href="tsts/metrics/builder.html">tsts.metrics.builder</a></li>
-<li><a href="tsts/metrics/mape.html">tsts.metrics.mape</a></li>
-<li><a href="tsts/metrics/rmse.html">tsts.metrics.rmse</a></li>
-<li><a href="tsts/models/builder.html">tsts.models.builder</a></li>
-<li><a href="tsts/models/nbeats.html">tsts.models.nbeats</a></li>
-<li><a href="tsts/models/seq2seq.html">tsts.models.seq2seq</a></li>
-<li><a href="tsts/optimizers/adam.html">tsts.optimizers.adam</a></li>
-<li><a href="tsts/optimizers/builder.html">tsts.optimizers.builder</a></li>
-<li><a href="tsts/optimizers/sgd.html">tsts.optimizers.sgd</a></li>
-<li><a href="tsts/schedulers/builder.html">tsts.schedulers.builder</a></li>
-<li><a href="tsts/schedulers/cosine.html">tsts.schedulers.cosine</a></li>
-<li><a href="tsts/schedulers/identity.html">tsts.schedulers.identity</a></li>
-</ul>
+  <div class="section" id="config">
+<h1>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, how to set config to change default values/modules.</p>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p><strong>TimeSeriesForecasting</strong> is the main interface for training and inference. It takes the path to a config file and merges the values with a default internally. If no config file path is given, <strong>TimeSeriesForecasting</strong> uses a default. Default values are defined in <strong>tsts/cfg/defaults.py</strong>.</p>
+</div>
+<div class="section" id="config-file">
+<h2>Config File<a class="headerlink" href="#config-file" title="Permalink to this headline">¶</a></h2>
+<p>Config file is represented as YAML file. Below figure shows the correspondence between default values and custom values. See how to overwrite <strong>IO.LOOKBACK</strong> and <strong>IO.HORIZON</strong>.</p>
+<a class="reference internal image-reference" href="../_images/correspondence.png"><img alt="../_images/correspondence.png" class="align-center" src="../_images/correspondence.png" style="width: 845.0px; height: 300.0px;" /></a>
+<p>To overwrite a default with the config file, just pass the path to the config file to <strong>TimeSeriesForecasting</strong>. It reads the content and merges it with a default. In this case, the lengths of input/output time series are updated to 48/24 respectively.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">TimeSeriesForecasting</span>
+
+<span class="n">solver</span> <span class="o">=</span> <span class="n">TimeSeriesForecasting</span><span class="p">(</span><span class="s2">&quot;custom.yml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="train.html" class="btn btn-neutral float-right" title="Training" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

@@ -1,6 +1,6 @@
-=============================
-Inference (Sine/Cosine Curve)
-=============================
+=========
+Inference
+=========
 
 In this tutorial, we will learn how to run inference on a test data.
 

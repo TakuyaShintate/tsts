@@ -5,6 +5,8 @@ API
 Getting Started 
 ===============
 
+Following example shows how to train a model on sine curve dataset.
+
 .. code-block:: python
 
     import torch
@@ -19,6 +21,7 @@ Getting Started
     :maxdepth: 1
     :caption: Tutorials
 
+    tutorials/cfg
     tutorials/train
     tutorials/infer
     tutorials/gpu
@@ -32,3 +35,4 @@ Getting Started
     metrics/metric
     models/model
     optimizers/optimizer
+    schedulers/scheduler
