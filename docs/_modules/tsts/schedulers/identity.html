@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tsts.optimizers.adam &mdash; tsts  documentation</title>
+  <title>tsts.schedulers.identity &mdash; tsts  documentation</title>
   
 
   
@@ -148,7 +148,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>tsts.optimizers.adam</li>
+      <li>tsts.schedulers.identity</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -163,39 +163,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for tsts.optimizers.adam</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
+  <h1>Source code for tsts.schedulers.identity</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">tsts.cfg</span> <span class="kn">import</span> <span class="n">CfgNode</span> <span class="k">as</span> <span class="n">CN</span>
+<span class="kn">from</span> <span class="nn">tsts.core</span> <span class="kn">import</span> <span class="n">SCHEDULERS</span>
+<span class="kn">from</span> <span class="nn">tsts.optimizers</span> <span class="kn">import</span> <span class="n">Optimizer</span>
 
-<span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Adam</span> <span class="k">as</span> <span class="n">_Adam</span>
-<span class="kn">from</span> <span class="nn">tsts.cfg</span> <span class="kn">import</span> <span class="n">CfgNode</span> <span class="k">as</span> <span class="n">CN</span>
-<span class="kn">from</span> <span class="nn">tsts.core</span> <span class="kn">import</span> <span class="n">OPTIMIZERS</span>
+<span class="kn">from</span> <span class="nn">.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Adam&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;IdentityScheduler&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../optimizers/optimizer.html#tsts.optimizers.Adam">[docs]</a><span class="nd">@OPTIMIZERS</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">_Adam</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adam implementation.</span>
+<div class="viewcode-block" id="IdentityScheduler"><a class="viewcode-back" href="../../../schedulers/scheduler.html#tsts.schedulers.IdentityScheduler">[docs]</a><span class="nd">@SCHEDULERS</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">IdentityScheduler</span><span class="p">(</span><span class="n">Scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dummy scheduler.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        OPTIMIZER:</span>
-<span class="sd">          NAME: &quot;Adam&quot;</span>
-<span class="sd">          LR: 0.001</span>
+<span class="sd">        SCHEDULER:</span>
+<span class="sd">          NAME: &quot;IdentityScheduler&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    optimizer : Optimizer</span>
+<span class="sd">        Target optimizer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
+
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_cfg</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">CN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Adam&quot;</span><span class="p">:</span>
-        <span class="n">lr</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">OPTIMIZER</span><span class="o">.</span><span class="n">LR</span>
-        <span class="n">weight_decay</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">OPTIMIZER</span><span class="o">.</span><span class="n">WEIGHT_DECAY</span>
-        <span class="n">optim</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">params</span><span class="p">,</span>
-            <span class="n">lr</span><span class="p">,</span>
-            <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">optim</span></div>
+    <span class="k">def</span> <span class="nf">from_cfg</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">CN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;IdentityScheduler&quot;</span><span class="p">:</span>
+        <span class="n">scheduler</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scheduler</span>
+
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span></div>
 </pre></div>
 
            </div>

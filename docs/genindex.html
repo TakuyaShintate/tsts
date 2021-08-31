@@ -88,8 +88,9 @@
             
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Training (Sine/Cosine Curve)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/infer.html">Inference (Sine/Cosine Curve)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/cfg.html">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/infer.html">Inference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/gpu.html">GPU Training</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
@@ -99,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="metrics/metric.html">tsts.metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="models/model.html">tsts.models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimizers/optimizer.html">tsts.optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schedulers/scheduler.html">tsts.schedulers</a></li>
 </ul>
 
             
@@ -171,6 +173,7 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#F"><strong>F</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -204,13 +207,15 @@
 </li>
       <li><a href="losses/loss.html#tsts.losses.build_losses">build_losses (class in tsts.losses)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="metrics/metric.html#tsts.metrics.build_metrics">build_metrics (class in tsts.metrics)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="models/model.html#tsts.models.build_model">build_model (class in tsts.models)</a>
 </li>
       <li><a href="optimizers/optimizer.html#tsts.optimizers.build_optimizer">build_optimizer (class in tsts.optimizers)</a>
+</li>
+      <li><a href="schedulers/scheduler.html#tsts.schedulers.build_scheduler">build_scheduler (class in tsts.schedulers)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -219,6 +224,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="collators/collator.html#tsts.collators.Collator">Collator (class in tsts.collators)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="schedulers/scheduler.html#tsts.schedulers.CosineAnnealing">CosineAnnealing (class in tsts.schedulers)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -253,6 +262,14 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="collators/collator.html#tsts.collators.Collator.from_cfg">from_cfg() (tsts.collators.Collator class method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="schedulers/scheduler.html#tsts.schedulers.IdentityScheduler">IdentityScheduler (class in tsts.schedulers)</a>
 </li>
   </ul></td>
 </tr></table>

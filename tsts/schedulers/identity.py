@@ -9,6 +9,21 @@ __all__ = ["IdentityScheduler"]
 
 @SCHEDULERS.register()
 class IdentityScheduler(Scheduler):
+    """Dummy scheduler.
+
+    Example
+    -------
+    .. code-block:: python
+
+        SCHEDULER:
+          NAME: "IdentityScheduler"
+
+    Parameters
+    ----------
+    optimizer : Optimizer
+        Target optimizer
+    """
+
     def __init__(self, optimizer: Optimizer) -> None:
         self.optimizer = optimizer
 

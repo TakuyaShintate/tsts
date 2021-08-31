@@ -25,7 +25,7 @@ pip install tsts
 
 Time series forecasting is the task to predict the values of the time series on **Horizon** given the values of the time series on **Lookback Period**. Note that data can be multivariate.
 
-## Getting Started
+## Getting started
 
 Following example shows how to train a model on sine curve dataset. See [Docs](https://takuyashintate.github.io/tsts/) for the details.
 

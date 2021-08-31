@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tsts.optimizers.adam &mdash; tsts  documentation</title>
+  <title>tsts.schedulers.cosine &mdash; tsts  documentation</title>
   
 
   
@@ -148,7 +148,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>tsts.optimizers.adam</li>
+      <li>tsts.schedulers.cosine</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -163,39 +163,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for tsts.optimizers.adam</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
-
-<span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Adam</span> <span class="k">as</span> <span class="n">_Adam</span>
+  <h1>Source code for tsts.schedulers.cosine</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="n">CosineAnnealingLR</span> <span class="k">as</span> <span class="n">_CosineAnnealingLR</span>
 <span class="kn">from</span> <span class="nn">tsts.cfg</span> <span class="kn">import</span> <span class="n">CfgNode</span> <span class="k">as</span> <span class="n">CN</span>
-<span class="kn">from</span> <span class="nn">tsts.core</span> <span class="kn">import</span> <span class="n">OPTIMIZERS</span>
+<span class="kn">from</span> <span class="nn">tsts.core</span> <span class="kn">import</span> <span class="n">SCHEDULERS</span>
+<span class="kn">from</span> <span class="nn">tsts.optimizers</span> <span class="kn">import</span> <span class="n">Optimizer</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Adam&quot;</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CosineAnnealing&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../optimizers/optimizer.html#tsts.optimizers.Adam">[docs]</a><span class="nd">@OPTIMIZERS</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">_Adam</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adam implementation.</span>
+<div class="viewcode-block" id="CosineAnnealing"><a class="viewcode-back" href="../../../schedulers/scheduler.html#tsts.schedulers.CosineAnnealing">[docs]</a><span class="nd">@SCHEDULERS</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">CosineAnnealing</span><span class="p">(</span><span class="n">Scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Cosine annealing scheduler implementation.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        OPTIMIZER:</span>
-<span class="sd">          NAME: &quot;Adam&quot;</span>
-<span class="sd">          LR: 0.001</span>
+<span class="sd">        SCHEDULER:</span>
+<span class="sd">          NAME: &quot;CosineAnnealing&quot;</span>
+<span class="sd">          T_MAX: 10</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    optimizer : Optimizer</span>
+<span class="sd">        Target optimizer</span>
+
+<span class="sd">    T_max : int</span>
+<span class="sd">        Maximum number of iterations (from pytorch)</span>
+
+<span class="sd">    eta_min : float, optional</span>
+<span class="sd">        Minimum learning rate (from pytorch), default 0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span>
+        <span class="n">T_max</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">eta_min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_max</span> <span class="o">=</span> <span class="n">T_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eta_min</span> <span class="o">=</span> <span class="n">eta_min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_scheduler</span><span class="p">()</span>
+
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_cfg</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">CN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Adam&quot;</span><span class="p">:</span>
-        <span class="n">lr</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">OPTIMIZER</span><span class="o">.</span><span class="n">LR</span>
-        <span class="n">weight_decay</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">OPTIMIZER</span><span class="o">.</span><span class="n">WEIGHT_DECAY</span>
-        <span class="n">optim</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">params</span><span class="p">,</span>
-            <span class="n">lr</span><span class="p">,</span>
-            <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">from_cfg</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">CN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CosineAnnealing&quot;</span><span class="p">:</span>
+        <span class="n">T_max</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">SCHEDULER</span><span class="o">.</span><span class="n">T_MAX</span>
+        <span class="n">eta_min</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">SCHEDULER</span><span class="o">.</span><span class="n">ETA_MIN</span>
+        <span class="n">scheduler</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">T_max</span><span class="p">,</span> <span class="n">eta_min</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scheduler</span>
+
+    <span class="k">def</span> <span class="nf">_init_scheduler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">_CosineAnnealingLR</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">T_max</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eta_min</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">optim</span></div>
+
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
