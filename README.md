@@ -17,10 +17,10 @@ tsts is an open-source easy-to-use toolset for time series forecasting.
 pip install tsts
 ```
 
-## Time Series Forecasting
+## What's that?
 
 <div align="center">
-  <img src="img/whats-forecasting.png" width="600"/>
+  <img src="img/whats-forecasting.png" width="800"/>
 </div>
 
 Time series forecasting is the task to predict the values of the time series on **Horizon** given the values of the time series on **Lookback Period**. Note that data can be multivariate.
@@ -37,17 +37,4 @@ sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
 sin_dataset = sin_dataset.unsqueeze(-1)
 forecaster = TimeSeriesForecaster()
 forecaster.fit([sin_dataset])
-```
-
-## Available Modules
-
-### Models
-
-* [Seq2Seq](https://arxiv.org/abs/1409.3215)
-* [NBeats](https://arxiv.org/abs/1905.10437) 
-
-### Losses
-
-* [DILATE](https://arxiv.org/abs/1909.09020)
-* MAPE
-* MSE
+``` 
