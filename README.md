@@ -17,38 +17,13 @@ tsts is an open-source easy-to-use toolset for time series forecasting.
 pip install tsts
 ```
 
-## What's that?
+## Time Series Forecasting?
 
 <div align="center">
   <img src="img/whats-forecasting.png" width="850"/>
 </div>
 
 Time series forecasting is the task to predict the values of the time series on **Horizon** given the values of the time series on **Lookback Period**. Note that data can be multivariate.
-
-## Getting started
-
-Following example shows how to train a model on sine curve dataset. See [Docs](https://takuyashintate.github.io/tsts/) for the details.
-
-### Training
-
-```python
-import torch
-from tsts.solvers import TimeSeriesForecaster
-
-sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
-sin_dataset = sin_dataset.unsqueeze(-1)
-forecaster = TimeSeriesForecaster()
-forecaster.fit([sin_dataset])
-``` 
-
-### Inference
-
-```python
-import torch
-
-X = torch.randn(100, 1)
-forecaster.predict(X)
-```
 
 ## Available Modules
 
@@ -103,3 +78,28 @@ forecaster.predict(X)
     </tr>
   </tbody>
 </table>
+
+## Getting Started
+
+Following example shows how to train a model on sine curve dataset. See [Docs](https://takuyashintate.github.io/tsts/) for the details.
+
+### Training
+
+```python
+import torch
+from tsts.solvers import TimeSeriesForecaster
+
+sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
+sin_dataset = sin_dataset.unsqueeze(-1)
+forecaster = TimeSeriesForecaster()
+forecaster.fit([sin_dataset])
+``` 
+
+### Inference
+
+```python
+import torch
+
+X = torch.randn(100, 1)
+forecaster.predict(X)
+```
