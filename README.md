@@ -87,7 +87,7 @@ Following example shows how to train a model on sine curve dataset. See [Docs](h
 
 ### Training
 
-Without a log directory path provided by config, it automatically generates random log directory.
+Without a log directory path provided by config, it automatically generates a random log directory.
 
 ```python
 import torch
@@ -101,7 +101,7 @@ forecaster.fit([sin_dataset])
 
 ### Inference
 
-For inference, it needs to load parameters from log directory generated in training.
+For inference, it needs to load parameters from a log directory generated in training.
 
 ```yaml
 # inference.yml
