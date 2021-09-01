@@ -5,7 +5,7 @@ from torch import Tensor
 __all__ = ["Batch", "MaybeRawDataset", "RawBatch", "RawDataset"]
 
 
-Batch = Tuple[Tensor, Tensor, Tensor, Tensor]
+Batch = Tuple[Tensor, Tensor, Tensor, Tensor, Tensor]
 MaybeRawDataset = List[Optional[Tensor]]
-RawBatch = Tuple[Tuple[Tensor, Tensor]]
+RawBatch = Tuple[Tuple[Tensor, Tensor, Tensor]]
 RawDataset = List[Tensor]

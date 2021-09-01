@@ -53,7 +53,6 @@ _C.MODEL = CN()
 _C.MODEL.NAME = "Seq2Seq"
 # If True, Add x_t (the last value of input time series) to every output
 # Set it to True when dataset has high varience
-# NOTE: It works only when univariate time series or auto regressive cases
 _C.MODEL.ADD_LAST_STEP_VAL = False
 # Number of hidden units in encoder and decoder
 _C.MODEL.NUM_H_UNITS = 64

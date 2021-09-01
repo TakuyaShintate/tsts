@@ -64,13 +64,15 @@ class Dataset(_Dataset):
         num_instances = len(self.X) - 1
         return num_instances
 
-    def __getitem__(self, i: int) -> Tuple[Tensor, Tensor]:
+    def __getitem__(self, i: int) -> Tuple[Tensor, Tensor, Tensor]:
         start = max(0, i - self.lookback + 1)
         mid = i + 1
         end = i + 1 + self.horizon
         X = self.X[start:mid]
         if self.y is not None:
             y = self.y[mid:end]
+            bias = self.y[start:mid]
         else:
             y = self.X[mid:end]
-        return (X, y)
+            bias = self.X[start:mid]
+        return (X, y, bias)
