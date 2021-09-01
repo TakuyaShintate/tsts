@@ -20,15 +20,20 @@ class TimeSeriesForecaster(Solver):
         X = X.to(device)
         lookback = self.cfg.IO.LOOKBACK
         num_in_feats = self.meta_info["num_in_feats"]
+        num_out_feats = self.meta_info["num_out_feats"]
         X_new = torch.zeros((1, lookback, num_in_feats))
+        bias_new = torch.zeros((1, lookback, num_out_feats))
         X_new = X_new.to(device)
+        bias_new = bias_new.to(device)
         X_new[:, -X.size(0) :] = X[-lookback:]
+        bias_new[:, -X.size(0) :] = bias[-lookback:]
         X_new = self.X_scaler.transform([X_new])[0]
+        bias_new = self.y_scaler.transform([bias_new])[0]
         X_mask = torch.zeros((1, lookback, num_in_feats))
         X_mask = X_mask.to(device)
         X_mask[:, -X.size(0) :] += 1.0
         with torch.no_grad():
-            Z = self.model(X_new, bias, X_mask)
+            Z = self.model(X_new, bias_new, X_mask)
             Z = Z.squeeze(0)
         Z = self.y_scaler.inv_transform([Z])[0]
         return Z.to(src_device)
