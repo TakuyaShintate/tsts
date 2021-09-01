@@ -29,6 +29,8 @@ Time series forecasting is the task to predict the values of the time series on 
 
 Following example shows how to train a model on sine curve dataset. See [Docs](https://takuyashintate.github.io/tsts/) for the details.
 
+### Training
+
 ```python
 import torch
 from tsts.solvers import TimeSeriesForecaster
@@ -38,6 +40,15 @@ sin_dataset = sin_dataset.unsqueeze(-1)
 forecaster = TimeSeriesForecaster()
 forecaster.fit([sin_dataset])
 ``` 
+
+### Inference
+
+```python
+import torch
+
+X = torch.randn(100, 1)
+forecaster.predict(X)
+```
 
 ## Available Modules
 
