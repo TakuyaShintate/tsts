@@ -38,3 +38,57 @@ sin_dataset = sin_dataset.unsqueeze(-1)
 forecaster = TimeSeriesForecaster()
 forecaster.fit([sin_dataset])
 ``` 
+
+## Available Modules
+
+<table align="center">
+  <tbody>
+    <tr align="center" valign="bottom">
+      <td>
+        <b>Architectures</b>
+      </td>
+      <td>
+        <b>Losses</b>
+      </td>
+      <td>
+        <b>Metrics</b>
+      </td>
+      <td>
+        <b>Optimizers</b>
+      </td>
+      <td>
+        <b>Scalers</b>
+      </td>
+      <td>
+        <b>Schedulers</b>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <li>Seq2Seq</li>
+        <li>NBeats</li>
+      </td>
+      <td>
+        <li>DILATE</li>
+        <li>MAPE</li>
+        <li>MSE</li>
+      </td>
+      <td>
+        <li>RMSE</li>
+        <li>MAPE</li>
+      </td>
+      <td>
+        <li>Adam</li>
+        <li>SGD</li>
+      </td>
+      <td>
+        <li>MinMaxScaler</li>
+        <li>StandardScaler</li>
+      </td>
+      <td>
+        <li>CosineAnnealing</li>
+      </td>
+    </td>
+    </tr>
+  </tbody>
+</table>
