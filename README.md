@@ -101,7 +101,7 @@ forecaster.fit([sin_dataset])
 
 ### Inference
 
-For inference, it loads parameters from log directory generated in training.
+For inference, it needs to load parameters from log directory generated in training.
 
 ```yaml
 # inference.yml
