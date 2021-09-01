@@ -12,7 +12,9 @@ __all__ = ["TimeSeriesForecaster"]
 class TimeSeriesForecaster(Solver):
     """Tool to solve time series forecasting."""
 
-    def predict(self, X: Tensor) -> Tensor:
+    def predict(self, X: Tensor, bias: Optional[Tensor] = None) -> Tensor:
+        if bias is None:
+            bias = X
         src_device = X.device
         device = self.cfg.DEVICE
         X = X.to(device)
@@ -26,7 +28,7 @@ class TimeSeriesForecaster(Solver):
         X_mask = X_mask.to(device)
         X_mask[:, -X.size(0) :] += 1.0
         with torch.no_grad():
-            Z = self.model(X_new, X_mask)
+            Z = self.model(X_new, bias, X_mask)
             Z = Z.squeeze(0)
         Z = self.y_scaler.inv_transform([Z])[0]
         return Z.to(src_device)

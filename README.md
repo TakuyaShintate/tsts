@@ -2,7 +2,7 @@
   <img src="img/tsts-logo.png" width="600"/>
 </div>
 
-[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.2.2/)
+[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.2.3/)
 [![license](https://img.shields.io/github/license/TakuyaShintate/tsts?style=flat)](https://github.com/TakuyaShintate/tsts/blob/main/LICENSE)
 
 ([Docs](https://takuyashintate.github.io/tsts/))([Benchmark](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/))
@@ -26,6 +26,8 @@ pip install tsts
 Time series forecasting is the task to predict the values of the time series on **Horizon** given the values of the time series on **Lookback Period**. Note that data can be multivariate.
 
 ## Available Modules
+
+Following modules are supported.
 
 <table align="center">
   <tbody>
@@ -85,6 +87,8 @@ Following example shows how to train a model on sine curve dataset. See [Docs](h
 
 ### Training
 
+Without a log directory path provided by config, it automatically generates random log directory.
+
 ```python
 import torch
 from tsts.solvers import TimeSeriesForecaster
@@ -97,9 +101,19 @@ forecaster.fit([sin_dataset])
 
 ### Inference
 
+For inference, it loads parameters from log directory generated in training.
+
+```yaml
+# inference.yml
+LOGGER:
+  LOG_DIR: "log directory generated in training"
+```
+
 ```python
 import torch
+from tsts.solvers import TimeSeriesForecaster
 
 X = torch.randn(100, 1)
+forecaster = TimeSeriesForecaster("inference.yml")
 forecaster.predict(X)
 ```

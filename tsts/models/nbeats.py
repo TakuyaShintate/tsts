@@ -261,7 +261,7 @@ class NBeats(Module):
                 )
             )
 
-    def forward(self, X: Tensor, X_mask: Tensor) -> Tensor:
+    def forward(self, X: Tensor, bias: Tensor, X_mask: Tensor) -> Tensor:
         """Return prediction.
 
         Parameters
@@ -279,11 +279,12 @@ class NBeats(Module):
         """
         batch_size = X.size(0)
         X = X.reshape(batch_size, -1)
+        bias = bias.reshape(batch_size, -1)
         X_mask = X_mask.reshape(batch_size, -1)
         X_mask = X_mask.flip(dims=(1,))
         # Predict offset
         if self.add_last_step_val is True:
-            mb_total_preds = X[:, -self.num_out_feats :]
+            mb_total_preds = bias[:, -self.num_out_feats :]
             mb_total_preds = mb_total_preds.repeat(1, self.horizon)
         else:
             mb_total_preds = torch.zeros_like(X[:, -1:])
