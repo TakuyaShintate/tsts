@@ -117,3 +117,7 @@ X = torch.randn(100, 1)
 forecaster = TimeSeriesForecaster("inference.yml")
 forecaster.predict(X)
 ```
+
+## Examples
+
+See [Benchmark](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/) for advanced usage.
