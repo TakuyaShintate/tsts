@@ -93,6 +93,7 @@ class SupervisedTrainer(Trainer):
         for (X, y, bias, X_mask, y_mask) in tqdm(self.train_dataloader):
             X = X.to(self.device)
             y = y.to(self.device)
+            bias = bias.to(self.device)
             X_mask = X_mask.to(self.device)
             y_mask = y_mask.to(self.device)
             Z = self.model(X, bias, X_mask)
@@ -132,6 +133,7 @@ class SupervisedTrainer(Trainer):
         for (X, y, bias, X_mask, y_mask) in tqdm(self.valid_dataloader):
             X = X.to(self.device)
             y = y.to(self.device)
+            bias = bias.to(self.device)
             X_mask = X_mask.to(self.device)
             y_mask = y_mask.to(self.device)
             with torch.no_grad():

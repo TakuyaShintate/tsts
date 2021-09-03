@@ -18,6 +18,7 @@ class TimeSeriesForecaster(Solver):
         src_device = X.device
         device = self.cfg.DEVICE
         X = X.to(device)
+        bias = bias.to(device)
         lookback = self.cfg.IO.LOOKBACK
         num_in_feats = self.meta_info["num_in_feats"]
         num_out_feats = self.meta_info["num_out_feats"]
