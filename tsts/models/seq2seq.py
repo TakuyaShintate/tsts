@@ -129,7 +129,7 @@ class Seq2Seq(Module):
                 c[i] = c_t
             y_t = self.regressor(h_t)
             if self.add_last_step_val is True:
-                y_t = y_t + bias[:, -1:]
+                y_t = y_t + bias[:, -1]
             mb_preds.append(y_t.unsqueeze(1))
         return torch.cat(mb_preds, dim=1)
 

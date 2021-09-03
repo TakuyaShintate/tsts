@@ -14,11 +14,14 @@ MODEL:
 DATALOADER:
   BATCH_SIZE_TRAIN: 1024
 
+LOSSES:
+  NAMES: ["MAPE"]
+
 METRICS:
   NAMES: ["MAPE"]
 
 SCALER:
-  NAME: "StandardScaler"
+  NAME: "IdentityScaler"
 
 LOGGER:
   LOG_DIR: "seq2seq-tourism-monthly"
