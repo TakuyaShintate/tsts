@@ -113,7 +113,7 @@ LOGGER:
 import torch
 from tsts.solvers import TimeSeriesForecaster
 
-X = torch.randn(100, 1)
+X = torch.sin(torch.arange(0.0, 10.0, 0.1)).unsqueeze(1)
 forecaster = TimeSeriesForecaster("inference.yml")
 forecaster.predict(X)
 ```
