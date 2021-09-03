@@ -1,0 +1,27 @@
+DEVICE: "cuda:2"
+
+IO:
+  LOOKBACK: 48
+  HORIZON: 24
+
+TRAINING:
+  TRAIN_DATA_SPLIT: "row"
+  NUM_EPOCHS: 300
+  
+MODEL:
+  ADD_LAST_STEP_VAL: True
+
+DATALOADER:
+  BATCH_SIZE_TRAIN: 1024
+  
+LOSSES:
+  NAMES: ["DILATE"]
+
+METRICS:
+  NAMES: ["MAPE"]
+
+SCALER:
+  NAME: "StandardScaler"
+
+LOGGER:
+  LOG_DIR: "seq2seq-tourism-monthly"
