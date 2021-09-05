@@ -90,12 +90,13 @@ class SupervisedTrainer(Trainer):
     def on_train(self) -> List[float]:
         self.model.train()
         ave_loss_vs = [0.0 for _ in range(len(self.losses))]
-        for (X, y, X_mask, y_mask) in tqdm(self.train_dataloader):
+        for (X, y, bias, X_mask, y_mask) in tqdm(self.train_dataloader):
             X = X.to(self.device)
             y = y.to(self.device)
+            bias = bias.to(self.device)
             X_mask = X_mask.to(self.device)
             y_mask = y_mask.to(self.device)
-            Z = self.model(X, X_mask)
+            Z = self.model(X, bias, X_mask)
             self.optimizer.zero_grad()
             device = Z.device
             total_loss_v = torch.tensor(
@@ -129,13 +130,14 @@ class SupervisedTrainer(Trainer):
             List of averaged scores
         """
         self.model.eval()
-        for (X, y, X_mask, y_mask) in tqdm(self.valid_dataloader):
+        for (X, y, bias, X_mask, y_mask) in tqdm(self.valid_dataloader):
             X = X.to(self.device)
             y = y.to(self.device)
+            bias = bias.to(self.device)
             X_mask = X_mask.to(self.device)
             y_mask = y_mask.to(self.device)
             with torch.no_grad():
-                Z = self.model(X, X_mask)
+                Z = self.model(X, bias, X_mask)
             Z = self.scaler.inv_transform(Z)
             y = self.scaler.inv_transform(y)
             for metric in self.metrics:

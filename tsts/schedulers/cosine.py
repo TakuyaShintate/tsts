@@ -10,6 +10,28 @@ __all__ = ["CosineAnnealing"]
 
 @SCHEDULERS.register()
 class CosineAnnealing(Scheduler):
+    """Cosine annealing scheduler implementation.
+
+    Example
+    -------
+    .. code-block:: python
+
+        SCHEDULER:
+          NAME: "CosineAnnealing"
+          T_MAX: 10
+
+    Parameters
+    ----------
+    optimizer : Optimizer
+        Target optimizer
+
+    T_max : int
+        Maximum number of iterations (from pytorch)
+
+    eta_min : float, optional
+        Minimum learning rate (from pytorch), default 0.0
+    """
+
     def __init__(
         self,
         optimizer: Optimizer,

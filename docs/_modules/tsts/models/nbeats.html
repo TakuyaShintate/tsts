@@ -65,10 +65,6 @@
           
             
             
-              <div class="version">
-                v0.1.0
-              </div>
-            
           
 
           
@@ -92,8 +88,9 @@
             
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/train.html">Training (Sine/Cosine Curve)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/infer.html">Inference (Sine/Cosine Curve)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/cfg.html">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/train.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/infer.html">Inference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gpu.html">GPU Training</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
@@ -103,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../metrics/metric.html">tsts.metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../models/model.html">tsts.models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../optimizers/optimizer.html">tsts.optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../schedulers/scheduler.html">tsts.schedulers</a></li>
 </ul>
 
             
@@ -166,8 +164,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for tsts.models.nbeats</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
 <span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">Linear</span><span class="p">,</span> <span class="n">Module</span><span class="p">,</span> <span class="n">ModuleList</span><span class="p">,</span> <span class="n">ReLU</span>
 <span class="kn">from</span> <span class="nn">tsts.cfg</span> <span class="kn">import</span> <span class="n">CfgNode</span> <span class="k">as</span> <span class="n">CN</span>
@@ -181,6 +181,9 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">backcast_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">forecast_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_in_feats</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_out_feats</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">degree</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">IdentityBasis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backcast_size</span> <span class="o">=</span> <span class="n">backcast_size</span>
@@ -193,6 +196,54 @@
         <span class="p">)</span>
 
 
+<span class="k">class</span> <span class="nc">TrendBasis</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">backcast_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">forecast_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_in_feats</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_out_feats</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">degree</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TrendBasis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backcast_size</span> <span class="o">=</span> <span class="n">backcast_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast_size</span> <span class="o">=</span> <span class="n">forecast_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_in_feats</span> <span class="o">=</span> <span class="n">num_in_feats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_out_feats</span> <span class="o">=</span> <span class="n">num_out_feats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">degree</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_t</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_init_t</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">actual_backcast_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backcast_size</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_in_feats</span>
+        <span class="n">actual_forecast_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_size</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_out_feats</span>
+        <span class="n">backcast_T</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">forecast_T</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">backcast_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">actual_backcast_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">backcast_t</span> <span class="o">=</span> <span class="n">backcast_t</span> <span class="o">/</span> <span class="n">actual_backcast_size</span>
+            <span class="n">backcast_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">backcast_t</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">backcast_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">backcast_t</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_in_feats</span><span class="p">)])</span>
+            <span class="n">backcast_T</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">backcast_t</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">forecast_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">actual_forecast_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">forecast_t</span> <span class="o">=</span> <span class="n">forecast_t</span> <span class="o">/</span> <span class="n">actual_forecast_size</span>
+            <span class="n">forecast_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">forecast_t</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">forecast_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">forecast_t</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_out_feats</span><span class="p">)])</span>
+            <span class="n">forecast_T</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">forecast_t</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">_backcast_T</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">backcast_T</span><span class="p">))</span>
+        <span class="n">_forecast_T</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">forecast_T</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;backcast_T&quot;</span><span class="p">,</span> <span class="n">_backcast_T</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;forecast_T&quot;</span><span class="p">,</span> <span class="n">_forecast_T</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mb_feats</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">mb_feats</span><span class="o">.</span><span class="n">device</span>
+        <span class="n">bt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backcast_T</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">ft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_T</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">backcast</span> <span class="o">=</span> <span class="p">(</span><span class="n">mb_feats</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">backcast_size</span><span class="p">]</span> <span class="o">*</span> <span class="n">bt</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">forecast</span> <span class="o">=</span> <span class="p">(</span><span class="n">mb_feats</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast_size</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">ft</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">backcast</span><span class="p">,</span> <span class="n">forecast</span><span class="p">)</span>
+
+
 <span class="k">class</span> <span class="nc">Block</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Main component of N-Beats.&quot;&quot;&quot;</span>
 
@@ -202,6 +253,10 @@
         <span class="n">num_out_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">num_h_units</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">block_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">num_in_feats</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_out_feats</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">degree</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">depth</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Block</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -209,11 +264,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_out_steps</span> <span class="o">=</span> <span class="n">num_out_steps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_h_units</span> <span class="o">=</span> <span class="n">num_h_units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">basis_fn</span> <span class="o">=</span> <span class="n">IdentityBasis</span><span class="p">(</span>
-            <span class="n">num_in_steps</span><span class="p">,</span>
-            <span class="n">num_out_steps</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_type</span> <span class="o">=</span> <span class="n">block_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_in_feats</span> <span class="o">=</span> <span class="n">num_in_feats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_out_feats</span> <span class="o">=</span> <span class="n">num_out_feats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_layers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_basis</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_init_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">ModuleList</span><span class="p">(</span>
@@ -240,6 +296,21 @@
             <span class="p">)</span>
         <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_init_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_type</span> <span class="o">==</span> <span class="s2">&quot;identity&quot;</span><span class="p">:</span>
+            <span class="n">basis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">IdentityBasis</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="n">TrendBasis</span><span class="p">]]</span> <span class="o">=</span> <span class="n">IdentityBasis</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_type</span> <span class="o">==</span> <span class="s2">&quot;trend&quot;</span><span class="p">:</span>
+            <span class="n">basis</span> <span class="o">=</span> <span class="n">TrendBasis</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Currently, NBeats supports IdentityBasis and TrendBasis only&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basis_fn</span> <span class="o">=</span> <span class="n">basis</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_in_steps</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_out_steps</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_in_feats</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_out_feats</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+        <span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mb_feats</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">):</span>
             <span class="n">mb_feats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">mb_feats</span><span class="p">)</span>
@@ -251,7 +322,6 @@
 <div class="viewcode-block" id="NBeats"><a class="viewcode-back" href="../../../models/model.html#tsts.models.NBeats">[docs]</a><span class="nd">@MODELS</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">NBeats</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;N-Beats implementation.</span>
-
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -295,6 +365,9 @@
         <span class="n">num_h_units</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
         <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">stack_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+        <span class="n">block_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;identity&quot;</span><span class="p">,</span>
+        <span class="n">degree</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">add_last_step_val</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">NBeats</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_in_feats</span> <span class="o">=</span> <span class="n">num_in_feats</span>
@@ -304,6 +377,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_h_units</span> <span class="o">=</span> <span class="n">num_h_units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stack_size</span> <span class="o">=</span> <span class="n">stack_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_type</span> <span class="o">=</span> <span class="n">block_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_last_step_val</span> <span class="o">=</span> <span class="n">add_last_step_val</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_stack</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
@@ -318,6 +394,9 @@
         <span class="n">num_h_units</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">MODEL</span><span class="o">.</span><span class="n">NUM_H_UNITS</span>
         <span class="n">depth</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">MODEL</span><span class="o">.</span><span class="n">DEPTH</span>
         <span class="n">stack_size</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">MODEL</span><span class="o">.</span><span class="n">STACK_SIZE</span>
+        <span class="n">block_type</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">MODEL</span><span class="o">.</span><span class="n">BLOCK_TYPE</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">MODEL</span><span class="o">.</span><span class="n">DEGREE</span>
+        <span class="n">add_last_step_val</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">MODEL</span><span class="o">.</span><span class="n">ADD_LAST_STEP_VAL</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">num_in_feats</span><span class="p">,</span>
             <span class="n">num_out_feats</span><span class="p">,</span>
@@ -326,6 +405,9 @@
             <span class="n">num_h_units</span><span class="p">,</span>
             <span class="n">depth</span><span class="p">,</span>
             <span class="n">stack_size</span><span class="p">,</span>
+            <span class="n">block_type</span><span class="p">,</span>
+            <span class="n">degree</span><span class="p">,</span>
+            <span class="n">add_last_step_val</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">model</span>
 
@@ -338,6 +420,10 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">num_out_feats</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">horizon</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">num_h_units</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">block_type</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_in_feats</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_out_feats</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
@@ -362,7 +448,11 @@
         <span class="n">X_mask</span> <span class="o">=</span> <span class="n">X_mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">X_mask</span> <span class="o">=</span> <span class="n">X_mask</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
         <span class="c1"># Predict offset</span>
-        <span class="n">mb_total_preds</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_last_step_val</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">mb_total_preds</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">num_out_feats</span> <span class="p">:]</span>
+            <span class="n">mb_total_preds</span> <span class="o">=</span> <span class="n">mb_total_preds</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">horizon</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mb_total_preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
         <span class="n">mb_feats</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_size</span><span class="p">):</span>
             <span class="p">(</span><span class="n">current_mb_feats</span><span class="p">,</span> <span class="n">mb_preds</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">mb_feats</span><span class="p">)</span>

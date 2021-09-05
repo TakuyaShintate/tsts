@@ -67,16 +67,19 @@ class Collator(object):
         """
         X_new = []
         y_new = []
+        bias_new = []
         X_mask = []
         y_mask = []
-        for (X, y) in batch:
+        for (X, y, bias) in batch:
             (X_num_steps, X_num_feats) = X.size()
             X_num_steps = min(X_num_steps, self.lookback)
             (y_num_steps, y_num_feats) = y.size()
             y_num_steps = min(y_num_steps, self.horizon)
             _X_new = X.new_zeros((self.lookback, X_num_feats))
+            _bias_new = bias.new_zeros((self.lookback, y_num_feats))
             # NOTE: X could be longer than lookback
             _X_new[-X_num_steps:] = X[-X_num_steps:]
+            _bias_new[-X_num_steps:] = bias[-X_num_steps:]
             _y_new = y.new_zeros((self.horizon, y_num_feats))
             # NOTE: y could be longer than horizon
             _y_new[:y_num_steps] = y[:y_num_steps]
@@ -86,11 +89,13 @@ class Collator(object):
             _y_mask[:y_num_steps] += 1.0
             X_new.append(_X_new)
             y_new.append(_y_new)
+            bias_new.append(_bias_new)
             X_mask.append(_X_mask)
             y_mask.append(_y_mask)
         return (
             torch.stack(X_new),
             torch.stack(y_new),
+            torch.stack(bias_new),
             torch.stack(X_mask),
             torch.stack(y_mask),
         )
