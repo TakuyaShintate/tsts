@@ -107,7 +107,14 @@ class SelfAttention(Module):
         self.num_in_feats = num_in_feats
         self.num_out_feats = num_out_feats
         self.num_heads = num_heads
+        self._init_qkv()
         self._init_projector()
+
+    def _init_qkv(self) -> None:
+        num_out_feats = (self.num_out_feats // self.num_heads) * self.num_heads
+        self.q_projector = Linear(self.num_in_feats, num_out_feats)
+        self.k_projector = Linear(self.num_in_feats, num_out_feats)
+        self.v_projector = Linear(self.num_in_feats, num_out_feats)
 
     def _init_projector(self) -> None:
         num_out_feats = (self.num_out_feats // self.num_heads) * self.num_heads
@@ -120,10 +127,32 @@ class SelfAttention(Module):
         scores = torch.softmax(scale * scores, dim=-1)
         v_new = (scores[..., None] * v[:, :, None, :, :]).sum(-2)
         (batch_size, _, num_vals, _) = v_new.size()
+        v_new = v_new.transpose(2, 1).contiguous()
         v_new = v_new.view(batch_size, num_vals, -1)
         return v_new
 
+    def _process_qkv(
+        self,
+        q: Tensor,
+        k: Tensor,
+        v: Tensor,
+    ) -> Tuple[Tensor, Tensor, Tensor]:
+        (b_q, n_q, u_q) = q.size()
+        (b_k, n_k, u_k) = k.size()
+        (b_v, n_v, u_v) = v.size()
+        q = self.q_projector(q)
+        k = self.k_projector(k)
+        v = self.v_projector(v)
+        q = q.reshape(b_q, n_q, self.num_heads, u_q // self.num_heads)
+        k = k.reshape(b_k, n_k, self.num_heads, u_k // self.num_heads)
+        v = v.reshape(b_v, n_v, self.num_heads, u_v // self.num_heads)
+        q = q.permute(0, 2, 1, 3)
+        k = k.permute(0, 2, 1, 3)
+        v = v.permute(0, 2, 1, 3)
+        return (q, k, v)
+
     def forward(self, q: Tensor, k: Tensor, v: Tensor) -> Tensor:
+        (q, k, v) = self._process_qkv(q, k, v)
         mb_feats = self._apply_attention(q, k, v)
         mb_feats = self.projector(mb_feats)
         return mb_feats
@@ -146,7 +175,14 @@ class ProbSparseSelfAttention(Module):
         self.mix = mix
         self.num_heads = num_heads
         self.contraction_factor = contraction_factor
+        self._init_qkv()
         self._init_projector()
+
+    def _init_qkv(self) -> None:
+        num_out_feats = (self.num_out_feats // self.num_heads) * self.num_heads
+        self.q_projector = Linear(self.num_in_feats, num_out_feats)
+        self.k_projector = Linear(self.num_in_feats, num_out_feats)
+        self.v_projector = Linear(self.num_in_feats, num_out_feats)
 
     def _init_projector(self) -> None:
         num_out_feats = (self.num_out_feats // self.num_heads) * self.num_heads
@@ -324,7 +360,28 @@ class ProbSparseSelfAttention(Module):
         v_new = v_new.contiguous()
         return v_new
 
+    def _process_qkv(
+        self,
+        q: Tensor,
+        k: Tensor,
+        v: Tensor,
+    ) -> Tuple[Tensor, Tensor, Tensor]:
+        (b_q, n_q, u_q) = q.size()
+        (b_k, n_k, u_k) = k.size()
+        (b_v, n_v, u_v) = v.size()
+        q = self.q_projector(q)
+        k = self.k_projector(k)
+        v = self.v_projector(v)
+        q = q.reshape(b_q, n_q, self.num_heads, u_q // self.num_heads)
+        k = k.reshape(b_k, n_k, self.num_heads, u_k // self.num_heads)
+        v = v.reshape(b_v, n_v, self.num_heads, u_v // self.num_heads)
+        q = q.permute(0, 2, 1, 3)
+        k = k.permute(0, 2, 1, 3)
+        v = v.permute(0, 2, 1, 3)
+        return (q, k, v)
+
     def forward(self, q: Tensor, k: Tensor, v: Tensor) -> Tensor:
+        (q, k, v) = self._process_qkv(q, k, v)
         (scores, m_top) = self._get_attention_scores(q, k, *self._get_num_samples(q, k))
         num_feats = q.size(-1)
         scale = 1.0 / np.sqrt(num_feats)
@@ -332,7 +389,7 @@ class ProbSparseSelfAttention(Module):
         num_queries = q.size(2)
         mb_feats = self._apply_attention(v, scores, m_top, num_queries)
         (batch_size, _, num_vals, _) = v.size()
-        if self.mix is True:
+        if self.mix is False:
             mb_feats = mb_feats.transpose(2, 1).contiguous()
         mb_feats = mb_feats.view(batch_size, num_vals, -1)
         mb_feats = self.projector(mb_feats)
@@ -357,18 +414,10 @@ class AttentionBlock(Module):
         self.contraction_factor = contraction_factor
         self.dropout_rate = dropout_rate
         self.expantion_rate = expansion_rate
-        self._init_qkv()
         self._init_attention()
         self._init_dropout()
         self._init_norms()
         self._init_convs()
-
-    def _init_qkv(self) -> None:
-        num_out_feats = (self.num_out_feats // self.num_heads) * self.num_heads
-        self.qkv = Linear(
-            self.num_in_feats,
-            3 * num_out_feats,
-        )
 
     def _init_attention(self) -> None:
         self.attention = ProbSparseSelfAttention(
@@ -392,22 +441,12 @@ class AttentionBlock(Module):
         self.conv1 = Conv1d(self.num_in_feats, num_h_feats, 1)
         self.conv2 = Conv1d(num_h_feats, self.num_out_feats, 1)
 
-    def _get_qkv(self, mb_feats: Tensor) -> Tuple[Tensor, ...]:
-        (b, n, u) = mb_feats.shape
-        qkv = self.qkv(mb_feats)
-        qkv = qkv.reshape(b, n, 3, self.num_heads, u // self.num_heads)
-        # q, k, v: (batch size, number of heads, number of tokens, number of features)
-        qkv = qkv.permute(2, 0, 3, 1, 4)
-        (q, k, v) = (qkv[0], qkv[1], qkv[2])
-        return (q, k, v)
-
     def forward(self, mb_feats: Tensor) -> Tensor:
-        (q, k, v) = self._get_qkv(mb_feats)
-        mb_feats = self.attention(q, k, v)
-        mb_feats = self.dropout(mb_feats)
+        mb_feats = self.attention(mb_feats, mb_feats, mb_feats)
+        mb_feats = mb_feats + self.dropout(mb_feats)
         mb_feats = skip_feats = self.norm1(mb_feats)
         mb_feats = self.conv1(mb_feats.transpose(-2, -1))
-        mb_feats = torch.relu(mb_feats)
+        mb_feats = F.gelu(mb_feats)
         mb_feats = self.dropout(mb_feats)
         mb_feats = self.conv2(mb_feats).transpose(-2, -1)
         mb_feats = self.dropout(mb_feats)
@@ -488,22 +527,28 @@ class CrossAttentionBlock(Module):
         q = self._reshape_qkv(qkv, 0, q.size(1))
         k = self._reshape_qkv(qkv, q.size(1), q.size(1) + k.size(1))
         v = self._reshape_qkv(
-            qkv, q.size(1) + k.size(1), q.size(1) + k.size(1) + v.size(1)
+            qkv,
+            q.size(1) + k.size(1),
+            q.size(1) + k.size(1) + v.size(1),
         )
         return (q, k, v)
 
     def forward(self, mb_feats: Tensor, mb_enc_feats: Tensor) -> Tensor:
+        """
         (q, k, v) = self._get_qkv(
             mb_feats,
             mb_enc_feats,
             mb_enc_feats,
         )
-        mb_feats = mb_feats + self.dropout(self.attention(q, q, q))
+        """
+        attn = self.attention(mb_feats, mb_feats, mb_feats)
+        mb_feats = mb_feats + self.dropout(attn)
         mb_feats = self.norm1(mb_feats)
-        mb_feats = mb_feats + self.dropout(self.cross_attention(q, k, v))
+        attn = self.cross_attention(mb_feats, mb_enc_feats, mb_enc_feats)
+        mb_feats = mb_feats + self.dropout(attn)
         mb_feats = skip_feats = self.norm2(mb_feats)
         mb_feats = self.conv1(mb_feats.transpose(-2, -1))
-        mb_feats = torch.relu(mb_feats)
+        mb_feats = F.gelu(mb_feats)
         mb_feats = self.dropout(mb_feats)
         mb_feats = self.conv2(mb_feats).transpose(-2, -1)
         mb_feats = self.dropout(mb_feats)
@@ -563,7 +608,7 @@ class Informer(Module):
         dropout_rate: float = 0.05,
         expansion_rate: float = 4.0,
         distil: bool = True,
-        dec_in_size: int = 48,
+        dec_in_size: int = 24,
         add_last_step_val: bool = False,
     ) -> None:
         super(Informer, self).__init__()
@@ -595,12 +640,29 @@ class Informer(Module):
     ) -> "Informer":
         lookback = cfg.IO.LOOKBACK
         horizon = cfg.IO.HORIZON
+        num_h_feats = cfg.MODEL.NUM_H_UNITS
+        num_encoders = cfg.MODEL.NUM_ENCODERS
+        num_decoders = cfg.MODEL.NUM_DECODERS
+        num_heads = cfg.MODEL.NUM_HEADS
+        contraction_factor = cfg.MODEL.CONTRACTION_FACTOR
+        dropout_rate = cfg.MODEL.DROPOUT_RATE
+        expansion_rate = cfg.MODEL.FF_EXPANSION_RATE
+        dec_in_size = cfg.MODEL.DECODER_IN_LENGTH
         add_last_step_val = cfg.MODEL.ADD_LAST_STEP_VAL
         model = cls(
             num_in_feats,
             num_out_feats,
             lookback,
             horizon,
+            num_h_feats,
+            num_encoders,
+            num_decoders,
+            num_heads,
+            contraction_factor,
+            dropout_rate,
+            expansion_rate,
+            True,
+            dec_in_size,
             add_last_step_val=add_last_step_val,
         )
         return model
@@ -681,7 +743,12 @@ class Informer(Module):
         mb_enc_feats = self.token_embedding_enc(X)
         mb_enc_feats = mb_enc_feats + self.position_embedding_enc(mb_enc_feats)
         mb_enc_feats = self._run_encoders(mb_enc_feats)
-        X_dec = X[:, -self.dec_in_size :]
+        X_dec1 = X[:, -self.dec_in_size :]
+        (b, _, u) = X_dec1.size()
+        X_dec2 = torch.zeros(b, self.horizon, u)
+        device = X_dec1.device
+        X_dec2 = X_dec2.to(device)
+        X_dec = torch.cat([X_dec1, X_dec2], dim=1)
         mb_dec_feats = self.token_embedding_dec(X_dec)
         mb_dec_feats = mb_dec_feats + self.position_embedding_dec(mb_dec_feats)
         mb_dec_feats = self._run_decoders(mb_dec_feats, mb_enc_feats)

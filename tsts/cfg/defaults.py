@@ -58,6 +58,20 @@ _C.MODEL.ADD_LAST_STEP_VAL = False
 _C.MODEL.NUM_H_UNITS = 64
 # Number of hidden layers in encoder and decoder
 _C.MODEL.DEPTH = 2
+# Number of encoders (Seq2Seq, Informer)
+_C.MODEL.NUM_ENCODERS = 2
+# Number of decoder (Seq2Seq, Informer)
+_C.MODEL.NUM_DECODERS = 1
+# Number of heads for multi-head self attention
+_C.MODEL.NUM_HEADS = 8
+# Scale factor of how many queries and keys are sampled (Informer)
+_C.MODEL.CONTRACTION_FACTOR = 5
+# Dropout rate
+_C.MODEL.DROPOUT_RATE = 0.1
+# Feed forward expansion rate (Transformer based models)
+_C.MODEL.FF_EXPANSION_RATE = 4.0
+# Input length for decoder (Informer)
+_C.MODEL.DECODER_IN_LENGTH = 24
 # Stack size of NBeats
 _C.MODEL.STACK_SIZE = 30
 # Block type of NBeats {"identity", "trend", "seasonal"}
