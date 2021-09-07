@@ -63,6 +63,7 @@ Following modules are supported.
         <li>MSE</li>
       </td>
       <td>
+        <li>MSE</li>
         <li>RMSE</li>
         <li>MAPE</li>
       </td>
