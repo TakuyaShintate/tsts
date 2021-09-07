@@ -30,10 +30,12 @@ _TRAIN_INDEX = 0
 _VALID_INDEX = 1
 _INVALID_INDEX = -1
 _FullRawDataset = Tuple[
-    RawDataset,
-    RawDataset,
-    MaybeRawDataset,
-    MaybeRawDataset,
+    RawDataset,  # X_train
+    RawDataset,  # X_valid
+    MaybeRawDataset,  # y_train
+    MaybeRawDataset,  # y_valid
+    MaybeRawDataset,  # time_stamps_train
+    MaybeRawDataset,  # time_stamps_valid
 ]
 
 
@@ -168,6 +170,7 @@ class Solver(object):
         self,
         X: RawDataset,
         y: Optional[RawDataset],
+        time_stamps: Optional[RawDataset],
     ) -> _FullRawDataset:
         train_data_ratio = self.cfg.TRAINING.TRAIN_DATA_RATIO
         lookback = self.cfg.IO.LOOKBACK
@@ -176,6 +179,8 @@ class Solver(object):
         X_valid = []
         y_train: MaybeRawDataset = []
         y_valid: MaybeRawDataset = []
+        time_stamps_train: MaybeRawDataset = []
+        time_stamps_valid: MaybeRawDataset = []
         train_data_split = self.cfg.TRAINING.TRAIN_DATA_SPLIT
         num_datasets = len(X)
         if train_data_split == "col":
@@ -194,6 +199,12 @@ class Solver(object):
                 else:
                     y_train.append(None)
                     y_valid.append(None)
+                if time_stamps is not None:
+                    time_stamps_train.append(time_stamps[i][indices == _TRAIN_INDEX])
+                    time_stamps_valid.append(time_stamps[i][indices == _VALID_INDEX])
+                else:
+                    time_stamps_train.append(None)
+                    time_stamps_valid.append(None)
         elif train_data_split == "row":
             num_train_samples = int(train_data_ratio * num_datasets)
             X_train = X[:num_train_samples]
@@ -206,7 +217,14 @@ class Solver(object):
                 y_valid = [None for _ in range(len(X_valid))]
         else:
             raise ValueError(f"Invalid train_data_split: {train_data_split}")
-        return (X_train, X_valid, y_train, y_valid)
+        return (
+            X_train,
+            X_valid,
+            y_train,
+            y_valid,
+            time_stamps_train,
+            time_stamps_valid,
+        )
 
     def build_scaler(self, X_or_y: RawDataset) -> Scaler:
         scaler = build_scaler(X_or_y, self.cfg)
@@ -216,6 +234,7 @@ class Solver(object):
         self,
         X: RawDataset,
         y: MaybeRawDataset,
+        time_stamps: MaybeRawDataset,
     ) -> Dataset:
         train_datasets = []
         num_datasets = len(X)
@@ -223,6 +242,7 @@ class Solver(object):
             td = build_dataset(
                 X[i],
                 y[i],
+                time_stamps[i],
                 "train",
                 self.cfg,
             )
@@ -234,6 +254,7 @@ class Solver(object):
         self,
         X: RawDataset,
         y: MaybeRawDataset,
+        time_stamps: MaybeRawDataset,
     ) -> Dataset:
         valid_datasets = []
         num_datasets = len(X)
@@ -241,6 +262,7 @@ class Solver(object):
             vd = build_dataset(
                 X[i],
                 y[i],
+                time_stamps[i],
                 "valid",
                 self.cfg,
             )

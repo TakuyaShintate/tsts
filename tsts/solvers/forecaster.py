@@ -12,13 +12,22 @@ __all__ = ["TimeSeriesForecaster"]
 class TimeSeriesForecaster(Solver):
     """Tool to solve time series forecasting."""
 
-    def predict(self, X: Tensor, bias: Optional[Tensor] = None) -> Tensor:
+    def predict(
+        self,
+        X: Tensor,
+        bias: Optional[Tensor] = None,
+        time_stamps: Optional[RawDataset] = None,
+    ) -> Tensor:
         if bias is None:
             bias = X
         src_device = X.device
         device = self.cfg.DEVICE
         X = X.to(device)
         bias = bias.to(device)
+        if time_stamps is not None:
+            time_stamps = time_stamps.to(device)  # type: ignore
+        else:
+            time_stamps = [None]  # type: ignore
         lookback = self.cfg.IO.LOOKBACK
         num_in_feats = self.meta_info["num_in_feats"]
         num_out_feats = self.meta_info["num_out_feats"]
@@ -34,7 +43,7 @@ class TimeSeriesForecaster(Solver):
         X_mask = X_mask.to(device)
         X_mask[:, -X.size(0) :] += 1.0
         with torch.no_grad():
-            Z = self.model(X_new, bias_new, X_mask)
+            Z = self.model(X_new, bias_new, X_mask, time_stamps)
             Z = Z.squeeze(0)
         Z = self.y_scaler.inv_transform([Z])[0]
         return Z.to(src_device)
@@ -43,6 +52,7 @@ class TimeSeriesForecaster(Solver):
         self,
         X: RawDataset,
         y: Optional[RawDataset] = None,
+        time_stamps: Optional[RawDataset] = None,
     ) -> None:
         """Train the target model on given dataset.
 
@@ -68,7 +78,14 @@ class TimeSeriesForecaster(Solver):
         metrics = self.build_metrics()
         optimizer = self.build_optimizer(model)
         scheduler = self.build_scheduler(optimizer)
-        (X_train, X_valid, y_train, y_valid) = self.split_train_and_valid_data(X, y)
+        (
+            X_train,
+            X_valid,
+            y_train,
+            y_valid,
+            time_stamps_train,
+            time_stamps_valid,
+        ) = self.split_train_and_valid_data(X, y, time_stamps)
         X_scaler = self.build_scaler(X_train)
         if y_train[0] is not None:
             y_scaler = self.build_scaler(y_train)  # type: ignore
@@ -81,8 +98,8 @@ class TimeSeriesForecaster(Solver):
             y_valid = y_scaler.transform(y_valid)  # type: ignore
         meta_info["X_scaler"] = X_scaler.meta_info
         meta_info["y_scaler"] = y_scaler.meta_info
-        train_dataset = self.build_train_dataset(X_train, y_train)
-        valid_dataset = self.build_valid_dataset(X_valid, y_valid)
+        train_dataset = self.build_train_dataset(X_train, y_train, time_stamps_train)
+        valid_dataset = self.build_valid_dataset(X_valid, y_valid, time_stamps_valid)
         collator = self.build_collator()
         train_dataloader = self.build_train_dataloader(train_dataset, collator)
         valid_dataloader = self.build_valid_dataloader(valid_dataset, collator)

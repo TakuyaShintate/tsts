@@ -1,14 +1,16 @@
 import typing
-from typing import Tuple
+from typing import List, Tuple, Union
 
 import numpy as np
 import torch
 import torch.nn.functional as F
+import torch.nn.init as init
 from torch import Tensor
 from torch.nn import (
     BatchNorm1d,
     Conv1d,
     Dropout,
+    Embedding,
     LayerNorm,
     Linear,
     MaxPool1d,
@@ -18,6 +20,12 @@ from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
 
 from .module import Module
+
+MIN_SIZE = 4
+HOUR_SIZE = 24
+DAY_SIZE = 32
+WEEKDAY_SIZE = 7
+MONTH_SIZE = 13
 
 
 class TokenEmbedding(Module):
@@ -35,6 +43,13 @@ class TokenEmbedding(Module):
             padding=1,
             padding_mode="circular",
         )
+        for m in self.modules():
+            if isinstance(m, Conv1d):
+                init.kaiming_normal_(
+                    m.weight,
+                    mode="fan_in",
+                    nonlinearity="leaky_relu",
+                )
 
     def forward(self, X: Tensor) -> Tensor:
         # X: (B, T, F)
@@ -57,14 +72,35 @@ class PositionEmbedding(Module):
         m = torch.arange(0.0, self.num_out_feats, 2.0)
         m = m * -(np.log(10000.0) / self.num_out_feats)
         m = m.exp()
-        embedding[:, 0::2] = torch.cos(x * m)
-        embedding[:, 1::2] = torch.sin(x * m)
+        embedding[:, 0::2] = torch.sin(x * m)
+        embedding[:, 1::2] = torch.cos(x * m)
         embedding = embedding.unsqueeze(0)
         self.register_buffer("embedding", embedding)
 
     def forward(self, mb_feats: Tensor) -> Tensor:
         t = mb_feats.size(1)
         return typing.cast(Tensor, self.embedding[:, :t])  # type: ignore
+
+
+class TemporalEmbedding(Module):
+    def __init__(self, num_out_feats: int) -> None:
+        super(TemporalEmbedding, self).__init__()
+        self.num_out_feats = num_out_feats
+        self._init_embeddings()
+
+    def _init_embeddings(self) -> None:
+        self.embeddings = ModuleList()
+        self.embeddings.append(Embedding(MONTH_SIZE, self.num_out_feats))
+        self.embeddings.append(Embedding(WEEKDAY_SIZE, self.num_out_feats))
+        self.embeddings.append(Embedding(DAY_SIZE, self.num_out_feats))
+        self.embeddings.append(Embedding(HOUR_SIZE, self.num_out_feats))
+        self.embeddings.append(Embedding(MIN_SIZE, self.num_out_feats))
+
+    def forward(self, time_stamps: Tensor) -> Tensor:
+        mb_feats = time_stamps.new_tensor(0.0)
+        for i in range(time_stamps.size(2)):
+            mb_feats = mb_feats + self.embeddings[i](time_stamps[:, :, i])
+        return mb_feats
 
 
 class ProbMask(Module):
@@ -513,34 +549,7 @@ class CrossAttentionBlock(Module):
         self.conv1 = Conv1d(self.num_in_feats, num_h_feats, 1)
         self.conv2 = Conv1d(num_h_feats, self.num_out_feats, 1)
 
-    def _reshape_qkv(self, qkv: Tensor, start: int, end: int) -> Tensor:
-        batch_size = qkv.size(0)
-        n = qkv[:, start:end]
-        n = n.reshape(batch_size, n.size(1), self.num_heads, -1)
-        n = n.permute(0, 2, 1, 3)
-        return n
-
-    def _get_qkv(self, q: Tensor, k: Tensor, v: Tensor) -> Tuple[Tensor, ...]:
-        mb_feats = torch.cat([q, k, v], dim=1)
-        (b, _, _) = mb_feats.size()
-        qkv = self.qkv(mb_feats)
-        q = self._reshape_qkv(qkv, 0, q.size(1))
-        k = self._reshape_qkv(qkv, q.size(1), q.size(1) + k.size(1))
-        v = self._reshape_qkv(
-            qkv,
-            q.size(1) + k.size(1),
-            q.size(1) + k.size(1) + v.size(1),
-        )
-        return (q, k, v)
-
     def forward(self, mb_feats: Tensor, mb_enc_feats: Tensor) -> Tensor:
-        """
-        (q, k, v) = self._get_qkv(
-            mb_feats,
-            mb_enc_feats,
-            mb_enc_feats,
-        )
-        """
         attn = self.attention(mb_feats, mb_feats, mb_feats)
         mb_feats = mb_feats + self.dropout(attn)
         mb_feats = self.norm1(mb_feats)
@@ -684,6 +693,12 @@ class Informer(Module):
             self.num_h_feats,
             self.lookback,
         )
+        self.temporal_embedding_enc = TemporalEmbedding(
+            self.num_out_feats,
+        )
+        self.temporal_embedding_dec = TemporalEmbedding(
+            self.num_out_feats,
+        )
 
     def _init_encoders(self) -> None:
         self.encoders = ModuleList()
@@ -739,18 +754,30 @@ class Informer(Module):
         mb_feats = self.norm_dec(mb_feats)
         return mb_feats
 
-    def forward(self, X: Tensor, bias: Tensor, X_mask: Tensor) -> Tensor:
+    def forward(
+        self,
+        X: Tensor,
+        bias: Tensor,
+        X_mask: Tensor,
+        time_stamps: List[Union[None, Tensor]],
+    ) -> Tensor:
         mb_enc_feats = self.token_embedding_enc(X)
-        mb_enc_feats = mb_enc_feats + self.position_embedding_enc(mb_enc_feats)
+        mb_enc_feats += self.position_embedding_enc(mb_enc_feats)
+        if time_stamps[0] is not None:
+            time_stamps_X = time_stamps[:, : self.lookback]  # type: ignore
+            mb_enc_feats += self.temporal_embedding_enc(time_stamps_X)
         mb_enc_feats = self._run_encoders(mb_enc_feats)
         X_dec1 = X[:, -self.dec_in_size :]
         (b, _, u) = X_dec1.size()
-        X_dec2 = torch.zeros(b, self.horizon, u)
+        X_dec2 = torch.ones(b, self.horizon, u)
         device = X_dec1.device
         X_dec2 = X_dec2.to(device)
         X_dec = torch.cat([X_dec1, X_dec2], dim=1)
         mb_dec_feats = self.token_embedding_dec(X_dec)
-        mb_dec_feats = mb_dec_feats + self.position_embedding_dec(mb_dec_feats)
+        mb_dec_feats += self.position_embedding_dec(mb_dec_feats)
+        if time_stamps[0] is not None:
+            time_stamps_y = time_stamps[:, -self.dec_in_size - self.horizon :]  # type: ignore
+            mb_dec_feats += self.temporal_embedding_dec(time_stamps_y)
         mb_dec_feats = self._run_decoders(mb_dec_feats, mb_enc_feats)
         mb_feats = self.projector(mb_dec_feats)
         if self.add_last_step_val is True:

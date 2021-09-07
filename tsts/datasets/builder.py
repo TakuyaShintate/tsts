@@ -12,6 +12,7 @@ __all__ = ["build_dataset"]
 def build_dataset(
     X: Tensor,
     y: Optional[Tensor],
+    time_stamps: Optional[Tensor],
     image_set: str,
     cfg: CN,
 ) -> Dataset:
@@ -23,6 +24,7 @@ def build_dataset(
     dataset = cls.from_cfg(
         X,
         y,
+        time_stamps,
         image_set,
         cfg,
     )
