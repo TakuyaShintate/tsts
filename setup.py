@@ -41,7 +41,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 setup(
     name="tsts",
     packages=[p for p in find_packages() if p.startswith("tsts")],
-    license="GNU General Public License v3.0",
+    license="MIT License",
     install_requires=get_install_requirements(
         install_requires(),
         [],
