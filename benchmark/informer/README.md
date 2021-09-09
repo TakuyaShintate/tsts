@@ -23,7 +23,7 @@
 
 ## ETT
 
-Download the datasets [here](https://robjhyndman.com/data/27-3-Athanasopoulos1.zip)
+Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ETT-small)
 
 > MSE and MAE are computed on unnormalized targets
 
