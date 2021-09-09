@@ -6,8 +6,17 @@ import torch
 import torch.nn.functional as F
 import torch.nn.init as init
 from torch import Tensor
-from torch.nn import (BatchNorm1d, Conv1d, Dropout, Embedding, LayerNorm,
-                      Linear, MaxPool1d, ModuleList, Parameter)
+from torch.nn import (
+    BatchNorm1d,
+    Conv1d,
+    Dropout,
+    Embedding,
+    LayerNorm,
+    Linear,
+    MaxPool1d,
+    ModuleList,
+    Parameter,
+)
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
 
