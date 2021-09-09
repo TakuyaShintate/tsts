@@ -14,7 +14,13 @@ Functions
 Classes
 =======
 
+.. autoclass:: tsts.metrics.MAE()
+    :members:
+
 .. autoclass:: tsts.metrics.MAPE()
+    :members:
+
+.. autoclass:: tsts.metrics.MSE()
     :members:
 
 .. autoclass:: tsts.metrics.RMSE()

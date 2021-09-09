@@ -16,6 +16,8 @@ class Seq2Seq(Module):
 
     Example
     -------
+    Add following section to use Seq2Seq.
+
     .. code-block:: yaml
 
         MODEL:

@@ -14,6 +14,9 @@ Functions
 Classes
 =======
 
+.. autoclass:: tsts.models.Informer()
+    :members:
+
 .. autoclass:: tsts.models.NBeats()
     :members:
 

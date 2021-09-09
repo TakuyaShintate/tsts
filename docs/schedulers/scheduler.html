@@ -234,6 +234,27 @@
 </dl>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="tsts.schedulers.StepScheduler">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsts.schedulers.</span></span><span class="sig-name descname"><span class="pre">StepScheduler</span></span><a class="reference internal" href="../_modules/tsts/schedulers/step.html#StepScheduler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.schedulers.StepScheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Step scheduler implementation.</p>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SCHEDULER</span><span class="p">:</span>
+  <span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;StepScheduler&quot;</span>
+  <span class="n">T_MAX</span><span class="p">:</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>optimizer</strong> (<em>Optimizer</em>) – Target optimizer</p></li>
+<li><p><strong>T_max</strong> (<em>int</em>) – Maximum number of iterations (from pytorch)</p></li>
+<li><p><strong>eta_min</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum learning rate (from pytorch), default 0.0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 

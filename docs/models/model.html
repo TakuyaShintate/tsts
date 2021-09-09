@@ -200,10 +200,61 @@
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="tsts.models.Informer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsts.models.</span></span><span class="sig-name descname"><span class="pre">Informer</span></span><a class="reference internal" href="../_modules/tsts/models/informer.html#Informer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.models.Informer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Informer implementation.</p>
+<p class="rubric">Example</p>
+<p>Add following section to use Informer.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MODEL</span><span class="p">:</span>
+  <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;Informer&quot;</span>
+  <span class="nt">NUM_H_UNITS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">512</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_in_feats</strong> (<em>int</em>) – Number of input features</p></li>
+<li><p><strong>num_out_feats</strong> (<em>int</em>) – Number of output features</p></li>
+<li><p><strong>lookback</strong> (<em>int</em>) – Number of input time steps</p></li>
+<li><p><strong>horizon</strong> (<em>int. optional</em>) – Indicate how many steps it predicts by default 1</p></li>
+<li><p><strong>num_h_feats</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of hidden features, by default 512</p></li>
+<li><p><strong>num_encoders</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of encoders, by default 2</p></li>
+<li><p><strong>num_decoders</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of decoders, by default 1</p></li>
+<li><p><strong>num_heads</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of heads of multi-head self attention, by default 8</p></li>
+<li><p><strong>contraction_factor</strong> (<em>int</em><em>, </em><em>optional</em>) – Factor which detemines the number of samples of queries and keys in
+ProbSparseSelfAttention, by default 5</p></li>
+<li><p><strong>dropout_rate</strong> (<em>int</em><em>, </em><em>optional</em>) – Dropout rate, by default 0.05</p></li>
+<li><p><strong>expansion_rate</strong> (<em>int</em><em>, </em><em>optional</em>) – Expansion rate which determines the number of filters in conv layers after attention, by
+default 4.0</p></li>
+<li><p><strong>distil</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag if use distillation module after each encoder except the last one, by default True</p></li>
+<li><p><strong>dec_in_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Size of input to decoder (last dec_in_size values of input to encoder are used), by
+default 24</p></li>
+<li><p><strong>add_last_step_val</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, Add x_t (the last value of input time series) to every output, by default False</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tsts.models.Informer.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../_modules/tsts/models/informer.html#Informer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.models.Informer.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="tsts.models.NBeats">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsts.models.</span></span><span class="sig-name descname"><span class="pre">NBeats</span></span><a class="reference internal" href="../_modules/tsts/models/nbeats.html#NBeats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.models.NBeats" title="Permalink to this definition">¶</a></dt>
 <dd><p>N-Beats implementation.</p>
 <p class="rubric">Example</p>
+<p>Add following section to use NBeats.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MODEL</span><span class="p">:</span>
   <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;NBeats&quot;</span>
   <span class="nt">NUM_H_UNITS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">512</span>
@@ -220,12 +271,13 @@
 <li><p><strong>num_h_units</strong> (<em>int</em>) – Number of hidden units</p></li>
 <li><p><strong>depth</strong> (<em>int</em>) – Number of hidden layers per block</p></li>
 <li><p><strong>stack_size</strong> (<em>int</em>) – Number of blocks</p></li>
+<li><p><strong>add_last_step_val</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, Add x_t (the last value of input time series) to every output, by default True</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="tsts.models.NBeats.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../_modules/tsts/models/nbeats.html#NBeats.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.models.NBeats.forward" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../_modules/tsts/models/nbeats.html#NBeats.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.models.NBeats.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return prediction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -250,6 +302,7 @@
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsts.models.</span></span><span class="sig-name descname"><span class="pre">Seq2Seq</span></span><a class="reference internal" href="../_modules/tsts/models/seq2seq.html#Seq2Seq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.models.Seq2Seq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Seq2Seq implementation.</p>
 <p class="rubric">Example</p>
+<p>Add following section to use Seq2Seq.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MODEL</span><span class="p">:</span>
   <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;Seq2Seq&quot;</span>
   <span class="nt">NUM_H_UNITS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">64</span>
@@ -269,7 +322,7 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="tsts.models.Seq2Seq.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../_modules/tsts/models/seq2seq.html#Seq2Seq.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.models.Seq2Seq.forward" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../_modules/tsts/models/seq2seq.html#Seq2Seq.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tsts.models.Seq2Seq.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return prediction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
