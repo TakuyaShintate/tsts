@@ -63,7 +63,7 @@ class StandardScaler(Scaler):
         self.std = self.std.to(device)
         X_or_y_new = copy.deepcopy(X_or_y)
         for i in range(num_instances):
-            X_or_y_new[i] = (X_or_y[i] - self.mean) / (self.std + EPSILON)
+            X_or_y_new[i] = (X_or_y[i] - self.mean) / self.std
         return X_or_y_new
 
     def inv_transform(self, X_or_y: RawDataset) -> RawDataset:
@@ -73,5 +73,5 @@ class StandardScaler(Scaler):
         self.std = self.std.to(device)
         X_or_y_new = copy.deepcopy(X_or_y)
         for i in range(num_instances):
-            X_or_y_new[i] = X_or_y[i] * (self.std + EPSILON) + self.mean
+            X_or_y_new[i] = X_or_y[i] * self.std + self.mean
         return X_or_y_new

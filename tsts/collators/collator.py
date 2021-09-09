@@ -1,4 +1,7 @@
+from typing import List, Optional
+
 import torch
+from torch import Tensor
 from tsts.cfg import CfgNode as CN
 from tsts.core import COLLATORS
 from tsts.types import Batch, RawBatch
@@ -70,7 +73,8 @@ class Collator(object):
         bias_new = []
         X_mask = []
         y_mask = []
-        for (X, y, bias) in batch:
+        time_stamps_new: List[Optional[Tensor]] = []  # type: ignore
+        for (X, y, bias, time_stamps) in batch:
             (X_num_steps, X_num_feats) = X.size()
             X_num_steps = min(X_num_steps, self.lookback)
             (y_num_steps, y_num_feats) = y.size()
@@ -87,6 +91,21 @@ class Collator(object):
             _X_mask[-X_num_steps:] += 1.0
             _y_mask = y.new_zeros((self.horizon, y_num_feats))
             _y_mask[:y_num_steps] += 1.0
+            if time_stamps is not None:
+                time_stamps_size = time_stamps.size(-1)
+                _time_stamps_new = y.new_zeros(
+                    (self.lookback + self.horizon, time_stamps_size),
+                    dtype=torch.long,
+                )
+                _time_stamps_new[
+                    self.lookback - X_num_steps : self.lookback
+                ] = time_stamps[:X_num_steps]
+                _time_stamps_new[
+                    self.lookback : self.lookback + y_num_steps
+                ] = time_stamps[X_num_steps:]
+                time_stamps_new.append(_time_stamps_new)
+            else:
+                time_stamps_new.append(None)
             X_new.append(_X_new)
             y_new.append(_y_new)
             bias_new.append(_bias_new)
@@ -98,4 +117,7 @@ class Collator(object):
             torch.stack(bias_new),
             torch.stack(X_mask),
             torch.stack(y_mask),
+            torch.stack(time_stamps_new)  # type: ignore
+            if time_stamps_new[0] is not None
+            else time_stamps,
         )

@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import torch
 from torch import Tensor
@@ -133,7 +133,13 @@ class Seq2Seq(Module):
             mb_preds.append(y_t.unsqueeze(1))
         return torch.cat(mb_preds, dim=1)
 
-    def forward(self, X: Tensor, bias: Tensor, X_mask: Tensor) -> Tensor:
+    def forward(
+        self,
+        X: Tensor,
+        bias: Tensor,
+        X_mask: Tensor,
+        time_stamps: Optional[Tensor] = None,
+    ) -> Tensor:
         """Return prediction.
 
         Parameters

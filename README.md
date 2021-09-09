@@ -2,7 +2,7 @@
   <img src="img/tsts-logo.png" width="600"/>
 </div>
 
-[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.2.5/)
+[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.3.0/)
 [![license](https://img.shields.io/github/license/TakuyaShintate/tsts?style=flat)](https://github.com/TakuyaShintate/tsts/blob/main/LICENSE)
 
 ([Docs](https://takuyashintate.github.io/tsts/))([Benchmark](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/))
@@ -53,8 +53,9 @@ Following modules are supported.
     </tr>
     <tr>
       <td>
-        <li>Seq2Seq</li>
+        <li>Informer</li>
         <li>NBeats</li>
+        <li>Seq2Seq</li>
       </td>
       <td>
         <li>DILATE</li>
@@ -62,6 +63,8 @@ Following modules are supported.
         <li>MSE</li>
       </td>
       <td>
+        <li>MAE</li>
+        <li>MSE</li>
         <li>RMSE</li>
         <li>MAPE</li>
       </td>
@@ -75,6 +78,7 @@ Following modules are supported.
       </td>
       <td>
         <li>CosineAnnealing</li>
+        <li>StepScheduler</li>
       </td>
     </td>
     </tr>

@@ -1,4 +1,4 @@
-from typing import Tuple, Type, Union
+from typing import Optional, Tuple, Type, Union
 
 import numpy as np
 import torch
@@ -261,7 +261,13 @@ class NBeats(Module):
                 )
             )
 
-    def forward(self, X: Tensor, bias: Tensor, X_mask: Tensor) -> Tensor:
+    def forward(
+        self,
+        X: Tensor,
+        bias: Tensor,
+        X_mask: Tensor,
+        time_stamps: Optional[Tensor] = None,
+    ) -> Tensor:
         """Return prediction.
 
         Parameters
