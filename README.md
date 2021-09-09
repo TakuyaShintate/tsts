@@ -11,13 +11,21 @@
 
 tsts is an open-source easy-to-use toolset for time series forecasting.
 
+## What's New
+
+### Sep, 10
+
+✨ New Model  
+
+Informer and related modules were added. See [results](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/informer) for how to use it.
+
 ## Installation
 
 ```
 pip install tsts
 ```
 
-## Time Series Forecasting?
+## Task Details
 
 <div align="center">
   <img src="img/whats-forecasting.png" width="850"/>
