@@ -6,16 +6,8 @@ import torch
 import torch.nn.functional as F
 import torch.nn.init as init
 from torch import Tensor
-from torch.nn import (
-    BatchNorm1d,
-    Conv1d,
-    Dropout,
-    Embedding,
-    LayerNorm,
-    Linear,
-    MaxPool1d,
-    ModuleList,
-)
+from torch.nn import (BatchNorm1d, Conv1d, Dropout, Embedding, LayerNorm,
+                      Linear, MaxPool1d, ModuleList, Parameter)
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
 
@@ -61,15 +53,15 @@ class PositionEmbedding(Module):
     def __init__(self, num_out_feats: int, lookback: int) -> None:
         super(PositionEmbedding, self).__init__()
         self.num_out_feats = num_out_feats
-        self.lookback = lookback
+        self.lookback = 5000  # lookback
         self._init_embedding()
 
     def _init_embedding(self) -> None:
         embedding = torch.zeros((self.lookback, self.num_out_feats))
         embedding.requires_grad = False
-        x = torch.arange(0.0, self.lookback)
+        x = torch.arange(0.0, float(self.lookback))
         x = x.unsqueeze(1)
-        m = torch.arange(0.0, self.num_out_feats, 2.0)
+        m = torch.arange(0.0, float(self.num_out_feats), 2.0)
         m = m * -(np.log(10000.0) / self.num_out_feats)
         m = m.exp()
         embedding[:, 0::2] = torch.sin(x * m)
@@ -82,6 +74,24 @@ class PositionEmbedding(Module):
         return typing.cast(Tensor, self.embedding[:, :t])  # type: ignore
 
 
+class FixedEmbedding(Module):
+    def __init__(self, num_in_feats: int, num_out_feats: int) -> None:
+        super(FixedEmbedding, self).__init__()
+        embedding = torch.zeros(num_in_feats, num_out_feats).float()
+        x = torch.arange(0.0, float(num_in_feats))
+        x = x.unsqueeze(1)
+        m = torch.arange(0.0, float(num_out_feats), 2.0)
+        m = m * -(np.log(10000.0) / num_out_feats)
+        m = m.exp()
+        embedding[:, 0::2] = torch.sin(x * m)
+        embedding[:, 1::2] = torch.cos(x * m)
+        self.embedding = Embedding(num_in_feats, num_out_feats)
+        self.embedding.weight = Parameter(embedding, requires_grad=False)
+
+    def forward(self, mb_feats: Tensor) -> Tensor:
+        return self.embedding(mb_feats).detach()
+
+
 class TemporalEmbedding(Module):
     def __init__(self, num_out_feats: int) -> None:
         super(TemporalEmbedding, self).__init__()
@@ -90,11 +100,11 @@ class TemporalEmbedding(Module):
 
     def _init_embeddings(self) -> None:
         self.embeddings = ModuleList()
-        self.embeddings.append(Embedding(MONTH_SIZE, self.num_out_feats))
-        self.embeddings.append(Embedding(WEEKDAY_SIZE, self.num_out_feats))
-        self.embeddings.append(Embedding(DAY_SIZE, self.num_out_feats))
-        self.embeddings.append(Embedding(HOUR_SIZE, self.num_out_feats))
-        self.embeddings.append(Embedding(MIN_SIZE, self.num_out_feats))
+        self.embeddings.append(FixedEmbedding(MONTH_SIZE, self.num_out_feats))
+        self.embeddings.append(FixedEmbedding(WEEKDAY_SIZE, self.num_out_feats))
+        self.embeddings.append(FixedEmbedding(DAY_SIZE, self.num_out_feats))
+        self.embeddings.append(FixedEmbedding(HOUR_SIZE, self.num_out_feats))
+        self.embeddings.append(FixedEmbedding(MIN_SIZE, self.num_out_feats))
 
     def forward(self, time_stamps: Tensor) -> Tensor:
         mb_feats = time_stamps.new_tensor(0.0)
@@ -138,12 +148,15 @@ class SelfAttention(Module):
         num_in_feats: int,
         num_out_feats: int,
         num_heads: int = 8,
+        dropout_rate: float = 0.1,
     ) -> None:
         super(SelfAttention, self).__init__()
         self.num_in_feats = num_in_feats
         self.num_out_feats = num_out_feats
         self.num_heads = num_heads
+        self.dropout_rate = dropout_rate
         self._init_qkv()
+        self._init_dropout()
         self._init_projector()
 
     def _init_qkv(self) -> None:
@@ -152,6 +165,9 @@ class SelfAttention(Module):
         self.k_projector = Linear(self.num_in_feats, num_out_feats)
         self.v_projector = Linear(self.num_in_feats, num_out_feats)
 
+    def _init_dropout(self) -> None:
+        self.dropout = Dropout(self.dropout_rate)
+
     def _init_projector(self) -> None:
         num_out_feats = (self.num_out_feats // self.num_heads) * self.num_heads
         self.projector = Linear(num_out_feats, self.num_in_feats)
@@ -159,12 +175,9 @@ class SelfAttention(Module):
     def _apply_attention(self, q: Tensor, k: Tensor, v: Tensor) -> Tensor:
         num_feats = q.size(-1)
         scale = 1.0 / np.sqrt(num_feats)
-        scores = torch.matmul(q, k.transpose(-2, -1))
-        scores = torch.softmax(scale * scores, dim=-1)
-        v_new = (scores[..., None] * v[:, :, None, :, :]).sum(-2)
-        (batch_size, _, num_vals, _) = v_new.size()
-        v_new = v_new.transpose(2, 1).contiguous()
-        v_new = v_new.view(batch_size, num_vals, -1)
+        scores = torch.einsum("blhe,bshe->bhls", q, k)
+        scores = self.dropout(torch.softmax(scale * scores, dim=-1))
+        v_new = torch.einsum("bhls,bshd->blhd", scores, v)
         return v_new
 
     def _process_qkv(
@@ -182,14 +195,14 @@ class SelfAttention(Module):
         q = q.reshape(b_q, n_q, self.num_heads, u_q // self.num_heads)
         k = k.reshape(b_k, n_k, self.num_heads, u_k // self.num_heads)
         v = v.reshape(b_v, n_v, self.num_heads, u_v // self.num_heads)
-        q = q.permute(0, 2, 1, 3)
-        k = k.permute(0, 2, 1, 3)
-        v = v.permute(0, 2, 1, 3)
         return (q, k, v)
 
     def forward(self, q: Tensor, k: Tensor, v: Tensor) -> Tensor:
         (q, k, v) = self._process_qkv(q, k, v)
         mb_feats = self._apply_attention(q, k, v)
+        (batch_size, num_queries, _, _) = q.size()
+        mb_feats = mb_feats.contiguous()
+        mb_feats = mb_feats.view(batch_size, num_queries, -1)
         mb_feats = self.projector(mb_feats)
         return mb_feats
 
@@ -534,6 +547,7 @@ class CrossAttentionBlock(Module):
             self.num_in_feats,
             self.num_out_feats,
             self.num_heads,
+            self.dropout_rate,
         )
 
     def _init_dropout(self) -> None:
@@ -636,6 +650,7 @@ class Informer(Module):
         self.dec_in_size = dec_in_size
         self.add_last_step_val = add_last_step_val
         self._init_embeddings()
+        self._init_dropout()
         self._init_encoders()
         self._init_decoders()
         self._init_projector()
@@ -681,24 +696,27 @@ class Informer(Module):
             self.num_in_feats,
             self.num_h_feats,
         )
-        self.position_embedding_enc = PositionEmbedding(
-            self.num_h_feats,
-            self.lookback,
-        )
         self.token_embedding_dec = TokenEmbedding(
             self.num_in_feats,
             self.num_h_feats,
         )
-        self.position_embedding_dec = PositionEmbedding(
+        self.position_embedding_enc = PositionEmbedding(
             self.num_h_feats,
             self.lookback,
         )
+        self.position_embedding_dec = PositionEmbedding(
+            self.num_h_feats,
+            self.lookback + self.horizon,
+        )
         self.temporal_embedding_enc = TemporalEmbedding(
-            self.num_out_feats,
+            self.num_h_feats,
         )
         self.temporal_embedding_dec = TemporalEmbedding(
-            self.num_out_feats,
+            self.num_h_feats,
         )
+
+    def _init_dropout(self) -> None:
+        self.dropout = Dropout(self.dropout_rate)
 
     def _init_encoders(self) -> None:
         self.encoders = ModuleList()
@@ -762,22 +780,24 @@ class Informer(Module):
         time_stamps: List[Union[None, Tensor]],
     ) -> Tensor:
         mb_enc_feats = self.token_embedding_enc(X)
-        mb_enc_feats += self.position_embedding_enc(mb_enc_feats)
-        if time_stamps[0] is not None:
+        mb_enc_feats += self.position_embedding_enc(X)
+        if time_stamps is not None:
             time_stamps_X = time_stamps[:, : self.lookback]  # type: ignore
             mb_enc_feats += self.temporal_embedding_enc(time_stamps_X)
+        mb_enc_feats = self.dropout(mb_enc_feats)
         mb_enc_feats = self._run_encoders(mb_enc_feats)
         X_dec1 = X[:, -self.dec_in_size :]
         (b, _, u) = X_dec1.size()
-        X_dec2 = torch.ones(b, self.horizon, u)
+        X_dec2 = torch.zeros(b, self.horizon, u)
         device = X_dec1.device
         X_dec2 = X_dec2.to(device)
         X_dec = torch.cat([X_dec1, X_dec2], dim=1)
         mb_dec_feats = self.token_embedding_dec(X_dec)
-        mb_dec_feats += self.position_embedding_dec(mb_dec_feats)
-        if time_stamps[0] is not None:
+        mb_dec_feats += self.position_embedding_dec(X_dec)
+        if time_stamps is not None:
             time_stamps_y = time_stamps[:, -self.dec_in_size - self.horizon :]  # type: ignore
             mb_dec_feats += self.temporal_embedding_dec(time_stamps_y)
+        mb_dec_feats = self.dropout(mb_dec_feats)
         mb_dec_feats = self._run_decoders(mb_dec_feats, mb_enc_feats)
         mb_feats = self.projector(mb_dec_feats)
         if self.add_last_step_val is True:

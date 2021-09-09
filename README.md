@@ -63,6 +63,7 @@ Following modules are supported.
         <li>MSE</li>
       </td>
       <td>
+        <li>MAE</li>
         <li>MSE</li>
         <li>RMSE</li>
         <li>MAPE</li>
@@ -77,6 +78,7 @@ Following modules are supported.
       </td>
       <td>
         <li>CosineAnnealing</li>
+        <li>StepScheduler</li>
       </td>
     </td>
     </tr>

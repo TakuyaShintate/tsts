@@ -96,7 +96,7 @@ class SupervisedTrainer(Trainer):
             bias = bias.to(self.device)
             X_mask = X_mask.to(self.device)
             y_mask = y_mask.to(self.device)
-            if time_stamps[0] is not None:
+            if time_stamps is not None:
                 time_stamps = time_stamps.to(self.device)
             Z = self.model(X, bias, X_mask, time_stamps)
             self.optimizer.zero_grad()
@@ -138,7 +138,7 @@ class SupervisedTrainer(Trainer):
             bias = bias.to(self.device)
             X_mask = X_mask.to(self.device)
             y_mask = y_mask.to(self.device)
-            if time_stamps[0] is not None:
+            if time_stamps is not None:
                 time_stamps = time_stamps.to(self.device)
             with torch.no_grad():
                 Z = self.model(X, bias, X_mask, time_stamps)

@@ -18,23 +18,38 @@ class TimeSeriesForecaster(Solver):
         bias: Optional[Tensor] = None,
         time_stamps: Optional[RawDataset] = None,
     ) -> Tensor:
+        self.model.eval()
         if bias is None:
             bias = X
         src_device = X.device
         device = self.cfg.DEVICE
         X = X.to(device)
         bias = bias.to(device)
-        if time_stamps is not None:
-            time_stamps = time_stamps.to(device)  # type: ignore
-        else:
-            time_stamps = [None]  # type: ignore
         lookback = self.cfg.IO.LOOKBACK
+        horizon = self.cfg.IO.HORIZON
         num_in_feats = self.meta_info["num_in_feats"]
         num_out_feats = self.meta_info["num_out_feats"]
         X_new = torch.zeros((1, lookback, num_in_feats))
         bias_new = torch.zeros((1, lookback, num_out_feats))
         X_new = X_new.to(device)
         bias_new = bias_new.to(device)
+        if time_stamps is not None:
+            time_stamps = time_stamps.to(device)  # type: ignore
+            time_stamps_new = torch.zeros((1, lookback + horizon, time_stamps.size(1)))
+            time_stamps_new = time_stamps_new.type(torch.long)
+            time_stamps_new = time_stamps_new.to(device)
+            y_size = time_stamps.size(0) - X.size(0)
+            start = -horizon - X.size(0)
+            end = -horizon
+            time_stamps_new[:, start:end] = time_stamps[: X.size(0)]
+            start = -horizon
+            end = -horizon + y_size
+            if end >= 0:
+                time_stamps_new[:, start:] = time_stamps[X.size(0) :]
+            else:
+                time_stamps_new[:, start:end] = time_stamps[X.size(0) :]
+        else:
+            time_stamps_new = None  # type: ignore
         X_new[:, -X.size(0) :] = X[-lookback:]
         bias_new[:, -X.size(0) :] = bias[-lookback:]
         X_new = self.X_scaler.transform([X_new])[0]
@@ -43,7 +58,7 @@ class TimeSeriesForecaster(Solver):
         X_mask = X_mask.to(device)
         X_mask[:, -X.size(0) :] += 1.0
         with torch.no_grad():
-            Z = self.model(X_new, bias_new, X_mask, time_stamps)
+            Z = self.model(X_new, bias_new, X_mask, time_stamps_new)
             Z = Z.squeeze(0)
         Z = self.y_scaler.inv_transform([Z])[0]
         return Z.to(src_device)

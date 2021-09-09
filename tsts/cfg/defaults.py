@@ -37,6 +37,10 @@ _C.SCHEDULER.NAME = "CosineAnnealing"
 _C.SCHEDULER.T_MAX = 10
 # Minimum learning rate (it comes from torch)
 _C.SCHEDULER.ETA_MIN = 0.0
+# Every STEP_SIZE steps, GAMMA is multiplied to learning rate used by StepScheduler
+_C.SCHEDULER.STEP_SIZE = 1
+# Scaling factor used by StepScheduler
+_C.SCHEDULER.GAMMA = 0.1
 
 _C.TRAINER = CN()
 # Trainer name
@@ -98,6 +102,8 @@ _C.DATASET = CN()
 _C.DATASET.NAME_TRAIN = "Dataset"
 # Validation dataset name
 _C.DATASET.NAME_VALID = "Dataset"
+# Dataset index starts with this value
+_C.DATASET.BASE_START_INDEX = 0
 
 _C.SCALER = CN()
 # Scaler name
