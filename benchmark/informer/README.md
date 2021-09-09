@@ -28,5 +28,5 @@ Download the datasets [here](https://robjhyndman.com/data/27-3-Athanasopoulos1.z
 > MSE and MAE are computed on unnormalized targets
 
 | Type | Lookback | Horizon | MSE | MAE | Ensemble | Script |
-|:---:|:---:|:---:|:---:|:---:|:---:|
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | h1 | 192 | 48 | 11.48 | 2.82 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/informer/train_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/informer/test_ett_h1.py) |
