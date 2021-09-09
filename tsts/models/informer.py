@@ -615,7 +615,65 @@ class DistilModule(Module):
 
 @MODELS.register()
 class Informer(Module):
-    """Informer implementation."""
+    """Informer implementation.
+
+    Example
+    -------
+    Add following section to use Informer.
+
+    .. code-block:: yaml
+
+        MODEL:
+          NAME: "Informer"
+          NUM_H_UNITS: 512
+
+    Parameters
+    ----------
+    num_in_feats : int
+        Number of input features
+
+    num_out_feats : int
+        Number of output features
+
+    lookback : int
+        Number of input time steps
+
+    horizon : int. optional
+        Indicate how many steps it predicts by default 1
+
+    num_h_feats : int, optional
+        Number of hidden features, by default 512
+
+    num_encoders : int, optional
+        Number of encoders, by default 2
+
+    num_decoders : int, optional
+        Number of decoders, by default 1
+
+    num_heads : int, optional
+        Number of heads of multi-head self attention, by default 8
+
+    contraction_factor : int, optional
+        Factor which detemines the number of samples of queries and keys in
+        ProbSparseSelfAttention, by default 5
+
+    dropout_rate : int, optional
+        Dropout rate, by default 0.05
+
+    expansion_rate : int, optional
+        Expansion rate which determines the number of filters in conv layers after attention, by
+        default 4.0
+
+    distil : bool, optional
+        Flag if use distillation module after each encoder except the last one, by default True
+
+    dec_in_size : int, optional
+        Size of input to decoder (last dec_in_size values of input to encoder are used), by
+        default 24
+
+    add_last_step_val : bool, optional
+        If True, Add x_t (the last value of input time series) to every output, by default False
+    """
 
     def __init__(
         self,
@@ -779,6 +837,21 @@ class Informer(Module):
         X_mask: Tensor,
         time_stamps: List[Union[None, Tensor]],
     ) -> Tensor:
+        """Return prediction.
+
+        Parameters
+        ----------
+        X : Tensor
+            Input time series
+
+        X_mask : Tensor
+            Input time series mask
+
+        Returns
+        -------
+        Tensor
+            Prediction
+        """
         mb_enc_feats = self.token_embedding_enc(X)
         mb_enc_feats += self.position_embedding_enc(X)
         if time_stamps is not None:

@@ -159,6 +159,8 @@ class NBeats(Module):
 
     Example
     -------
+    Add following section to use NBeats.
+
     .. code-block:: yaml
 
         MODEL:
@@ -188,6 +190,9 @@ class NBeats(Module):
 
     stack_size : int
         Number of blocks
+
+    add_last_step_val : bool, optional
+        If True, Add x_t (the last value of input time series) to every output, by default True
     """
 
     def __init__(

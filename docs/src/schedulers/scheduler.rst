@@ -19,3 +19,6 @@ Classes
 
 .. autoclass:: tsts.schedulers.IdentityScheduler()
     :members:
+
+.. autoclass:: tsts.schedulers.StepScheduler()
+    :members:
