@@ -12,11 +12,13 @@ year = {2019}
 }
 ```
 
-## Tourism
+## ETT
 
-Download the datasets [here](https://robjhyndman.com/data/27-3-Athanasopoulos1.zip)
+Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ETT-small)
 
-| Model | Period | Lookback | Horizon | MAPE | Ensemble | Script |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Seq2Seq | Monthly | 2H | 24 | N/A | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/nbeats/train_tourism_monthly.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/nbeats/test_tourism_monthly.py) |
+> MSE and MAE are computed on unnormalized targets
+
+| Model | Type | Lookback | Horizon | MSE | MAE | Ensemble | Script |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Informer | h1 | 192 | 48 | 10.46 | 2.62 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/dilate/train_informer_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/dilate/test_informer_ett_h1.py) |
 

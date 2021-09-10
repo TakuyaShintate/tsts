@@ -17,11 +17,3 @@ series = {NIPS'14}
 }
 ```
 
-## Tourism
-
-Download the datasets [here](https://robjhyndman.com/data/27-3-Athanasopoulos1.zip)
-
-| Period | Lookback | Horizon | MAPE | Ensemble | Script |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-| Monthly | 2H | 24 | 52.45 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/train_tourism_monthly.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/test_tourism_monthly.py) |
-
