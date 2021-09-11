@@ -34,7 +34,7 @@ class Dataset(_Dataset):
     def __init__(
         self,
         X: Tensor,
-        y: Optional[Tensor] = None,
+        y: Tensor,
         time_stamps: Optional[Tensor] = None,
         lookback: int = 100,
         horizon: int = 1,
@@ -51,7 +51,7 @@ class Dataset(_Dataset):
     def from_cfg(
         cls,
         X: Tensor,
-        y: Optional[Tensor],
+        y: Tensor,
         time_stamps: Optional[Tensor],
         image_set: str,
         cfg: CN,
@@ -80,12 +80,8 @@ class Dataset(_Dataset):
         mid = i + 1
         end = i + 1 + self.horizon
         X = self.X[start:mid]
-        if self.y is not None:
-            y = self.y[mid:end]
-            bias = self.y[start:mid]
-        else:
-            y = self.X[mid:end]
-            bias = self.X[start:mid]
+        y = self.y[mid:end]
+        bias = self.y[start:mid]
         if self.time_stamps is not None:
             time_stamps: Optional[Tensor] = self.time_stamps[start:end]
         else:

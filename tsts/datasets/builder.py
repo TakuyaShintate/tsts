@@ -11,7 +11,7 @@ __all__ = ["build_dataset"]
 
 def build_dataset(
     X: Tensor,
-    y: Optional[Tensor],
+    y: Tensor,
     time_stamps: Optional[Tensor],
     image_set: str,
     cfg: CN,

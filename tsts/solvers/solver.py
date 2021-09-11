@@ -1,6 +1,5 @@
 import json
 import os
-import sys
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
@@ -8,7 +7,7 @@ from torch.optim import Optimizer
 from torch.utils.data import ConcatDataset
 from tsts.cfg import get_cfg_defaults
 from tsts.collators import Collator, build_collator
-from tsts.core import SCALERS
+from tsts.core import SCALERS, ContextManager
 from tsts.dataloaders import DataLoader, build_dataloader
 from tsts.datasets import Dataset, build_dataset
 from tsts.loggers import Logger, build_logger
@@ -26,19 +25,6 @@ from tsts.utils import set_random_seed
 __all__ = ["Solver"]
 
 
-_TRAIN_INDEX = 0
-_VALID_INDEX = 1
-_INVALID_INDEX = -1
-_FullRawDataset = Tuple[
-    RawDataset,  # X_train
-    RawDataset,  # X_valid
-    MaybeRawDataset,  # y_train
-    MaybeRawDataset,  # y_valid
-    MaybeRawDataset,  # time_stamps_train
-    MaybeRawDataset,  # time_stamps_valid
-]
-
-
 class Solver(object):
     """Base solver class."""
 
@@ -50,6 +36,7 @@ class Solver(object):
         seed = self.cfg.SEED
         set_random_seed(seed)
         # Load pretrained model for inference
+        """
         if self.log_dir_exist() is True:
             if verbose is True:
                 sys.stdout.write("Log directory found \n")
@@ -59,8 +46,13 @@ class Solver(object):
             (self.X_scaler, self.y_scaler) = self._restore_scaler(self.meta_info)
             if verbose is True:
                 sys.stdout.write("\t [done] \n")
+        """
+        self._init_context_manager()
         self.cfg_path = cfg_path
         self.verbose = verbose
+
+    def _init_context_manager(self) -> None:
+        self.context_manager = ContextManager()
 
     def _load_meta_info(self) -> Dict[str, Any]:
         """Load meta info collected during training.
@@ -166,66 +158,6 @@ class Solver(object):
         scheduler = build_scheduler(optimizer, self.cfg)
         return scheduler
 
-    def split_train_and_valid_data(
-        self,
-        X: RawDataset,
-        y: Optional[RawDataset],
-        time_stamps: Optional[RawDataset],
-    ) -> _FullRawDataset:
-        train_data_ratio = self.cfg.TRAINING.TRAIN_DATA_RATIO
-        lookback = self.cfg.IO.LOOKBACK
-        device = self.cfg.DEVICE
-        X_train = []
-        X_valid = []
-        y_train: MaybeRawDataset = []
-        y_valid: MaybeRawDataset = []
-        time_stamps_train: MaybeRawDataset = []
-        time_stamps_valid: MaybeRawDataset = []
-        train_data_split = self.cfg.TRAINING.TRAIN_DATA_SPLIT
-        num_datasets = len(X)
-        if train_data_split == "col":
-            for i in range(num_datasets):
-                num_samples = len(X[i])
-                num_train_samples = int(train_data_ratio * num_samples)
-                indices = torch.zeros(num_samples, device=device)
-                offset = num_train_samples
-                indices[offset + lookback :] += _VALID_INDEX
-                indices[offset : offset + lookback] += _INVALID_INDEX
-                X_train.append(X[i][indices == _TRAIN_INDEX])
-                X_valid.append(X[i][indices == _VALID_INDEX])
-                if y is not None:
-                    y_train.append(y[i][indices == _TRAIN_INDEX])
-                    y_valid.append(y[i][indices == _VALID_INDEX])
-                else:
-                    y_train.append(None)
-                    y_valid.append(None)
-                if time_stamps is not None:
-                    time_stamps_train.append(time_stamps[i][indices == _TRAIN_INDEX])
-                    time_stamps_valid.append(time_stamps[i][indices == _VALID_INDEX])
-                else:
-                    time_stamps_train.append(None)
-                    time_stamps_valid.append(None)
-        elif train_data_split == "row":
-            num_train_samples = int(train_data_ratio * num_datasets)
-            X_train = X[:num_train_samples]
-            X_valid = X[num_train_samples:]
-            if y is not None:
-                y_train = y[:num_train_samples]  # type: ignore
-                y_valid = y[num_train_samples:]  # type: ignore
-            else:
-                y_train = [None for _ in range(len(X_train))]
-                y_valid = [None for _ in range(len(X_valid))]
-        else:
-            raise ValueError(f"Invalid train_data_split: {train_data_split}")
-        return (
-            X_train,
-            X_valid,
-            y_train,
-            y_valid,
-            time_stamps_train,
-            time_stamps_valid,
-        )
-
     def build_scaler(self, X_or_y: RawDataset) -> Scaler:
         scaler = build_scaler(X_or_y, self.cfg)
         return scaler
@@ -233,7 +165,7 @@ class Solver(object):
     def build_train_dataset(
         self,
         X: RawDataset,
-        y: MaybeRawDataset,
+        y: RawDataset,
         time_stamps: MaybeRawDataset,
     ) -> Dataset:
         train_datasets = []
@@ -242,7 +174,7 @@ class Solver(object):
             td = build_dataset(
                 X[i],
                 y[i],
-                time_stamps[i],
+                time_stamps[i] if time_stamps is not None else None,
                 "train",
                 self.cfg,
             )
@@ -253,7 +185,7 @@ class Solver(object):
     def build_valid_dataset(
         self,
         X: RawDataset,
-        y: MaybeRawDataset,
+        y: RawDataset,
         time_stamps: MaybeRawDataset,
     ) -> Dataset:
         valid_datasets = []
@@ -262,7 +194,7 @@ class Solver(object):
             vd = build_dataset(
                 X[i],
                 y[i],
-                time_stamps[i],
+                time_stamps[i] if time_stamps is not None else None,
                 "valid",
                 self.cfg,
             )
@@ -309,7 +241,8 @@ class Solver(object):
         scheduler: Scheduler,
         train_dataloader: DataLoader,
         valid_dataloader: DataLoader,
-        scaler: Scaler,
+        X_scaler: Scaler,
+        y_scaler: Scaler,
     ) -> Trainer:
         trainer = build_trainer(
             model,
@@ -319,7 +252,8 @@ class Solver(object):
             scheduler,
             train_dataloader,
             valid_dataloader,
-            scaler,
+            X_scaler,
+            y_scaler,
             self.cfg,
         )
         return trainer
@@ -329,13 +263,13 @@ class Solver(object):
         model: Module,
         losses: List[Loss],
         metrics: List[Metric],
-        meta_info: Dict[str, Any],
+        context_manager: ContextManager,
     ) -> Logger:
         logger = build_logger(
             model,
             losses,
             metrics,
-            meta_info,
+            context_manager,
             self.cfg,
         )
         return logger

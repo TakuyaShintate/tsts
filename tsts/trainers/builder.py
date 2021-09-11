@@ -23,7 +23,8 @@ def build_trainer(
     scheduler: Scheduler,
     train_dataloader: DataLoader,
     valid_dataloader: DataLoader,
-    scaler: Scaler,
+    X_scaler: Scaler,
+    y_scaler: Scaler,
     cfg: CN,
 ) -> Trainer:
     trainer_name = cfg.TRAINER.NAME
@@ -36,7 +37,8 @@ def build_trainer(
         scheduler,
         train_dataloader,
         valid_dataloader,
-        scaler,
+        X_scaler,
+        y_scaler,
         cfg,
     )
     return trainer
