@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
+from torch import Tensor
 from tsts.cfg import CfgNode as CN
 from tsts.core import SCALERS
-from tsts.types import RawDataset
 
 from .scaler import Scaler
 
@@ -20,12 +20,12 @@ class IdentityScaler(Scaler):
         return {}
 
     @classmethod
-    def from_cfg(cls, X_or_y: RawDataset, cfg: CN) -> "IdentityScaler":
+    def from_cfg(cls, cfg: CN) -> "IdentityScaler":
         scaler = cls(cfg)
         return scaler
 
-    def transform(self, X_or_y: RawDataset) -> RawDataset:
+    def transform(self, X_or_y: Tensor) -> Tensor:
         return X_or_y
 
-    def inv_transform(self, X_or_y: RawDataset) -> RawDataset:
+    def inv_transform(self, X_or_y: Tensor) -> Tensor:
         return X_or_y

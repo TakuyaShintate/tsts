@@ -65,8 +65,6 @@ class Logger(object):
         meta_info = {
             "num_in_feats": self.context_manager["num_in_feats"],
             "num_out_feats": self.context_manager["num_out_feats"],
-            "X_scaler": self.context_manager["X_scaler"].meta_info,
-            "y_scaler": self.context_manager["y_scaler"].meta_info,
         }
         with open(meta_info_file, "w") as f:
             json.dump(meta_info, f)

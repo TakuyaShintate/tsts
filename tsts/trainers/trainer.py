@@ -9,7 +9,6 @@ from tsts.core import TRAINERS
 from tsts.losses import Loss
 from tsts.metrics import Metric
 from tsts.optimizers import Optimizer
-from tsts.scalers import Scaler
 from tsts.schedulers import Scheduler
 
 __all__ = ["SupervisedTrainer", "Trainer"]
@@ -28,8 +27,6 @@ class Trainer(object):
         valid_dataloader: DataLoader,
         max_grad_norm: float,
         device: str,
-        X_scaler: Scaler,
-        y_scaler: Scaler,
     ) -> None:
         self.model = model
         self.losses = losses
@@ -41,8 +38,6 @@ class Trainer(object):
         self.valid_dataloader = valid_dataloader
         self.max_grad_norm = max_grad_norm
         self.device = device
-        self.X_scaler = X_scaler
-        self.y_scaler = y_scaler
 
     def on_train(self) -> List[float]:
         raise NotImplementedError
@@ -68,8 +63,6 @@ class SupervisedTrainer(Trainer):
         scheduler: Scheduler,
         train_dataloader: DataLoader,
         valid_dataloader: DataLoader,
-        X_scaler: Scaler,
-        y_scaler: Scaler,
         cfg: CN,
     ) -> "SupervisedTrainer":
         weight_per_loss = cfg.LOSSES.WEIGHT_PER_LOSS
@@ -86,17 +79,15 @@ class SupervisedTrainer(Trainer):
             valid_dataloader,
             max_grad_norm,
             device,
-            X_scaler,
-            y_scaler,
         )
         return trainer
 
     def on_train(self) -> List[float]:
         self.model.train()
         ave_loss_vs = [0.0 for _ in range(len(self.losses))]
-        for (X, y, bias, X_mask, y_mask, time_stamps) in tqdm(self.train_dataloader):
-            X = self.X_scaler.transform([X])[0]
-            y = self.y_scaler.transform([y])[0]
+        for (X, y, bias, X_mask, y_mask, time_stamps, _, _) in tqdm(
+            self.train_dataloader
+        ):
             X = X.to(self.device)
             y = y.to(self.device)
             bias = bias.to(self.device)
@@ -138,8 +129,16 @@ class SupervisedTrainer(Trainer):
             List of averaged scores
         """
         self.model.eval()
-        for (X, y, bias, X_mask, y_mask, time_stamps) in tqdm(self.valid_dataloader):
-            X = self.X_scaler.transform([X])[0]
+        for (
+            X,
+            y,
+            bias,
+            X_mask,
+            y_mask,
+            time_stamps,
+            _,
+            y_inv_transforms,
+        ) in tqdm(self.valid_dataloader):
             X = X.to(self.device)
             y = y.to(self.device)
             bias = bias.to(self.device)
@@ -149,7 +148,10 @@ class SupervisedTrainer(Trainer):
                 time_stamps = time_stamps.to(self.device)
             with torch.no_grad():
                 Z = self.model(X, bias, X_mask, time_stamps)
-            Z = self.y_scaler.inv_transform([Z])[0]
+            batch_size = X.size(0)
+            for i in range(batch_size):
+                Z[i] = y_inv_transforms[i](Z[i])
+                y[i] = y_inv_transforms[i](y[i])
             for metric in self.metrics:
                 metric.update(Z, y, y_mask)
         ave_scores = []

@@ -9,7 +9,6 @@ from tsts.losses.loss import Loss
 from tsts.metrics import Metric
 from tsts.models.module import Module
 from tsts.optimizers import Optimizer
-from tsts.scalers import Scaler
 from tsts.schedulers import Scheduler
 from tsts.trainers import Trainer
 from tsts.types import MaybeRawDataset, RawDataset
@@ -167,36 +166,6 @@ class TimeSeriesForecaster(Solver):
         return num_train_samples
 
     @property
-    def X_scaler(self) -> Scaler:
-        """Get a scaler for X_train and X_valid.
-
-        Returns
-        -------
-        Scaler
-            Scaler
-        """
-        if "X_scaler" not in self.context_manager:
-            X_scaler = self.build_scaler(self.X_train)
-            self.context_manager["X_scaler"] = X_scaler
-        X_scaler = self.context_manager["X_scaler"]
-        return X_scaler
-
-    @property
-    def y_scaler(self) -> Scaler:
-        """Get a scaler for y_train and y_valid.
-
-        Returns
-        -------
-        Scaler
-            Scaler
-        """
-        if "y_scaler" not in self.context_manager:
-            y_scaler = self.build_scaler(self.y_train)
-            self.context_manager["y_scaler"] = y_scaler
-        y_scaler = self.context_manager["y_scaler"]
-        return y_scaler
-
-    @property
     def X_train(self) -> RawDataset:
         """Get a training raw input dataset.
 
@@ -282,7 +251,7 @@ class TimeSeriesForecaster(Solver):
                 for i in range(num_datasets):
                     y_valid.append(self.y[i][self.num_train_samples[i] + lookback :])
             else:
-                y_valid = self.y[self.num_train_samples[0] + lookback :]
+                y_valid = self.y[self.num_train_samples[0] :]
             self.context_manager["y_valid"] = y_valid
         y_valid = self.context_manager["y_valid"]
         return y_valid
@@ -341,7 +310,7 @@ class TimeSeriesForecaster(Solver):
                             time_stamps_valid.append(ts)
                 else:
                     if self.time_stamps is not None:
-                        offset = self.num_train_samples[0] + lookback
+                        offset = self.num_train_samples[0]
                         ts = self.time_stamps[0][offset:]
                         time_stamps_valid.append(ts)
                 self.context_manager["time_stamps_valid"] = time_stamps_valid
@@ -481,8 +450,6 @@ class TimeSeriesForecaster(Solver):
                 self.scheduler,
                 self.train_dataloader,
                 self.valid_dataloader,
-                self.X_scaler,
-                self.y_scaler,
             )
             self.context_manager["trainer"] = trainer
         trainer = self.context_manager["trainer"]

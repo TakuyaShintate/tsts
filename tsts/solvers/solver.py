@@ -1,13 +1,12 @@
-import json
 import os
-from typing import Any, Dict, List, Optional, Tuple
+from typing import List, Optional
 
 import torch
 from torch.optim import Optimizer
 from torch.utils.data import ConcatDataset
 from tsts.cfg import get_cfg_defaults
 from tsts.collators import Collator, build_collator
-from tsts.core import SCALERS, ContextManager
+from tsts.core import ContextManager
 from tsts.dataloaders import DataLoader, build_dataloader
 from tsts.datasets import Dataset, build_dataset
 from tsts.loggers import Logger, build_logger
@@ -16,7 +15,6 @@ from tsts.losses.builder import build_losses
 from tsts.metrics import Metric, build_metrics
 from tsts.models import Module, build_model
 from tsts.optimizers import build_optimizer
-from tsts.scalers import Scaler, build_scaler
 from tsts.schedulers import Scheduler, build_scheduler
 from tsts.trainers import Trainer, build_trainer
 from tsts.types import MaybeRawDataset, RawDataset
@@ -35,75 +33,12 @@ class Solver(object):
             self.cfg.merge_from_file(cfg_path)
         seed = self.cfg.SEED
         set_random_seed(seed)
-        # Load pretrained model for inference
-        """
-        if self.log_dir_exist() is True:
-            if verbose is True:
-                sys.stdout.write("Log directory found \n")
-                sys.stdout.write("Restoring state ...")
-            self.meta_info = self._load_meta_info()
-            self.model = self._restore_model(self.meta_info)
-            (self.X_scaler, self.y_scaler) = self._restore_scaler(self.meta_info)
-            if verbose is True:
-                sys.stdout.write("\t [done] \n")
-        """
         self._init_context_manager()
         self.cfg_path = cfg_path
         self.verbose = verbose
 
     def _init_context_manager(self) -> None:
         self.context_manager = ContextManager()
-
-    def _load_meta_info(self) -> Dict[str, Any]:
-        """Load meta info collected during training.
-
-        Returns
-        -------
-        Dict[str, Any]
-            Meta info
-        """
-        log_dir = self.cfg.LOGGER.LOG_DIR
-        meta_info_path = os.path.join(log_dir, "meta.json")
-        with open(meta_info_path, "r") as f:
-            meta_info = json.load(f)
-        return meta_info
-
-    def _restore_model(self, meta_info: Dict[str, Any]) -> Module:
-        """Restore pretrained model by meta_info.
-
-        Parameters
-        ----------
-        meta_info : Dict[str, Any]
-            Meta info collected during training
-
-        Returns
-        -------
-        Module
-            Pretrained model
-        """
-        num_in_feats = meta_info["num_in_feats"]
-        num_out_feats = meta_info["num_out_feats"]
-        model = self.build_model(num_in_feats, num_out_feats)
-        model.eval()
-        return model
-
-    def _restore_scaler(self, meta_info: Dict[str, Any]) -> Tuple[Scaler, Scaler]:
-        """Restore scaler used during training
-
-        Parameters
-        ----------
-        meta_info : Dict[str, Any]
-            Meta info collected during training
-
-        Returns
-        -------
-        Scaler
-            Scaler
-        """
-        scaler_name = self.cfg.SCALER.NAME
-        X_scaler = SCALERS[scaler_name](cfg=self.cfg, **meta_info["X_scaler"])
-        y_scaler = SCALERS[scaler_name](cfg=self.cfg, **meta_info["y_scaler"])
-        return (X_scaler, y_scaler)
 
     def infer_num_in_feats(self, X: RawDataset) -> int:
         num_in_feats = X[0].size(-1)
@@ -157,10 +92,6 @@ class Solver(object):
     def build_scheduler(self, optimizer: Optimizer) -> Scheduler:
         scheduler = build_scheduler(optimizer, self.cfg)
         return scheduler
-
-    def build_scaler(self, X_or_y: RawDataset) -> Scaler:
-        scaler = build_scaler(X_or_y, self.cfg)
-        return scaler
 
     def build_train_dataset(
         self,
@@ -241,8 +172,6 @@ class Solver(object):
         scheduler: Scheduler,
         train_dataloader: DataLoader,
         valid_dataloader: DataLoader,
-        X_scaler: Scaler,
-        y_scaler: Scaler,
     ) -> Trainer:
         trainer = build_trainer(
             model,
@@ -252,8 +181,6 @@ class Solver(object):
             scheduler,
             train_dataloader,
             valid_dataloader,
-            X_scaler,
-            y_scaler,
             self.cfg,
         )
         return trainer

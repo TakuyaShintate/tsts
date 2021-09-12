@@ -1,13 +1,21 @@
-from typing import Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 from torch import Tensor
 from torch.utils.data import Dataset as _Dataset
 from tsts.cfg import CfgNode as CN
 from tsts.core import DATASETS
+from tsts.scalers import Scaler, build_scaler
 
 __all__ = ["Dataset"]
 
-_DataFrame = Tuple[Tensor, Tensor, Tensor, Optional[Tensor]]
+_DataFrame = Tuple[
+    Tensor,
+    Tensor,
+    Tensor,
+    Optional[Tensor],
+    Callable,
+    Callable,
+]
 
 
 @DATASETS.register()
@@ -35,6 +43,8 @@ class Dataset(_Dataset):
         self,
         X: Tensor,
         y: Tensor,
+        X_scaler: Scaler,
+        y_scaler: Scaler,
         time_stamps: Optional[Tensor] = None,
         lookback: int = 100,
         horizon: int = 1,
@@ -42,10 +52,17 @@ class Dataset(_Dataset):
     ) -> None:
         self.X = X
         self.y = y
+        self.X_scaler = X_scaler
+        self.y_scaler = y_scaler
         self.time_stamps = time_stamps
         self.lookback = lookback
         self.horizon = horizon
         self.base_start_index = base_start_index
+        self._fit_scalers()
+
+    def _fit_scalers(self) -> None:
+        self.X_scaler.fit(self.X)
+        self.y_scaler.fit(self.y)
 
     @classmethod
     def from_cfg(
@@ -59,9 +76,13 @@ class Dataset(_Dataset):
         lookback = cfg.IO.LOOKBACK
         horizon = cfg.IO.HORIZON
         base_start_index = cfg.DATASET.BASE_START_INDEX
+        X_scaler = build_scaler(cfg)
+        y_scaler = build_scaler(cfg)
         dataset = cls(
             X,
             y,
+            X_scaler,
+            y_scaler,
             time_stamps,
             lookback,
             horizon,
@@ -86,4 +107,13 @@ class Dataset(_Dataset):
             time_stamps: Optional[Tensor] = self.time_stamps[start:end]
         else:
             time_stamps = None
-        return (X, y, bias, time_stamps)
+        X = self.X_scaler.transform(X)
+        y = self.y_scaler.transform(y)
+        return (
+            X,
+            y,
+            bias,
+            time_stamps,
+            self.X_scaler.inv_transform,
+            self.y_scaler.inv_transform,
+        )
