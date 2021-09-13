@@ -58,11 +58,6 @@ class Dataset(_Dataset):
         self.lookback = lookback
         self.horizon = horizon
         self.base_start_index = base_start_index
-        self._fit_scalers()
-
-    def _fit_scalers(self) -> None:
-        self.X_scaler.fit(self.X)
-        self.y_scaler.fit(self.y)
 
     @classmethod
     def from_cfg(
@@ -71,13 +66,19 @@ class Dataset(_Dataset):
         y: Tensor,
         time_stamps: Optional[Tensor],
         image_set: str,
+        X_scaler: Scaler,
+        y_scaler: Scaler,
         cfg: CN,
     ) -> "Dataset":
         lookback = cfg.IO.LOOKBACK
         horizon = cfg.IO.HORIZON
         base_start_index = cfg.DATASET.BASE_START_INDEX
-        X_scaler = build_scaler(cfg)
-        y_scaler = build_scaler(cfg)
+        norm_per_dataset = cfg.DATASET.NORM_PER_DATASET
+        if norm_per_dataset is True:
+            X_scaler = build_scaler(cfg)
+            y_scaler = build_scaler(cfg)
+            X_scaler.fit(X)
+            y_scaler.fit(y)
         dataset = cls(
             X,
             y,
@@ -109,6 +110,7 @@ class Dataset(_Dataset):
             time_stamps = None
         X = self.X_scaler.transform(X)
         y = self.y_scaler.transform(y)
+        bias = self.y_scaler.transform(bias)
         return (
             X,
             y,

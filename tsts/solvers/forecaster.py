@@ -9,6 +9,8 @@ from tsts.losses.loss import Loss
 from tsts.metrics import Metric
 from tsts.models.module import Module
 from tsts.optimizers import Optimizer
+from tsts.scalers import Scaler
+from tsts.scalers.builder import build_scaler
 from tsts.schedulers import Scheduler
 from tsts.trainers import Trainer
 from tsts.types import MaybeRawDataset, RawDataset
@@ -335,6 +337,8 @@ class TimeSeriesForecaster(Solver):
                 self.X_train,
                 self.y_train,
                 self.time_stamps_train,
+                self.X_scaler,
+                self.y_scaler,
             )
             self.context_manager["train_dataset"] = train_dataset
         train_dataset = self.context_manager["train_dataset"]
@@ -356,10 +360,44 @@ class TimeSeriesForecaster(Solver):
                 self.X_valid,
                 self.y_valid,
                 self.time_stamps_valid,
+                self.X_scaler,
+                self.y_scaler,
             )
             self.context_manager["valid_dataset"] = valid_dataset
         valid_dataset = self.context_manager["valid_dataset"]
         return valid_dataset
+
+    @property
+    def X_scaler(self) -> Scaler:
+        """Get a scaler for input.
+
+        Returns
+        -------
+        Scaler
+            Scale for input
+        """
+        if "X_scaler" not in self.context_manager:
+            X_scaler = build_scaler(self.cfg)
+            X_scaler.fit_batch(self.X_train)
+            self.context_manager["X_scaler"] = X_scaler
+        X_scaler = self.context_manager["X_scaler"]
+        return X_scaler
+
+    @property
+    def y_scaler(self) -> Scaler:
+        """Get a scaler for target.
+
+        Returns
+        -------
+        Scaler
+            Scale for target
+        """
+        if "y_scaler" not in self.context_manager:
+            y_scaler = build_scaler(self.cfg)
+            y_scaler.fit_batch(self.y_train)
+            self.context_manager["y_scaler"] = y_scaler
+        y_scaler = self.context_manager["y_scaler"]
+        return y_scaler
 
     @property
     def collator(self) -> Collator:

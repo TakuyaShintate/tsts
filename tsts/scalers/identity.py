@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from torch import Tensor
 from tsts.cfg import CfgNode as CN
@@ -14,6 +14,12 @@ class IdentityScaler(Scaler):
     def __init__(self, cfg: CN) -> None:
         super(IdentityScaler, self).__init__()
         self.cfg = cfg
+
+    def fit(self, X_or_y: Tensor) -> None:
+        pass
+
+    def fit_batch(self, X_or_ys: List[Tensor]) -> None:
+        pass
 
     @property
     def meta_info(self) -> Dict[str, Any]:

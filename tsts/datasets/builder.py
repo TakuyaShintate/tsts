@@ -3,6 +3,7 @@ from typing import Optional
 from torch import Tensor
 from tsts.cfg import CfgNode as CN
 from tsts.core import DATASETS
+from tsts.scalers import Scaler
 
 from .dataset import Dataset
 
@@ -14,6 +15,8 @@ def build_dataset(
     y: Tensor,
     time_stamps: Optional[Tensor],
     image_set: str,
+    X_scaler: Scaler,
+    y_scaler: Scaler,
     cfg: CN,
 ) -> Dataset:
     if image_set == "train":
@@ -26,6 +29,8 @@ def build_dataset(
         y,
         time_stamps,
         image_set,
+        X_scaler,
+        y_scaler,
         cfg,
     )
     return dataset

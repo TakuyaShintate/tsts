@@ -15,6 +15,7 @@ from tsts.losses.builder import build_losses
 from tsts.metrics import Metric, build_metrics
 from tsts.models import Module, build_model
 from tsts.optimizers import build_optimizer
+from tsts.scalers import Scaler
 from tsts.schedulers import Scheduler, build_scheduler
 from tsts.trainers import Trainer, build_trainer
 from tsts.types import MaybeRawDataset, RawDataset
@@ -98,6 +99,8 @@ class Solver(object):
         X: RawDataset,
         y: RawDataset,
         time_stamps: MaybeRawDataset,
+        X_scaler: Scaler,
+        y_scaler: Scaler,
     ) -> Dataset:
         train_datasets = []
         num_datasets = len(X)
@@ -107,6 +110,8 @@ class Solver(object):
                 y[i],
                 time_stamps[i] if time_stamps is not None else None,
                 "train",
+                X_scaler,
+                y_scaler,
                 self.cfg,
             )
             train_datasets.append(td)
@@ -118,6 +123,8 @@ class Solver(object):
         X: RawDataset,
         y: RawDataset,
         time_stamps: MaybeRawDataset,
+        X_scaler: Scaler,
+        y_scaler: Scaler,
     ) -> Dataset:
         valid_datasets = []
         num_datasets = len(X)
@@ -127,6 +134,8 @@ class Solver(object):
                 y[i],
                 time_stamps[i] if time_stamps is not None else None,
                 "valid",
+                X_scaler,
+                y_scaler,
                 self.cfg,
             )
             valid_datasets.append(vd)

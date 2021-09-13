@@ -27,6 +27,7 @@ class Trainer(object):
         valid_dataloader: DataLoader,
         max_grad_norm: float,
         device: str,
+        denorm: bool,
     ) -> None:
         self.model = model
         self.losses = losses
@@ -38,6 +39,7 @@ class Trainer(object):
         self.valid_dataloader = valid_dataloader
         self.max_grad_norm = max_grad_norm
         self.device = device
+        self.denorm = denorm
 
     def on_train(self) -> List[float]:
         raise NotImplementedError
@@ -68,6 +70,7 @@ class SupervisedTrainer(Trainer):
         weight_per_loss = cfg.LOSSES.WEIGHT_PER_LOSS
         max_grad_norm = cfg.TRAINER.MAX_GRAD_NORM
         device = cfg.DEVICE
+        denorm = cfg.TRAINER.DENORM
         trainer = cls(
             model,
             losses,
@@ -79,6 +82,7 @@ class SupervisedTrainer(Trainer):
             valid_dataloader,
             max_grad_norm,
             device,
+            denorm,
         )
         return trainer
 
@@ -149,9 +153,10 @@ class SupervisedTrainer(Trainer):
             with torch.no_grad():
                 Z = self.model(X, bias, X_mask, time_stamps)
             batch_size = X.size(0)
-            for i in range(batch_size):
-                Z[i] = y_inv_transforms[i](Z[i])
-                y[i] = y_inv_transforms[i](y[i])
+            if self.denorm is True:
+                for i in range(batch_size):
+                    Z[i] = y_inv_transforms[i](Z[i])
+                    y[i] = y_inv_transforms[i](y[i])
             for metric in self.metrics:
                 metric.update(Z, y, y_mask)
         ave_scores = []

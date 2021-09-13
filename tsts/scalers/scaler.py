@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from torch import Tensor
 from tsts.cfg import CfgNode as CN
@@ -12,6 +12,9 @@ class Scaler(object):
         raise NotImplementedError
 
     def fit(self, X_or_y: Tensor) -> None:
+        raise NotImplementedError
+
+    def fit_batch(self, X_or_ys: List[Tensor]) -> None:
         raise NotImplementedError
 
     @property
