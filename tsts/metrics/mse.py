@@ -36,7 +36,7 @@ class MSE(Metric):
         instances = y_mask.sum().item()
         self.total_instances += instances
 
-    def forward(self) -> float:
+    def forward(self, reset: bool = True) -> float:
         """Return averaged score.
 
         Returns
@@ -45,5 +45,6 @@ class MSE(Metric):
             Averaged score
         """
         ave_score = self.total_score / self.total_instances
-        self._reset_internal_state()
+        if reset is True:
+            self._reset_internal_state()
         return ave_score

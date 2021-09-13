@@ -20,10 +20,7 @@ class StandardScaler(Scaler):
 
     @property
     def meta_info(self) -> Dict[str, Any]:
-        return {
-            "mean": self.mean.tolist(),
-            "std": self.std.tolist(),
-        }
+        return {"mean": self.mean, "std": self.std}
 
     def fit(self, X_or_y: Tensor) -> None:
         self.mean = X_or_y.mean(0)
@@ -39,7 +36,7 @@ class StandardScaler(Scaler):
             num_instances += float(X_or_ys[i].size(0))
         self.mean = mean / num_instances
         for i in range(len(X_or_ys)):
-            std += ((X_or_ys[i] - mean) ** 2).sum(0)
+            std += ((X_or_ys[i] - self.mean) ** 2).sum(0)
         std /= num_instances
         self.std = std.sqrt()
 

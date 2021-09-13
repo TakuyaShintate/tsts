@@ -1,5 +1,6 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
+import torch
 from torch import Tensor
 from tsts.cfg import CfgNode as CN
 from tsts.core import SCALERS
@@ -18,6 +19,16 @@ class MinMaxScaler(Scaler):
     def fit(self, X_or_y: Tensor) -> None:
         self.min_v = X_or_y.min(0)[0]
         self.max_v = X_or_y.max(0)[0]
+
+    def fit_batch(self, X_or_ys: List[Tensor]) -> None:
+        num_feats = X_or_ys[0].size(-1)
+        min_v = torch.zeros(num_feats) + float("inf")
+        max_v = torch.zeros(num_feats) - float("inf")
+        for i in range(len(X_or_ys)):
+            min_v = torch.minimum(min_v, X_or_ys[i].min(0)[0])
+            max_v = torch.maximum(max_v, X_or_ys[i].max(0)[0])
+        self.min_v = min_v
+        self.max_v = max_v
 
     @property
     def meta_info(self) -> Dict[str, Any]:

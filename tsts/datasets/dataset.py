@@ -74,7 +74,7 @@ class Dataset(_Dataset):
         horizon = cfg.IO.HORIZON
         base_start_index = cfg.DATASET.BASE_START_INDEX
         norm_per_dataset = cfg.DATASET.NORM_PER_DATASET
-        if norm_per_dataset is True:
+        if norm_per_dataset is True and image_set == "train":
             X_scaler = build_scaler(cfg)
             y_scaler = build_scaler(cfg)
             X_scaler.fit(X)
