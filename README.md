@@ -99,35 +99,62 @@ Following example shows how to train a model on sine curve dataset. See [Docs](h
 
 ### Training
 
-Without a log directory path provided by config, it automatically generates a random log directory.
-
-```python
-import torch
-from tsts.solvers import TimeSeriesForecaster
-
-sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
-sin_dataset = sin_dataset.unsqueeze(-1)
-forecaster = TimeSeriesForecaster()
-forecaster.fit([sin_dataset])
-``` 
-
-### Inference
-
-For inference, it needs to load parameters from a log directory generated in training.
+Define config and start training with it.
 
 ```yaml
-# inference.yml
+# cfg.yml
 LOGGER:
-  LOG_DIR: "log directory generated in training"
+  # Log file and parameters are saved here
+  LOG_DIR: "my-first-tsts-model"
 ```
 
 ```python
 import torch
 from tsts.solvers import TimeSeriesForecaster
 
-X = torch.sin(torch.arange(0.0, 10.0, 0.1)).unsqueeze(1)
-forecaster = TimeSeriesForecaster("inference.yml")
-forecaster.predict(X)
+# Define trainining + validation datasets (they are divided inside)
+sin_dataset = torch.sin(torch.arange(0.0, 100.0, 0.1))
+sin_dataset = sin_dataset.unsqueeze(-1)
+
+# Run training
+forecaster = TimeSeriesForecaster("cfg.yml")
+forecaster.fit([sin_dataset])
+``` 
+
+See results in `my-first-tsts-model` directory.
+
+### Inference
+
+For inference, it needs to load parameters from a log directory generated in training.
+
+```python
+import torch
+from tsts.scalers import StandardScaler
+from tsts.solvers import TimeSeriesForecaster
+
+# Initialize scaler
+sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
+sin_dataset = sin_dataset.unsqueeze(-1)
+X_scaler = StandardScaler()
+num_train_samples = int(0.75 * len(sin_dataset))
+X_scaler.fit(sin_dataset)
+
+# Define test dataset
+X = torch.sin(torch.arange(100.0, 110.0, 0.1))
+X = X.unsqueeze(-1)
+X = X_scaler.transform(X)
+
+# Run inference
+forecaster = TimeSeriesForecaster("cfg.yml")
+Z = forecaster.predict(X)
+
+# Initialize target to compare prediction with it
+y = torch.sin(torch.arange(110.0, 110.8, 0.1)).unsqueeze(1)
+y = X_scaler.transform(y)
+
+# Result
+print(Z)
+print(y)
 ```
 
 ## Examples

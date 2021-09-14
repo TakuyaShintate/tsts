@@ -111,7 +111,7 @@ _C.DATASET.NORM_PER_DATASET = False
 
 _C.SCALER = CN()
 # Scaler name
-_C.SCALER.NAME = "MinMaxScaler"
+_C.SCALER.NAME = "StandardScaler"
 
 _C.COLLATOR = CN()
 _C.COLLATOR.NAME = "Collator"
