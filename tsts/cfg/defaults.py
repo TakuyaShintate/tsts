@@ -47,6 +47,8 @@ _C.TRAINER = CN()
 _C.TRAINER.NAME = "SupervisedTrainer"
 # Maximum gradient norm
 _C.TRAINER.MAX_GRAD_NORM = 1.0
+# Denormalize before computing metric values
+_C.TRAINER.DENORM = False
 
 _C.SOLVER = CN()
 # Solver name
@@ -104,6 +106,8 @@ _C.DATASET.NAME_TRAIN = "Dataset"
 _C.DATASET.NAME_VALID = "Dataset"
 # Dataset index starts with this value
 _C.DATASET.BASE_START_INDEX = 0
+# Normalize per dataset differently
+_C.DATASET.NORM_PER_DATASET = False
 
 _C.SCALER = CN()
 # Scaler name

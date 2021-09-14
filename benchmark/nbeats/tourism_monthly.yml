@@ -1,4 +1,4 @@
-DEVICE: "cuda:0"
+DEVICE: "cuda:2"
 
 IO:
   LOOKBACK: 48
@@ -6,7 +6,7 @@ IO:
 
 TRAINING:
   TRAIN_DATA_SPLIT: "row"
-  NUM_EPOCHS: 300
+  NUM_EPOCHS: 30
 
 DATALOADER:
   BATCH_SIZE_TRAIN: 1024
@@ -24,6 +24,9 @@ METRICS:
 
 SCALER:
   NAME: "IdentityScaler"
+
+TRAINER:
+  DENORM: True
 
 LOGGER:
   LOG_DIR: "nbeats-tourism-monthly"

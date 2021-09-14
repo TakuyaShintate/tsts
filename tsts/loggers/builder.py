@@ -1,7 +1,7 @@
-from typing import Any, Dict, List
+from typing import List
 
 from tsts.cfg import CfgNode as CN
-from tsts.core import LOGGERS
+from tsts.core import LOGGERS, ContextManager
 from tsts.losses import Loss
 from tsts.metrics import Metric
 from tsts.models import Module
@@ -15,7 +15,7 @@ def build_logger(
     model: Module,
     losses: List[Loss],
     metrics: List[Metric],
-    meta_info: Dict[str, Any],
+    context_manager: ContextManager,
     cfg: CN,
 ) -> Logger:
     logger_name = cfg.LOGGER.NAME
@@ -24,7 +24,7 @@ def build_logger(
         model,
         losses,
         metrics,
-        meta_info,
+        context_manager,
         cfg,
     )
     return logger

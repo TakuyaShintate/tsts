@@ -1,4 +1,5 @@
-from tsts.core.registry import (
+from .context_manager import ContextManager
+from .registry import (
     COLLATORS,
     DATALOADERS,
     DATASETS,
@@ -13,6 +14,7 @@ from tsts.core.registry import (
 )
 
 __all__ = [
+    "ContextManager",
     "COLLATORS",
     "DATALOADERS",
     "DATASETS",

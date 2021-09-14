@@ -73,8 +73,10 @@ class Collator(object):
         bias_new = []
         X_mask = []
         y_mask = []
+        X_inv_transforms = []
+        y_inv_transforms = []
         time_stamps_new: List[Optional[Tensor]] = []  # type: ignore
-        for (X, y, bias, time_stamps) in batch:
+        for (X, y, bias, time_stamps, X_inv_transform, y_inv_transform) in batch:
             (X_num_steps, X_num_feats) = X.size()
             X_num_steps = min(X_num_steps, self.lookback)
             (y_num_steps, y_num_feats) = y.size()
@@ -111,6 +113,8 @@ class Collator(object):
             bias_new.append(_bias_new)
             X_mask.append(_X_mask)
             y_mask.append(_y_mask)
+            X_inv_transforms.append(X_inv_transform)
+            y_inv_transforms.append(y_inv_transform)
         return (
             torch.stack(X_new),
             torch.stack(y_new),
@@ -120,4 +124,6 @@ class Collator(object):
             torch.stack(time_stamps_new)  # type: ignore
             if time_stamps_new[0] is not None
             else time_stamps,
+            X_inv_transforms,
+            y_inv_transforms,
         )

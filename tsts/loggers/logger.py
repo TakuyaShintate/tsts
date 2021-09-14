@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 
 import torch
 from tsts.cfg import CfgNode as CN
-from tsts.core import LOGGERS
+from tsts.core import LOGGERS, ContextManager
 from tsts.losses import Loss
 from tsts.metrics import Metric
 from tsts.models import Module
@@ -21,15 +21,16 @@ class Logger(object):
         model: Module,
         losses: List[Loss],
         metrics: List[Metric],
-        meta_info: Dict[str, Any],
+        context_manager: ContextManager,
     ) -> None:
         self.log_dir = log_dir
         self.model = model
         self.losses = losses
         self.metrics = metrics
-        self.meta_info = meta_info
+        self.context_manager = context_manager
         self._init_internal_state()
         self._init_log_dir()
+        self._dump_meta_info()
 
     @classmethod
     def from_cfg(
@@ -37,7 +38,7 @@ class Logger(object):
         model: Module,
         losses: List[Loss],
         metrics: List[Metric],
-        meta_info: Dict[str, Any],
+        context_manager: ContextManager,
         cfg: CN,
     ) -> "Logger":
         log_dir = cfg.LOGGER.LOG_DIR
@@ -48,7 +49,7 @@ class Logger(object):
             model,
             losses,
             metrics,
-            meta_info,
+            context_manager,
         )
         return logger
 
@@ -58,9 +59,15 @@ class Logger(object):
     def _init_log_dir(self) -> None:
         if os.path.exists(self.log_dir) is False:
             os.mkdir(self.log_dir)
+
+    def _dump_meta_info(self) -> None:
         meta_info_file = os.path.join(self.log_dir, "meta.json")
+        meta_info = {
+            "num_in_feats": self.context_manager["num_in_feats"],
+            "num_out_feats": self.context_manager["num_out_feats"],
+        }
         with open(meta_info_file, "w") as f:
-            json.dump(self.meta_info, f)
+            json.dump(meta_info, f)
 
     def log(
         self,
@@ -78,6 +85,7 @@ class Logger(object):
         record: Dict[str, Any] = {
             "epoch": epoch,
             "loss": {},
+            "best": self.best_ave_score,
             "metric": {},
         }
         for (i, loss) in enumerate(self.losses):

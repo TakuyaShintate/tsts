@@ -1,22 +1,24 @@
-from typing import Any, Dict
+from typing import List
 
+from torch import Tensor
 from tsts.cfg import CfgNode as CN
-from tsts.types import RawDataset
 
 __all__ = ["Scaler"]
 
 
 class Scaler(object):
     @classmethod
-    def from_cfg(cls, X_or_y: RawDataset, cfg: CN) -> "Scaler":
+    def from_cfg(cls, cfg: CN) -> "Scaler":
         raise NotImplementedError
 
-    @property
-    def meta_info(self) -> Dict[str, Any]:
+    def fit(self, X_or_y: Tensor) -> None:
         raise NotImplementedError
 
-    def transform(self, X_or_y: RawDataset) -> RawDataset:
+    def fit_batch(self, X_or_ys: List[Tensor]) -> None:
         raise NotImplementedError
 
-    def inv_transform(self, X_or_y: RawDataset) -> RawDataset:
+    def transform(self, X_or_y: Tensor) -> Tensor:
+        raise NotImplementedError
+
+    def inv_transform(self, X_or_y: Tensor) -> Tensor:
         raise NotImplementedError

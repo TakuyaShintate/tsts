@@ -1,13 +1,21 @@
-from typing import Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 from torch import Tensor
 from torch.utils.data import Dataset as _Dataset
 from tsts.cfg import CfgNode as CN
 from tsts.core import DATASETS
+from tsts.scalers import Scaler, build_scaler
 
 __all__ = ["Dataset"]
 
-_DataFrame = Tuple[Tensor, Tensor, Tensor, Optional[Tensor]]
+_DataFrame = Tuple[
+    Tensor,
+    Tensor,
+    Tensor,
+    Optional[Tensor],
+    Callable,
+    Callable,
+]
 
 
 @DATASETS.register()
@@ -34,7 +42,9 @@ class Dataset(_Dataset):
     def __init__(
         self,
         X: Tensor,
-        y: Optional[Tensor] = None,
+        y: Tensor,
+        X_scaler: Scaler,
+        y_scaler: Scaler,
         time_stamps: Optional[Tensor] = None,
         lookback: int = 100,
         horizon: int = 1,
@@ -42,6 +52,8 @@ class Dataset(_Dataset):
     ) -> None:
         self.X = X
         self.y = y
+        self.X_scaler = X_scaler
+        self.y_scaler = y_scaler
         self.time_stamps = time_stamps
         self.lookback = lookback
         self.horizon = horizon
@@ -51,17 +63,27 @@ class Dataset(_Dataset):
     def from_cfg(
         cls,
         X: Tensor,
-        y: Optional[Tensor],
+        y: Tensor,
         time_stamps: Optional[Tensor],
         image_set: str,
+        X_scaler: Scaler,
+        y_scaler: Scaler,
         cfg: CN,
     ) -> "Dataset":
         lookback = cfg.IO.LOOKBACK
         horizon = cfg.IO.HORIZON
         base_start_index = cfg.DATASET.BASE_START_INDEX
+        norm_per_dataset = cfg.DATASET.NORM_PER_DATASET
+        if norm_per_dataset is True and image_set == "train":
+            X_scaler = build_scaler(cfg)
+            y_scaler = build_scaler(cfg)
+            X_scaler.fit(X)
+            y_scaler.fit(y)
         dataset = cls(
             X,
             y,
+            X_scaler,
+            y_scaler,
             time_stamps,
             lookback,
             horizon,
@@ -80,14 +102,20 @@ class Dataset(_Dataset):
         mid = i + 1
         end = i + 1 + self.horizon
         X = self.X[start:mid]
-        if self.y is not None:
-            y = self.y[mid:end]
-            bias = self.y[start:mid]
-        else:
-            y = self.X[mid:end]
-            bias = self.X[start:mid]
+        y = self.y[mid:end]
+        bias = self.y[start:mid]
         if self.time_stamps is not None:
             time_stamps: Optional[Tensor] = self.time_stamps[start:end]
         else:
             time_stamps = None
-        return (X, y, bias, time_stamps)
+        X = self.X_scaler.transform(X)
+        y = self.y_scaler.transform(y)
+        bias = self.y_scaler.transform(bias)
+        return (
+            X,
+            y,
+            bias,
+            time_stamps,
+            self.X_scaler.inv_transform,
+            self.y_scaler.inv_transform,
+        )

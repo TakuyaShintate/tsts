@@ -9,7 +9,6 @@ from tsts.core import TRAINERS
 from tsts.losses import Loss
 from tsts.metrics import Metric
 from tsts.optimizers import Optimizer
-from tsts.scalers import Scaler
 from tsts.schedulers import Scheduler
 
 __all__ = ["SupervisedTrainer", "Trainer"]
@@ -28,7 +27,7 @@ class Trainer(object):
         valid_dataloader: DataLoader,
         max_grad_norm: float,
         device: str,
-        scaler: Scaler,
+        denorm: bool,
     ) -> None:
         self.model = model
         self.losses = losses
@@ -40,7 +39,7 @@ class Trainer(object):
         self.valid_dataloader = valid_dataloader
         self.max_grad_norm = max_grad_norm
         self.device = device
-        self.scaler = scaler
+        self.denorm = denorm
 
     def on_train(self) -> List[float]:
         raise NotImplementedError
@@ -66,12 +65,12 @@ class SupervisedTrainer(Trainer):
         scheduler: Scheduler,
         train_dataloader: DataLoader,
         valid_dataloader: DataLoader,
-        scaler: Scaler,
         cfg: CN,
     ) -> "SupervisedTrainer":
         weight_per_loss = cfg.LOSSES.WEIGHT_PER_LOSS
         max_grad_norm = cfg.TRAINER.MAX_GRAD_NORM
         device = cfg.DEVICE
+        denorm = cfg.TRAINER.DENORM
         trainer = cls(
             model,
             losses,
@@ -83,41 +82,53 @@ class SupervisedTrainer(Trainer):
             valid_dataloader,
             max_grad_norm,
             device,
-            scaler,
+            denorm,
         )
         return trainer
 
     def on_train(self) -> List[float]:
         self.model.train()
         ave_loss_vs = [0.0 for _ in range(len(self.losses))]
-        for (X, y, bias, X_mask, y_mask, time_stamps) in tqdm(self.train_dataloader):
-            X = X.to(self.device)
-            y = y.to(self.device)
-            bias = bias.to(self.device)
-            X_mask = X_mask.to(self.device)
-            y_mask = y_mask.to(self.device)
-            if time_stamps is not None:
-                time_stamps = time_stamps.to(self.device)
-            Z = self.model(X, bias, X_mask, time_stamps)
-            self.optimizer.zero_grad()
-            device = Z.device
-            total_loss_v = torch.tensor(
-                0.0,
-                dtype=torch.float32,
-                device=device,
-            )
-            for (i, loss) in enumerate(self.losses):
-                weight = self.weight_per_loss[i]
-                loss_v = loss(Z, y, y_mask)
-                total_loss_v += weight * loss_v
-                ave_loss_vs[i] += loss_v.item()
-            total_loss_v.backward()
-            if self.max_grad_norm > 0:
-                torch.nn.utils.clip_grad_norm_(
-                    self.model.parameters(),
-                    self.max_grad_norm,
+        with tqdm(total=len(self.train_dataloader), leave=False) as pbar:
+            for (
+                X,
+                y,
+                bias,
+                X_mask,
+                y_mask,
+                time_stamps,
+                _,
+                _,
+            ) in self.train_dataloader:
+                X = X.to(self.device)
+                y = y.to(self.device)
+                bias = bias.to(self.device)
+                X_mask = X_mask.to(self.device)
+                y_mask = y_mask.to(self.device)
+                if time_stamps is not None:
+                    time_stamps = time_stamps.to(self.device)
+                Z = self.model(X, bias, X_mask, time_stamps)
+                self.optimizer.zero_grad()
+                device = Z.device
+                total_loss_v = torch.tensor(
+                    0.0,
+                    dtype=torch.float32,
+                    device=device,
                 )
-            self.optimizer.step()
+                for (i, loss) in enumerate(self.losses):
+                    weight = self.weight_per_loss[i]
+                    loss_v = loss(Z, y, y_mask)
+                    total_loss_v += weight * loss_v
+                    ave_loss_vs[i] += loss_v.item()
+                total_loss_v.backward()
+                if self.max_grad_norm > 0:
+                    torch.nn.utils.clip_grad_norm_(
+                        self.model.parameters(),
+                        self.max_grad_norm,
+                    )
+                self.optimizer.step()
+                pbar.set_description(f"(loss={total_loss_v.item():.4f})")
+                pbar.update(1)
         self.scheduler.step()
         for i in range(len(self.losses)):
             ave_loss_vs[i] /= len(self.train_dataloader)
@@ -132,22 +143,38 @@ class SupervisedTrainer(Trainer):
             List of averaged scores
         """
         self.model.eval()
-        for (X, y, bias, X_mask, y_mask, time_stamps) in tqdm(self.valid_dataloader):
-            X = X.to(self.device)
-            y = y.to(self.device)
-            bias = bias.to(self.device)
-            X_mask = X_mask.to(self.device)
-            y_mask = y_mask.to(self.device)
-            if time_stamps is not None:
-                time_stamps = time_stamps.to(self.device)
-            with torch.no_grad():
-                Z = self.model(X, bias, X_mask, time_stamps)
-            Z = self.scaler.inv_transform(Z)
-            y = self.scaler.inv_transform(y)
-            for metric in self.metrics:
-                metric.update(Z, y, y_mask)
+        with tqdm(total=len(self.valid_dataloader), leave=False) as pbar:
+            for (
+                X,
+                y,
+                bias,
+                X_mask,
+                y_mask,
+                time_stamps,
+                _,
+                y_inv_transforms,
+            ) in self.valid_dataloader:
+                X = X.to(self.device)
+                y = y.to(self.device)
+                bias = bias.to(self.device)
+                X_mask = X_mask.to(self.device)
+                y_mask = y_mask.to(self.device)
+                if time_stamps is not None:
+                    time_stamps = time_stamps.to(self.device)
+                with torch.no_grad():
+                    Z = self.model(X, bias, X_mask, time_stamps)
+                batch_size = X.size(0)
+                if self.denorm is True:
+                    for i in range(batch_size):
+                        Z[i] = y_inv_transforms[i](Z[i])
+                        y[i] = y_inv_transforms[i](y[i])
+                for metric in self.metrics:
+                    metric.update(Z, y, y_mask)
+                metric_v = sum([metric(False) for metric in self.metrics])
+                pbar.set_description(f"(metric={metric_v:.4f})")
+                pbar.update(1)
         ave_scores = []
         for metric in self.metrics:
-            ave_score = metric()
+            ave_score = metric(True)
             ave_scores.append(ave_score)
         return ave_scores
