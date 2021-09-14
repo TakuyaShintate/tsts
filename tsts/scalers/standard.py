@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import List
 
 import torch
 from torch import Tensor
@@ -14,13 +14,13 @@ EPSILON = 1e-8
 
 @SCALERS.register()
 class StandardScaler(Scaler):
-    def __init__(self, cfg: CN) -> None:
+    def __init__(self) -> None:
         super(StandardScaler, self).__init__()
-        self.cfg = cfg
 
-    @property
-    def meta_info(self) -> Dict[str, Any]:
-        return {"mean": self.mean, "std": self.std}
+    @classmethod
+    def from_cfg(cls, cfg: CN) -> "StandardScaler":
+        scaler = cls()
+        return scaler
 
     def fit(self, X_or_y: Tensor) -> None:
         self.mean = X_or_y.mean(0)
@@ -37,13 +37,8 @@ class StandardScaler(Scaler):
         self.mean = mean / num_instances
         for i in range(len(X_or_ys)):
             std += ((X_or_ys[i] - self.mean) ** 2).sum(0)
-        std /= num_instances
+        std /= (num_instances - 1)
         self.std = std.sqrt()
-
-    @classmethod
-    def from_cfg(cls, cfg: CN) -> "StandardScaler":
-        scaler = cls(cfg)
-        return scaler
 
     def transform(self, X_or_y: Tensor) -> Tensor:
         device = X_or_y.device

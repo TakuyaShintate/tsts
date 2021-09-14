@@ -85,6 +85,7 @@ class Logger(object):
         record: Dict[str, Any] = {
             "epoch": epoch,
             "loss": {},
+            "best": self.best_ave_score,
             "metric": {},
         }
         for (i, loss) in enumerate(self.losses):

@@ -1,6 +1,8 @@
 import typing
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
+import torch
+from torch import Tensor
 from tsts.collators import Collator
 from tsts.dataloaders.dataloader import DataLoader
 from tsts.datasets import Dataset
@@ -18,6 +20,8 @@ from tsts.types import MaybeRawDataset, RawDataset
 from .solver import Solver
 
 __all__ = ["TimeSeriesForecaster"]
+
+_TestData = Tuple[Tensor, Tensor, Tensor, Optional[Tensor]]
 
 
 class TimeSeriesForecaster(Solver):
@@ -503,21 +507,75 @@ class TimeSeriesForecaster(Solver):
         self.y = y or X
         self.time_stamps = time_stamps
 
+    def _apply_collator_to_test_data(
+        self,
+        X: Tensor,
+        time_stamps: Optional[Tensor] = None,
+    ) -> _TestData:
+        raw_batch = (
+            (
+                X,
+                torch.zeros_like(X),  # Dummy (y)
+                X,
+                time_stamps,
+                lambda x: x,  # Dummy (X_inv_transform)
+                lambda x: x,  # Dummy (y_inv_transform)
+            ),
+        )
+        # Unpack a batch
+        batch = self.collator(raw_batch)
+        (X, _, bias, X_mask, _, time_stamps, _, _) = batch
+        return (X, bias, X_mask, time_stamps)
+
+    def predict(
+        self,
+        X: Tensor,
+        time_stamps: Optional[Tensor] = None,
+    ) -> Tensor:
+        """Predict y for X.
+
+        Notes
+        -----
+        Unlike fit method, X and time_stamps are not lists.
+
+        Parameters
+        ----------
+        X : Tensor
+            Input
+        """
+        self.model.eval()
+        (X, bias, X_mask, time_stamps) = self._apply_collator_to_test_data(
+            X, time_stamps
+        )
+        device = self.cfg.DEVICE
+        X = X.to(device)
+        bias = bias.to(device)
+        X_mask = X_mask.to(device)
+        if time_stamps is not None:
+            time_stamps = time_stamps.to(device)
+        Z = self.model(X, bias, X_mask, time_stamps)
+        Z = Z[0].detach().cpu()
+        return Z
+
     def fit(
         self,
         X: RawDataset,
         y: Optional[RawDataset] = None,
         time_stamps: Optional[RawDataset] = None,
     ) -> None:
-        """Fit
+        """Train model on given datasets.
+
+        Notes
+        -----
+        If y is None, X is used for y.
 
         Parameters
         ----------
         X : RawDataset, (L, N, M)
-            Input on witch the model is trained
+            List of input datasets
 
         y : Optional[RawDataset], optional
-            Target, by default None
+            List of target datasets, by default None
         """
         num_epochs = self.cfg.TRAINING.NUM_EPOCHS
         self._register_raw_datasets(X, y, time_stamps)

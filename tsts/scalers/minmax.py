@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import List
 
 import torch
 from torch import Tensor
@@ -12,9 +12,13 @@ __all__ = ["MinMaxScaler"]
 
 @SCALERS.register()
 class MinMaxScaler(Scaler):
-    def __init__(self, cfg: CN) -> None:
+    def __init__(self) -> None:
         super(MinMaxScaler, self).__init__()
-        self.cfg = cfg
+
+    @classmethod
+    def from_cfg(cls, cfg: CN) -> "MinMaxScaler":
+        scaler = cls()
+        return scaler
 
     def fit(self, X_or_y: Tensor) -> None:
         self.min_v = X_or_y.min(0)[0]
@@ -29,18 +33,6 @@ class MinMaxScaler(Scaler):
             max_v = torch.maximum(max_v, X_or_ys[i].max(0)[0])
         self.min_v = min_v
         self.max_v = max_v
-
-    @property
-    def meta_info(self) -> Dict[str, Any]:
-        return {
-            "min_v": self.min_v.tolist(),
-            "max_v": self.max_v.tolist(),
-        }
-
-    @classmethod
-    def from_cfg(cls, cfg: CN) -> "MinMaxScaler":
-        scaler = cls(cfg)
-        return scaler
 
     def transform(self, X_or_y: Tensor) -> Tensor:
         device = X_or_y.device

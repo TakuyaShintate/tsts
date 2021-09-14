@@ -1,4 +1,7 @@
+import json
 import os
+import sys
+import warnings
 from typing import List, Optional
 
 import torch
@@ -25,18 +28,51 @@ __all__ = ["Solver"]
 
 
 class Solver(object):
-    """Base solver class."""
+    """Base solver class.
+
+    It has methods to build modules used to start training and inference, and has some utility
+    methods.
+
+    Parameters
+    ----------
+    cfg_path : str, optional
+        Path to custom config file, by default None
+
+    verbose : bool, optional
+        If True, it prints meta info on console, by default True
+    """
 
     def __init__(self, cfg_path: Optional[str] = None, verbose: bool = True) -> None:
         super(Solver, self).__init__()
-        self.cfg = get_cfg_defaults()
-        if cfg_path is not None:
-            self.cfg.merge_from_file(cfg_path)
+        self.cfg_path = cfg_path
+        self.verbose = verbose
+        self._init_internal_state()
+
+    def _init_internal_state(self) -> None:
+        self._init_cfg()
         seed = self.cfg.SEED
         set_random_seed(seed)
         self._init_context_manager()
-        self.cfg_path = cfg_path
-        self.verbose = verbose
+        if self.log_dir_exist() is True:
+            self._load_meta_info()
+
+    def _load_meta_info(self) -> None:
+        if self.verbose is True:
+            sys.stdout.write("Log directory found \n")
+            sys.stdout.write("Restoring state ...")
+        log_dir = self.cfg.LOGGER.LOG_DIR
+        meta_info_path = os.path.join(log_dir, "meta.json")
+        with open(meta_info_path, "r") as f:
+            meta_info = json.load(f)
+        for (k, v) in meta_info.items():
+            self.context_manager[k] = v
+        if self.verbose is True:
+            sys.stdout.write("\t [done] \n")
+
+    def _init_cfg(self) -> None:
+        self.cfg = get_cfg_defaults()
+        if self.cfg_path is not None:
+            self.cfg.merge_from_file(self.cfg_path)
 
     def _init_context_manager(self) -> None:
         self.context_manager = ContextManager()
@@ -67,9 +103,12 @@ class Solver(object):
         model.to(device)
         log_dir = self.cfg.LOGGER.LOG_DIR
         if self.log_dir_exist() is True:
-            model_path = os.path.join(log_dir, "model.pth")
-            state_dict = torch.load(model_path)
-            model.load_state_dict(state_dict)
+            try:
+                model_path = os.path.join(log_dir, "model.pth")
+                state_dict = torch.load(model_path)
+                model.load_state_dict(state_dict)
+            except FileNotFoundError:
+                warnings.warn("Failed to load pretrained model")
         return model
 
     def build_losses(self) -> List[Loss]:

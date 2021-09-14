@@ -25,8 +25,6 @@
 
 Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ETT-small)
 
-> MSE and MAE are computed on unnormalized targets
-
-| Type | Lookback | Horizon | MSE | MAE | Ensemble | Script |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| h1 | 192 | 48 | 11.48 | 2.82 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/informer/train_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/informer/test_ett_h1.py) |
+| Type | Input | Target | Lookback | Horizon | MSE | MAE | Ensemble | Script |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| h1 | OT | OT | 720 | 48 | 0.1608 | 0.3366 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/informer/train_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/informer/test_ett_h1.py) |
