@@ -57,9 +57,6 @@ _C.SOLVER.NAME = "Forecaster"
 _C.MODEL = CN()
 # Model name
 _C.MODEL.NAME = "Seq2Seq"
-# If True, Add x_t (the last value of input time series) to every output
-# Set it to True when dataset has high varience
-_C.MODEL.ADD_LAST_STEP_VAL = False
 # Number of hidden units in encoder and decoder
 _C.MODEL.NUM_H_UNITS = 64
 # Number of hidden layers in encoder and decoder
@@ -84,6 +81,12 @@ _C.MODEL.STACK_SIZE = 30
 _C.MODEL.BLOCK_TYPE = "identity"
 # Polynomial degree
 _C.MODEL.DEGREE = 2
+
+_C.LOCALSCALER = CN()
+# Local scaler name
+_C.LOCALSCALER.NAME = "NOOP"
+# Order p i.e. AR(p)
+_C.LOCALSCALER.NUM_STEPS = 100
 
 _C.LOSSES = CN()
 # Loss function names
@@ -114,6 +117,7 @@ _C.SCALER = CN()
 _C.SCALER.NAME = "StandardScaler"
 
 _C.COLLATOR = CN()
+# Collator name
 _C.COLLATOR.NAME = "Collator"
 
 _C.DATALOADER = CN()

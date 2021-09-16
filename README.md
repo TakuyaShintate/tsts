@@ -112,7 +112,7 @@ LOGGER:
 import torch
 from tsts.solvers import TimeSeriesForecaster
 
-# Define trainining + validation datasets (they are divided inside)
+# Define training + validation datasets (they are divided inside)
 sin_dataset = torch.sin(torch.arange(0.0, 100.0, 0.1))
 sin_dataset = sin_dataset.unsqueeze(-1)
 
