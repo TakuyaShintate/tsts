@@ -17,6 +17,7 @@ from tsts.losses import Loss
 from tsts.losses.builder import build_losses
 from tsts.metrics import Metric, build_metrics
 from tsts.models import Module, build_model
+from tsts.models.localscalers import build_local_scaler
 from tsts.optimizers import build_optimizer
 from tsts.scalers import Scaler
 from tsts.schedulers import Scheduler, build_scheduler
@@ -111,6 +112,28 @@ class Solver(object):
                 warnings.warn("Failed to load pretrained model")
         return model
 
+    def build_local_scaler(
+        self,
+        num_in_feats: int,
+        num_out_feats: int,
+    ) -> Module:
+        local_scaler = build_local_scaler(
+            num_in_feats,
+            num_out_feats,
+            self.cfg,
+        )
+        device = self.cfg.DEVICE
+        local_scaler.to(device)
+        log_dir = self.cfg.LOGGER.LOG_DIR
+        if self.log_dir_exist() is True:
+            try:
+                local_scaler_path = os.path.join(log_dir, "local_scaler.pth")
+                state_dict = torch.load(local_scaler_path)
+                local_scaler.load_state_dict(state_dict)
+            except FileNotFoundError:
+                warnings.warn("Failed to load pretrained local scaler")
+        return local_scaler
+
     def build_losses(self) -> List[Loss]:
         losses = build_losses(self.cfg)
         device = self.cfg.DEVICE
@@ -125,8 +148,9 @@ class Solver(object):
             metric.to(device)
         return metrics
 
-    def build_optimizer(self, model: Module) -> Optimizer:
-        optimizer = build_optimizer(model.parameters(), self.cfg)
+    def build_optimizer(self, model: Module, local_scaler: Module) -> Optimizer:
+        params = list(model.parameters()) + list(local_scaler.parameters())
+        optimizer = build_optimizer(params, self.cfg)
         return optimizer
 
     def build_scheduler(self, optimizer: Optimizer) -> Scheduler:
@@ -214,6 +238,7 @@ class Solver(object):
     def build_trainer(
         self,
         model: Module,
+        local_scaler: Module,
         losses: List[Loss],
         metrics: List[Metric],
         optimizer: Optimizer,
@@ -223,6 +248,7 @@ class Solver(object):
     ) -> Trainer:
         trainer = build_trainer(
             model,
+            local_scaler,
             losses,
             metrics,
             optimizer,
@@ -236,12 +262,14 @@ class Solver(object):
     def build_logger(
         self,
         model: Module,
+        local_scaler: Module,
         losses: List[Loss],
         metrics: List[Metric],
         context_manager: ContextManager,
     ) -> Logger:
         logger = build_logger(
             model,
+            local_scaler,
             losses,
             metrics,
             context_manager,

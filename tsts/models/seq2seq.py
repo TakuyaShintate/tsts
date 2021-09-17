@@ -118,9 +118,9 @@ class Seq2Seq(Module):
                 c[i] = c_t
         return h
 
-    def _run_decoder(self, h: List[Tensor], bias: Tensor) -> Tensor:
-        batch_size = bias.size(0)
-        device = bias.device
+    def _run_decoder(self, h: List[Tensor]) -> Tensor:
+        batch_size = h[0].size(0)
+        device = h[0].device
         (_, c) = self._init_memory(batch_size, device)
         mb_preds = []
         h_t = h[-1]
@@ -130,15 +130,12 @@ class Seq2Seq(Module):
                 h[i] = h_t
                 c[i] = c_t
             y_t = self.regressor(h_t)
-            if self.add_last_step_val is True:
-                y_t = y_t + bias[:, -1]
             mb_preds.append(y_t.unsqueeze(1))
         return torch.cat(mb_preds, dim=1)
 
     def forward(
         self,
         X: Tensor,
-        bias: Tensor,
         X_mask: Tensor,
         time_stamps: Optional[Tensor] = None,
     ) -> Tensor:
@@ -158,5 +155,5 @@ class Seq2Seq(Module):
             Prediction
         """
         h = self._run_encoder(X)
-        mb_preds = self._run_decoder(h, bias)
+        mb_preds = self._run_decoder(h)
         return mb_preds

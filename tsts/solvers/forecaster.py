@@ -80,6 +80,24 @@ class TimeSeriesForecaster(Solver):
         return model
 
     @property
+    def local_scaler(self) -> Module:
+        """Get a target local scaler.
+
+        Returns
+        -------
+        Module
+            Target local scaler
+        """
+        if "local_scaler" not in self.context_manager:
+            local_scaler = self.build_local_scaler(
+                self.num_in_feats,
+                self.num_out_feats,
+            )
+            self.context_manager["local_scaler"] = local_scaler
+        local_scaler = self.context_manager["local_scaler"]
+        return local_scaler
+
+    @property
     def losses(self) -> List[Loss]:
         """Get a list of loss functions.
 
@@ -119,7 +137,7 @@ class TimeSeriesForecaster(Solver):
             Optimizer
         """
         if "optimizer" not in self.context_manager:
-            optimizer = self.build_optimizer(self.model)
+            optimizer = self.build_optimizer(self.model, self.local_scaler)
             self.context_manager["optimizer"] = optimizer
         optimizer = self.context_manager["optimizer"]
         return optimizer
@@ -466,6 +484,7 @@ class TimeSeriesForecaster(Solver):
         if "logger" not in self.context_manager:
             logger = self.build_logger(
                 self.model,
+                self.local_scaler,
                 self.losses,
                 self.metrics,
                 self.context_manager,
@@ -486,6 +505,7 @@ class TimeSeriesForecaster(Solver):
         if "trainer" not in self.context_manager:
             trainer = self.build_trainer(
                 self.model,
+                self.local_scaler,
                 self.losses,
                 self.metrics,
                 self.optimizer,
@@ -544,6 +564,7 @@ class TimeSeriesForecaster(Solver):
             Input
         """
         self.model.eval()
+        self.local_scaler.eval()
         (X, bias, X_mask, time_stamps) = self._apply_collator_to_test_data(
             X, time_stamps
         )
@@ -553,7 +574,8 @@ class TimeSeriesForecaster(Solver):
         X_mask = X_mask.to(device)
         if time_stamps is not None:
             time_stamps = time_stamps.to(device)
-        Z = self.model(X, bias, X_mask, time_stamps)
+        Z = self.model(X, X_mask, time_stamps)
+        Z = Z + self.local_scaler(bias)
         Z = Z[0].detach().cpu()
         return Z
 

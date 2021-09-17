@@ -18,6 +18,7 @@ class Trainer(object):
     def __init__(
         self,
         model: Module,
+        local_scaler: Module,
         losses: List[Loss],
         weight_per_loss: List[float],
         metrics: List[Metric],
@@ -30,6 +31,7 @@ class Trainer(object):
         denorm: bool,
     ) -> None:
         self.model = model
+        self.local_scaler = local_scaler
         self.losses = losses
         self.weight_per_loss = weight_per_loss
         self.metrics = metrics
@@ -59,6 +61,7 @@ class SupervisedTrainer(Trainer):
     def from_cfg(
         cls,
         model: Module,
+        local_scaler: Module,
         losses: List[Loss],
         metrics: List[Metric],
         optimizer: Optimizer,
@@ -73,6 +76,7 @@ class SupervisedTrainer(Trainer):
         denorm = cfg.TRAINER.DENORM
         trainer = cls(
             model,
+            local_scaler,
             losses,
             weight_per_loss,
             metrics,
@@ -88,6 +92,7 @@ class SupervisedTrainer(Trainer):
 
     def on_train(self) -> List[float]:
         self.model.train()
+        self.local_scaler.train()
         ave_loss_vs = [0.0 for _ in range(len(self.losses))]
         with tqdm(total=len(self.train_dataloader), leave=False) as pbar:
             for (
@@ -107,7 +112,8 @@ class SupervisedTrainer(Trainer):
                 y_mask = y_mask.to(self.device)
                 if time_stamps is not None:
                     time_stamps = time_stamps.to(self.device)
-                Z = self.model(X, bias, X_mask, time_stamps)
+                Z = self.model(X, X_mask, time_stamps)
+                Z = Z + self.local_scaler(bias)
                 self.optimizer.zero_grad()
                 device = Z.device
                 total_loss_v = torch.tensor(
@@ -143,6 +149,7 @@ class SupervisedTrainer(Trainer):
             List of averaged scores
         """
         self.model.eval()
+        self.local_scaler.eval()
         with tqdm(total=len(self.valid_dataloader), leave=False) as pbar:
             for (
                 X,
@@ -162,7 +169,8 @@ class SupervisedTrainer(Trainer):
                 if time_stamps is not None:
                     time_stamps = time_stamps.to(self.device)
                 with torch.no_grad():
-                    Z = self.model(X, bias, X_mask, time_stamps)
+                    Z = self.model(X, X_mask, time_stamps)
+                    Z = Z + self.local_scaler(bias)
                 batch_size = X.size(0)
                 if self.denorm is True:
                     for i in range(batch_size):

@@ -19,12 +19,14 @@ class Logger(object):
         self,
         log_dir: str,
         model: Module,
+        local_scaler: Module,
         losses: List[Loss],
         metrics: List[Metric],
         context_manager: ContextManager,
     ) -> None:
         self.log_dir = log_dir
         self.model = model
+        self.local_scaler = local_scaler
         self.losses = losses
         self.metrics = metrics
         self.context_manager = context_manager
@@ -36,6 +38,7 @@ class Logger(object):
     def from_cfg(
         cls,
         model: Module,
+        local_scaler: Module,
         losses: List[Loss],
         metrics: List[Metric],
         context_manager: ContextManager,
@@ -47,6 +50,7 @@ class Logger(object):
         logger = cls(
             log_dir,
             model,
+            local_scaler,
             losses,
             metrics,
             context_manager,
@@ -79,8 +83,10 @@ class Logger(object):
         current_ave_score = sum(ave_scores) / len(ave_scores)
         if current_ave_score < self.best_ave_score:
             self.best_ave_score = current_ave_score
-            root = os.path.join(self.log_dir, "model.pth")
-            torch.save(self.model.state_dict(), root)
+            model_path = os.path.join(self.log_dir, "model.pth")
+            torch.save(self.model.state_dict(), model_path)
+            local_scaler_path = os.path.join(self.log_dir, "local_scaler.pth")
+            torch.save(self.local_scaler.state_dict(), local_scaler_path)
         # Add new record to log file
         record: Dict[str, Any] = {
             "epoch": epoch,

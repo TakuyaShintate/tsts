@@ -16,6 +16,7 @@ __all__ = ["build_trainer"]
 
 def build_trainer(
     model: Module,
+    local_scaler: Module,
     losses: List[Loss],
     metrics: List[Metric],
     optimizer: Optimizer,
@@ -28,6 +29,7 @@ def build_trainer(
     cls = TRAINERS[trainer_name]
     trainer = cls.from_cfg(
         model,
+        local_scaler,
         losses,
         metrics,
         optimizer,

@@ -13,6 +13,7 @@ __all__ = ["build_logger"]
 
 def build_logger(
     model: Module,
+    local_scaler: Module,
     losses: List[Loss],
     metrics: List[Metric],
     context_manager: ContextManager,
@@ -22,6 +23,7 @@ def build_logger(
     cls = LOGGERS[logger_name]
     logger = cls.from_cfg(
         model,
+        local_scaler,
         losses,
         metrics,
         context_manager,

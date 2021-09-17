@@ -16,6 +16,9 @@ MODEL:
   NUM_H_UNITS: 512
   ADD_LAST_STEP_VAL: True
 
+LOCALSCALER:
+  NAME: "LastStep"
+
 LOSSES:
   NAMES: ["MAPE"]
 

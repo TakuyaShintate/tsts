@@ -6,17 +6,8 @@ import torch
 import torch.nn.functional as F
 import torch.nn.init as init
 from torch import Tensor
-from torch.nn import (
-    BatchNorm1d,
-    Conv1d,
-    Dropout,
-    Embedding,
-    LayerNorm,
-    Linear,
-    MaxPool1d,
-    ModuleList,
-    Parameter,
-)
+from torch.nn import (BatchNorm1d, Conv1d, Dropout, Embedding, LayerNorm,
+                      Linear, MaxPool1d, ModuleList, Parameter)
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
 
@@ -842,7 +833,6 @@ class Informer(Module):
     def forward(
         self,
         X: Tensor,
-        bias: Tensor,
         X_mask: Tensor,
         time_stamps: List[Union[None, Tensor]],
     ) -> Tensor:
@@ -882,6 +872,4 @@ class Informer(Module):
         mb_dec_feats = self.dropout(mb_dec_feats)
         mb_dec_feats = self._run_decoders(mb_dec_feats, mb_enc_feats)
         mb_feats = self.projector(mb_dec_feats)
-        if self.add_last_step_val is True:
-            mb_feats = mb_feats + bias[:, -1:]
         return mb_feats[:, -self.horizon :]
