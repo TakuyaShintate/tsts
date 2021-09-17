@@ -1,4 +1,4 @@
-DEVICE: "cuda:2"
+DEVICE: "cuda:0"
 
 IO:
   LOOKBACK: 48
@@ -14,7 +14,6 @@ DATALOADER:
 MODEL:
   NAME: "NBeats"
   NUM_H_UNITS: 512
-  ADD_LAST_STEP_VAL: True
 
 LOCALSCALER:
   NAME: "LastStep"
