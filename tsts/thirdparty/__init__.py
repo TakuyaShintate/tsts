@@ -1,3 +1,3 @@
-from . import dilate
+from . import dilate, sam
 
-__all__ = ["dilate"]
+__all__ = ["dilate", "sam"]

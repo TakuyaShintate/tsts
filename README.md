@@ -2,7 +2,7 @@
   <img src="img/tsts-logo.png" width="600"/>
 </div>
 
-[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.4.0/)
+[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.6.0/)
 [![license](https://img.shields.io/github/license/TakuyaShintate/tsts?style=flat)](https://github.com/TakuyaShintate/tsts/blob/main/LICENSE)
 
 ([Docs](https://takuyashintate.github.io/tsts/))([Benchmark](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/))
@@ -61,14 +61,17 @@ Following modules are supported.
     </tr>
     <tr>
       <td>
+        <li>HistricalInertia</li>
         <li>Informer</li>
         <li>NBeats</li>
         <li>Seq2Seq</li>
       </td>
       <td>
         <li>DILATE</li>
+        <li>MAE</li>
         <li>MAPE</li>
         <li>MSE</li>
+        <li>SmoothMAE</li>
       </td>
       <td>
         <li>MAE</li>
@@ -78,6 +81,8 @@ Following modules are supported.
       </td>
       <td>
         <li>Adam</li>
+        <li>AdamW</li>
+        <li>SAM</li>
         <li>SGD</li>
       </td>
       <td>
