@@ -133,7 +133,7 @@ from tsts.scalers import StandardScaler
 from tsts.solvers import TimeSeriesForecaster
 
 # Initialize scaler with training dataset
-sin_dataset = torch.sin(torch.arange(0, 100, 0.1))
+sin_dataset = torch.sin(torch.arange(0.0, 100.0, 0.1))
 sin_dataset = sin_dataset.unsqueeze(-1)
 X_scaler = StandardScaler()
 # NOTE: 0.75 is default training validation dataset ratio (training: 0.75, validation: 0.25)

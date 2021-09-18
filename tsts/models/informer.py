@@ -6,8 +6,17 @@ import torch
 import torch.nn.functional as F
 import torch.nn.init as init
 from torch import Tensor
-from torch.nn import (BatchNorm1d, Conv1d, Dropout, Embedding, LayerNorm,
-                      Linear, MaxPool1d, ModuleList, Parameter)
+from torch.nn import (
+    BatchNorm1d,
+    Conv1d,
+    Dropout,
+    Embedding,
+    LayerNorm,
+    Linear,
+    MaxPool1d,
+    ModuleList,
+    Parameter,
+)
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
 
@@ -690,7 +699,6 @@ class Informer(Module):
         expansion_rate: float = 4.0,
         distil: bool = True,
         dec_in_size: int = 24,
-        add_last_step_val: bool = False,
     ) -> None:
         super(Informer, self).__init__()
         self.num_in_feats = num_in_feats
@@ -706,7 +714,6 @@ class Informer(Module):
         self.expansion_rate = expansion_rate
         self.distil = distil
         self.dec_in_size = dec_in_size
-        self.add_last_step_val = add_last_step_val
         self._init_embeddings()
         self._init_dropout()
         self._init_encoders()
@@ -722,7 +729,7 @@ class Informer(Module):
     ) -> "Informer":
         lookback = cfg.IO.LOOKBACK
         horizon = cfg.IO.HORIZON
-        num_h_feats = cfg.MODEL.NUM_H_UNITS
+        num_h_feats = cfg.MODEL.NUM_H_FEATS
         num_encoders = cfg.MODEL.NUM_ENCODERS
         num_decoders = cfg.MODEL.NUM_DECODERS
         num_heads = cfg.MODEL.NUM_HEADS
@@ -730,7 +737,6 @@ class Informer(Module):
         dropout_rate = cfg.MODEL.DROPOUT_RATE
         expansion_rate = cfg.MODEL.FF_EXPANSION_RATE
         dec_in_size = cfg.MODEL.DECODER_IN_LENGTH
-        add_last_step_val = cfg.MODEL.ADD_LAST_STEP_VAL
         model = cls(
             num_in_feats,
             num_out_feats,
@@ -745,7 +751,6 @@ class Informer(Module):
             expansion_rate,
             True,
             dec_in_size,
-            add_last_step_val=add_last_step_val,
         )
         return model
 
