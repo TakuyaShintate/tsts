@@ -58,7 +58,7 @@ _C.MODEL = CN()
 # Model name
 _C.MODEL.NAME = "Seq2Seq"
 # Number of hidden units in encoder and decoder
-_C.MODEL.NUM_H_UNITS = 64
+_C.MODEL.NUM_H_FEATS = 64
 # Number of hidden layers in encoder and decoder
 _C.MODEL.DEPTH = 2
 # Number of encoders (Seq2Seq, Informer)

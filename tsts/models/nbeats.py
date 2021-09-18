@@ -85,7 +85,7 @@ class Block(Module):
         self,
         num_in_steps: int,
         num_out_steps: int,
-        num_h_units: int,
+        num_h_feats: int,
         depth: int,
         block_type: str,
         num_in_feats: int,
@@ -96,7 +96,7 @@ class Block(Module):
         super(Block, self).__init__()
         self.num_in_steps = num_in_steps
         self.num_out_steps = num_out_steps
-        self.num_h_units = num_h_units
+        self.num_h_feats = num_h_feats
         self.depth = depth
         self.block_type = block_type
         self.num_in_feats = num_in_feats
@@ -110,7 +110,7 @@ class Block(Module):
             [
                 Linear(
                     self.num_in_steps,
-                    self.num_h_units,
+                    self.num_h_feats,
                 ),
                 ReLU(),
             ]
@@ -118,14 +118,14 @@ class Block(Module):
         for _ in range(self.depth - 1):
             self.layers.append(
                 Linear(
-                    self.num_h_units,
-                    self.num_h_units,
+                    self.num_h_feats,
+                    self.num_h_feats,
                 )
             )
             self.layers.append(ReLU())
         self.layers.append(
             Linear(
-                self.num_h_units,
+                self.num_h_feats,
                 self.num_in_steps + self.num_out_steps,
             )
         )
@@ -165,7 +165,7 @@ class NBeats(Module):
 
         MODEL:
           NAME: "NBeats"
-          NUM_H_UNITS: 512
+          NUM_H_FEATS: 512
           NUM_STACKS: 30
 
     Parameters
@@ -182,7 +182,7 @@ class NBeats(Module):
     horizon : int. optional
         Indicate how many steps it predicts by default 1
 
-    num_h_units : int
+    num_h_feats : int
         Number of hidden units
 
     depth : int
@@ -201,24 +201,22 @@ class NBeats(Module):
         num_out_feats: int,
         lookback: int,
         horizon: int,
-        num_h_units: int = 512,
+        num_h_feats: int = 512,
         depth: int = 2,
         stack_size: int = 30,
         block_type: str = "identity",
         degree: int = 2,
-        add_last_step_val: bool = True,
     ) -> None:
         super(NBeats, self).__init__()
         self.num_in_feats = num_in_feats
         self.num_out_feats = num_out_feats
         self.lookback = lookback
         self.horizon = horizon
-        self.num_h_units = num_h_units
+        self.num_h_feats = num_h_feats
         self.depth = depth
         self.stack_size = stack_size
         self.block_type = block_type
         self.degree = degree
-        self.add_last_step_val = add_last_step_val
         self._init_stack()
 
     @classmethod
@@ -230,23 +228,21 @@ class NBeats(Module):
     ) -> "NBeats":
         lookback = cfg.IO.LOOKBACK
         horizon = cfg.IO.HORIZON
-        num_h_units = cfg.MODEL.NUM_H_UNITS
+        num_h_feats = cfg.MODEL.NUM_H_FEATS
         depth = cfg.MODEL.DEPTH
         stack_size = cfg.MODEL.STACK_SIZE
         block_type = cfg.MODEL.BLOCK_TYPE
         degree = cfg.MODEL.DEGREE
-        add_last_step_val = cfg.MODEL.ADD_LAST_STEP_VAL
         model = cls(
             num_in_feats,
             num_out_feats,
             lookback,
             horizon,
-            num_h_units,
+            num_h_feats,
             depth,
             stack_size,
             block_type,
             degree,
-            add_last_step_val,
         )
         return model
 
@@ -257,7 +253,7 @@ class NBeats(Module):
                 Block(
                     self.num_in_feats * self.lookback,
                     self.num_out_feats * self.horizon,
-                    self.num_h_units,
+                    self.num_h_feats,
                     self.depth,
                     self.block_type,
                     self.num_in_feats,
