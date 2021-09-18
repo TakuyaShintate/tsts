@@ -39,9 +39,6 @@ class Seq2Seq(Module):
 
     depth : int, optional
         Number of hidden layers, bu default 2
-
-    add_last_step_val : bool, optional
-        If True, Add x_t (the last value of input time series) to every output, by default False
     """
 
     def __init__(
@@ -52,7 +49,6 @@ class Seq2Seq(Module):
         num_h_feats: int = 64,
         num_encoders: int = 1,
         num_decoders: int = 1,
-        add_last_step_val: bool = False,
     ) -> None:
         super(Seq2Seq, self).__init__()
         self.num_in_feats = num_in_feats

@@ -1,0 +1,29 @@
+name: UnitTest
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+
+jobs:
+  coding:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: pip installation
+        run: |
+          python -m pip install -U pip
+
+      - name: tsts installation
+        run: |
+          pip install .
+
+      - name: test
+        run: python -m unittest discover -s ./tests
