@@ -29,6 +29,7 @@ def install_requires() -> List[str]:
         "torch",
         "tqdm",
         "yacs",
+        "numba",
     ]
     return requires
 
