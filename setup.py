@@ -30,6 +30,7 @@ def install_requires() -> List[str]:
         "tqdm",
         "yacs",
         "numba",
+        "seaborn",
     ]
     return requires
 
@@ -51,7 +52,7 @@ setup(
     author_email="kmdbn2hs@gmail.com",
     url="https://github.com/TakuyaShintate/tsts",
     description="toolset for time series forecasting",
-    version="0.5.1",
+    version="0.6.0",
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords="tsts",

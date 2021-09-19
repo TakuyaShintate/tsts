@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>tsts - (Tutorial 1) Training</title>
+<title>tsts - (Tutorial 2) Inference</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous"/>
@@ -39,8 +39,8 @@
       <script src="../../app-data.js"></script>
 <link rel="index" title="Index" href="../genindex.html" />
 <link rel="search" title="Search" href="../search.html" />
-<link rel="next" title="(Tutorial 2) Inference" href="inference.html" />
-<link rel="prev" title="Tutorials" href="../index.html" />
+<link rel="next" title="Informer" href="../models/informer.html" />
+<link rel="prev" title="(Tutorial 1) Training" href="training.html" />
 
 </head>
 <body class="full-height test">
@@ -59,8 +59,8 @@
 
       </div>
       <div id="hdr-centre" class="text-center stretch">
-        <h3 title="(Tutorial 1) Training">(Tutorial 1) Training</h3>
-        <h6>(Tutorial 1) Training</h6>
+        <h3 title="(Tutorial 2) Inference">(Tutorial 2) Inference</h3>
+        <h6>(Tutorial 2) Inference</h6>
       </div>
       <div id="hdr-search">
         
@@ -77,7 +77,7 @@
       </div>
 
       <div id="hdr-source">
-        <a href="../_sources/tutorials/training.rst.txt" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
+        <a href="../_sources/tutorials/inference.rst.txt" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
       </div>
 
       <div id="hdr-right">
@@ -86,18 +86,18 @@
   <div class="prev-next">
     
       <div class="pull-left">
-        <a class="btn btn-default prev" href="../index.html" title="Previous chapter (Tutorials)"><i class="fa fa-chevron-left mr-1em" aria-hidden="true"></i><span class="btn-text">Tutorials</span></a>
+        <a class="btn btn-default prev" href="training.html" title="Previous chapter ((Tutorial 1) Training)"><i class="fa fa-chevron-left mr-1em" aria-hidden="true"></i><span class="btn-text">(Tutorial 1) Training</span></a>
       </div>
     
       <div class="pull-right">
-        <a class="btn btn-default next" href="inference.html" title="Next chapter ((Tutorial 2) Inference)"><span class="btn-text">(Tutorial 2) Inference</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
+        <a class="btn btn-default next" href="../models/informer.html" title="Next chapter (Informer)"><span class="btn-text">Informer</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
       </div>
     </div>
   
       </div>
       <div id="alt-hdr-right">
 
-        <a href="../index.html"><i class="fa fa-chevron-left mr-8"></i></a>
+        <a href="training.html"><i class="fa fa-chevron-left mr-8"></i></a>
 
 
         <a href="../index.html"><i class="fa fa-home mr-8"></i></a>
@@ -109,7 +109,7 @@
         <a href="../genindex.html"><i class="fa fa-list mr-8"></i></a>
 
 
-        <a href="inference.html"><i class="fa fa-chevron-right"></i></a>
+        <a href="../models/informer.html"><i class="fa fa-chevron-right"></i></a>
 
       </div>
     </div>
@@ -147,19 +147,19 @@
   
     <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#tutorial-1-training">(Tutorial 1) Training</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-1-config">(Step 1) Config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-2-dataset-preparation">(Step 2) Dataset Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-3-start-training">(Step 3) Start Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">(Tutorial 1) Training</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="training.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-1-config">(Step 1) Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-2-dataset-preparation">(Step 2) Dataset Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-3-start-training">(Step 3) Start Training</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="inference.html">(Tutorial 2) Inference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#step-1-loading-pre-trained-model">(Step 1) Loading pre-trained model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#step-2-initializing-scaler">(Step 2) Initializing scaler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#step-3-input-data-preparation">(Step 3) Input Data Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#step-3-running-predict-method">(Step 3) Running <strong>predict</strong> Method</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#tutorial-2-inference">(Tutorial 2) Inference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-loading-pre-trained-model">(Step 1) Loading pre-trained model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-initializing-scaler">(Step 2) Initializing scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-input-data-preparation">(Step 3) Input Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-4-running-predict-method">(Step 4) Running <strong>predict</strong> Method</a></li>
 </ul>
 </li>
 </ul>
@@ -193,19 +193,19 @@
   
     <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#tutorial-1-training">(Tutorial 1) Training</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-1-config">(Step 1) Config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-2-dataset-preparation">(Step 2) Dataset Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-3-start-training">(Step 3) Start Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">(Tutorial 1) Training</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="training.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-1-config">(Step 1) Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-2-dataset-preparation">(Step 2) Dataset Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-3-start-training">(Step 3) Start Training</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="inference.html">(Tutorial 2) Inference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#step-1-loading-pre-trained-model">(Step 1) Loading pre-trained model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#step-2-initializing-scaler">(Step 2) Initializing scaler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#step-3-input-data-preparation">(Step 3) Input Data Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#step-3-running-predict-method">(Step 3) Running <strong>predict</strong> Method</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#tutorial-2-inference">(Tutorial 2) Inference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-loading-pre-trained-model">(Step 1) Loading pre-trained model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-initializing-scaler">(Step 2) Initializing scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-input-data-preparation">(Step 3) Input Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-4-running-predict-method">(Step 4) Running <strong>predict</strong> Method</a></li>
 </ul>
 </li>
 </ul>
@@ -232,104 +232,76 @@
           </div>
           <div class="body">
             
-  <div class="section" id="tutorial-1-training">
-<h1>(Tutorial 1) Training<a class="headerlink" href="#tutorial-1-training" title="Permalink to this headline">¶</a></h1>
-<p>In this tutorial, we will learn how to start training on a custom dataset.</p>
+  <div class="section" id="tutorial-2-inference">
+<h1>(Tutorial 2) Inference<a class="headerlink" href="#tutorial-2-inference" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will learn how to run inference on a test data.</p>
 <div class="section" id="workflow">
 <h2>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h2>
-<a class="reference internal image-reference" href="../_images/training-scheme.png"><img alt="../_images/training-scheme.png" class="align-center" src="../_images/training-scheme.png" style="width: 1029.0px; height: 500.0px;" /></a>
-<p>To start training, we have 3 steps:</p>
+<a class="reference internal image-reference" href="../_images/inference-scheme.png"><img alt="../_images/inference-scheme.png" class="align-center" src="../_images/inference-scheme.png" style="width: 1029.0px; height: 500.0px;" /></a>
+<p>For inference, we have 2 steps:</p>
 <ol class="arabic simple">
-<li>(Optional) Make a config file</li>
-<li>Prepare training datasets (validation dataset should be included in training dataset)</li>
-<li>Run <strong>fit</strong> method</li>
+<li>Load pre-trained model</li>
+<li>Prepare input</li>
+<li>Run <strong>predict</strong> method</li>
 </ol>
-<p>Let’s go through step by step.</p>
 </div>
-<div class="section" id="step-1-config">
-<h2>(Step 1) Config<a class="headerlink" href="#step-1-config" title="Permalink to this headline">¶</a></h2>
-<p>Training can be configured by a custom config. In the following config file, model and the number of hidden units are specified.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># cfg.yml</span>
-<span class="nt">LOGGER</span><span class="p">:</span>
-  <span class="c1"># Log file and parameters are saved here</span>
-  <span class="nt">LOG_DIR</span><span class="p">:</span> <span class="s">&quot;my-first-tsts-model&quot;</span>
-<span class="nt">MODEL</span><span class="p">:</span>
-  <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;NBeats&quot;</span>
-  <span class="c1"># Number of hidden units</span>
-  <span class="nt">NUM_H_FEATS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">512</span>
-</pre></div>
-</div>
-<p>To update default config, pass the custom config file path to <strong>TimeSeriesForecaster</strong>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">TimeSeriesForecaster</span>
+<div class="section" id="step-1-loading-pre-trained-model">
+<h2>(Step 1) Loading pre-trained model<a class="headerlink" href="#step-1-loading-pre-trained-model" title="Permalink to this headline">¶</a></h2>
+<p>To load pre-trained model, just pass the config file which was used for training.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">TimeSeriesForecaster</span>
 
-<span class="c1"># Define training + validation datasets (they are divided inside)</span>
-<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="c1"># Pass config here</span>
+<span class="c1"># &quot;cfg.yml&quot; is a config file made in **(Tutorial 1) Training**.</span>
 <span class="n">forecaster</span> <span class="o">=</span> <span class="n">TimeSeriesForecaster</span><span class="p">(</span><span class="s2">&quot;cfg.yml&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You can see how it was changed by <strong>cfg</strong> property.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">forecaster</span><span class="o">.</span><span class="n">cfg</span><span class="p">)</span>
-</pre></div>
+<p>It will load saved parameters by referring to the directory indicated by <strong>LOG_DIR</strong>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">if your config file does not have <strong>LOG_DIR</strong>, add it with random generated directory name (if your config file does not have <strong>LOG_DIR</strong>, <strong>fit</strong> method generates random named directory).</p>
 </div>
-<p>See <strong>tsts.cfg.defaults.py</strong> for more details.</p>
 </div>
-<div class="section" id="step-2-dataset-preparation">
-<h2>(Step 2) Dataset Preparation<a class="headerlink" href="#step-2-dataset-preparation" title="Permalink to this headline">¶</a></h2>
-<p><strong>fit</strong> takes a list of dataset. Inside this method, each dataset is split into training dataset and validation dataset. You can specify the training dataset ratio by TRAINING.TRAIN_DATA_RATIO.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># cfg.yml</span>
-<span class="nt">LOGGER</span><span class="p">:</span>
-  <span class="c1"># Log file and parameters are saved here</span>
-  <span class="nt">LOG_DIR</span><span class="p">:</span> <span class="s">&quot;my-first-tsts-model&quot;</span>
-<span class="nt">TRAINING</span><span class="p">:</span>
-  <span class="nt">TRAIN_DATA_RATIO</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.8</span>
-</pre></div>
-</div>
-<p>Each dataset in the list must have the shape (number of instances, number of features).</p>
+<div class="section" id="step-2-initializing-scaler">
+<h2>(Step 2) Initializing scaler<a class="headerlink" href="#step-2-initializing-scaler" title="Permalink to this headline">¶</a></h2>
+<p>To preprocess input as in the same way to training dataset, initialize scaler with training dataset.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tsts.solvers</span> <span class="kn">import</span> <span class="n">TimeSeriesForecaster</span>
+<span class="kn">from</span> <span class="nn">tsts.scalers</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
 
+<span class="c1"># Restore training dataset</span>
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
 <span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sin_dataset</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>  <span class="c1"># (1000, 1)</span>
-</pre></div>
-</div>
-<p>If you want to use multiple datasets, add a new dataset to the list.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="c1"># NOTE: We used 0.8 for TRAINING.TRAIN_DATA_RATIO</span>
+<span class="n">num_train_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.8</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">sin_dataset</span><span class="p">))</span>
+<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="p">[:</span><span class="n">num_train_samples</span><span class="p">]</span>
 
-<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-<span class="n">sin_dataset</span> <span class="o">=</span> <span class="n">sin_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="c1"># Now define cosine dataset</span>
-<span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-<span class="n">cos_dataset</span> <span class="o">=</span> <span class="n">cos_dataset</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="n">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="n">sin_dataset</span><span class="p">,</span> <span class="n">cos_dataset</span><span class="p">]</span>
+<span class="c1"># Run **fit** method to initialize scaler</span>
+<span class="n">X_scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">X_scaler</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sin_dataset</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-3-start-training">
-<h2>(Step 3) Start Training<a class="headerlink" href="#step-3-start-training" title="Permalink to this headline">¶</a></h2>
-<p>Training can be started just by running <strong>fit</strong>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<div class="section" id="step-3-input-data-preparation">
+<h2>(Step 3) Input Data Preparation<a class="headerlink" href="#step-3-input-data-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Preprocess input data with the scaler initialized in previous step.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use next 100 steps as input</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">110.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># Pass config here</span>
-<span class="n">forecaster</span> <span class="o">=</span> <span class="n">TimeSeriesForecaster</span><span class="p">(</span><span class="s2">&quot;cfg.yml&quot;</span><span class="p">)</span>
-
-<span class="c1"># Run training</span>
-<span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+<span class="c1"># Use scaler initialized in previous step</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">X_scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If you have specific target time series, you can pass it by <strong>y</strong>. Then model is trained to predict <strong>y</strong>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
-
-<span class="n">forecaster</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="p">[</span><span class="n">sin_dataset</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">cos_dataset</span><span class="p">])</span>
+</div>
+<div class="section" id="step-4-running-predict-method">
+<h2>(Step 4) Running <strong>predict</strong> Method<a class="headerlink" href="#step-4-running-predict-method" title="Permalink to this headline">¶</a></h2>
+<p>Run <strong>predict</strong> method with the preprocessed input. Unlike <strong>fit</strong> method which takes as input a list of datasets, <strong>predict</strong> method takes as input a tensor which size is (num steps, num feats).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">the preprocessed input could be shorter or longer than the value of <strong>IO.LOOKBACK</strong>. It paddings or removes the input automatically.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Z</span> <span class="o">=</span> <span class="n">forecaster</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Full script is <a class="reference external" href="https://github.com/TakuyaShintate/tsts/tree/main/examples/tutorial_1_training.ipynb">here</a>.</p>
+<p>Full script is <a class="reference external" href="https://github.com/TakuyaShintate/tsts/tree/main/examples/tutorial_2_inference.ipynb">here</a>.</p>
 </div>
 </div>
 

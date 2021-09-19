@@ -4,9 +4,10 @@ Tutorials
 
 .. toctree::
     :maxdepth: 1
-    :caption: Models
+    :caption: Basic
 
     tutorials/training
+    tutorials/inference
 
 ====
 Docs

@@ -10,9 +10,9 @@ _C.SEED = 42
 
 _C.IO = CN()
 # Number of input time steps
-_C.IO.LOOKBACK = 100
+_C.IO.LOOKBACK = 96
 # Number of output time steps
-_C.IO.HORIZON = 8
+_C.IO.HORIZON = 48
 
 _C.TRAINING = CN()
 # How to split train dataset {"col" or "row"}
@@ -29,6 +29,10 @@ _C.OPTIMIZER.NAME = "Adam"
 _C.OPTIMIZER.LR = 0.001
 # L2 penalty factor
 _C.OPTIMIZER.WEIGHT_DECAY = 1e-4
+# Base optimizer for second step optimizers like SAM
+_C.OPTIMIZER.BASE_OPTIMIZER_NAME = "Adam"
+# Hyper parameter for SAM
+_C.OPTIMIZER.RHO = 0.05
 
 _C.SCHEDULER = CN()
 # Scheduler name

@@ -1,0 +1,6 @@
+# cfg.yml
+LOGGER:
+  # Log file and parameters are saved here
+  LOG_DIR: "my-first-tsts-model"
+TRAINING:
+  TRAIN_DATA_RATIO: 0.8

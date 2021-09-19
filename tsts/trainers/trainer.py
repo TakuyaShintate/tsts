@@ -1,6 +1,7 @@
 from typing import List, Tuple
 
 import torch
+from torch import Tensor
 from torch.nn import Module
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -112,6 +113,23 @@ class SupervisedTrainer(Trainer):
                 y_mask = y_mask.to(self.device)
                 if time_stamps is not None:
                     time_stamps = time_stamps.to(self.device)
+
+                # NOTE: This is for second step optimziers like SAM
+                def closure() -> Tensor:
+                    Z = self.model(X, X_mask, time_stamps)
+                    device = Z.device
+                    total_loss_v = torch.tensor(
+                        0.0,
+                        dtype=torch.float32,
+                        device=device,
+                    )
+                    for (i, loss) in enumerate(self.losses):
+                        weight = self.weight_per_loss[i]
+                        loss_v = loss(Z, y, y_mask)
+                        total_loss_v += weight * loss_v
+                    total_loss_v.backward()
+                    return total_loss_v
+
                 Z = self.model(X, X_mask, time_stamps)
                 Z = Z + self.local_scaler(bias)
                 self.optimizer.zero_grad()
@@ -132,7 +150,10 @@ class SupervisedTrainer(Trainer):
                         self.model.parameters(),
                         self.max_grad_norm,
                     )
-                self.optimizer.step()
+                if self.optimizer.require_second_step is True:
+                    self.optimizer.step(closure)  # type: ignore
+                else:
+                    self.optimizer.step()
                 pbar.set_description(f"(loss={total_loss_v.item():.4f})")
                 pbar.update(1)
         self.scheduler.step()

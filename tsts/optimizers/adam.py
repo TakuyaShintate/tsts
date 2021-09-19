@@ -30,3 +30,7 @@ class Adam(_Adam):
             weight_decay=weight_decay,
         )
         return optim
+
+    @property
+    def require_second_step(self) -> bool:
+        return False
