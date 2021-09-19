@@ -10,9 +10,9 @@ _C.SEED = 42
 
 _C.IO = CN()
 # Number of input time steps
-_C.IO.LOOKBACK = 100
+_C.IO.LOOKBACK = 96
 # Number of output time steps
-_C.IO.HORIZON = 8
+_C.IO.HORIZON = 48
 
 _C.TRAINING = CN()
 # How to split train dataset {"col" or "row"}

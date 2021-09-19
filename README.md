@@ -159,11 +159,11 @@ forecaster = TimeSeriesForecaster("cfg.yml")
 Z = forecaster.predict(X)
 
 # Initialize target to compare prediction with it
-y = torch.sin(torch.arange(110.0, 110.8, 0.1)).unsqueeze(1)
+y = torch.sin(torch.arange(110.0, 114.8, 0.1)).unsqueeze(1)
 y = X_scaler.transform(y)
 
 # Result
-plot(Z, y)
+plot(Z, y, xticks=torch.arange(110.0, 114.8, 0.1))
 ```
 
 Result:
