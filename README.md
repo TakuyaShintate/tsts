@@ -167,7 +167,7 @@ plot(Z, y)
 ```
 
 <div align="center">
-  <img src="img/result-getting-started.png" width="850"/>
+  <img src="img/result-getting-started.png" width="700"/>
 </div>
 
 ## Examples
