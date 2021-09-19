@@ -20,11 +20,3 @@
   bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 ```
-
-## ETT
-
-Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ETT-small)
-
-| Type | Input | Target | Lookback | Horizon | MSE | MAE | Ensemble | Script |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| h1 | OT | OT | 720 | 48 | 0.0788 | 0.2194 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/histricalinertia/train_hi_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/histricalinertia/test_hi_ett_h1.py) |

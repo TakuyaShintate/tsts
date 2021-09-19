@@ -1,17 +1,13 @@
-from typing import Optional
-
 import torch
 from torch import Tensor
-from torch.nn import Linear
 from tsts.cfg import CfgNode as CN
-from tsts.core import MODELS
-
-from .module import Module
+from tsts.core import LOCALSCALERS
+from tsts.models import Module
 
 __all__ = ["HistricalInertia"]
 
 
-@MODELS.register()
+@LOCALSCALERS.register()
 class HistricalInertia(Module):
     def __init__(
         self,
@@ -22,10 +18,6 @@ class HistricalInertia(Module):
         super(HistricalInertia, self).__init__()
         self.lookback = lookback
         self.horizon = horizon
-        self._init_dummy_module()
-
-    def _init_dummy_module(self) -> None:
-        self.dummy_module = Linear(1, 1)
 
     @classmethod
     def from_cfg(
@@ -41,10 +33,8 @@ class HistricalInertia(Module):
 
     def forward(
         self,
-        X: Tensor,
-        X_mask: Tensor,
-        time_stamps: Optional[Tensor] = None,
+        bias: Tensor,
     ) -> Tensor:
-        Z = torch.zeros_like(X, requires_grad=True)
-        Z = Z[:, -self.horizon :] + X[:, -self.horizon :]
+        Z = torch.zeros_like(bias, requires_grad=True)
+        Z = Z[:, -self.horizon :] + bias[:, -self.horizon :]
         return Z[:, -self.horizon :]

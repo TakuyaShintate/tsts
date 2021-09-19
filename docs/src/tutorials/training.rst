@@ -7,6 +7,11 @@ In this tutorial, we will learn how to start training on a custom dataset.
 Workflow
 ========
 
+.. image:: ../../../img/training-scheme.png
+   :scale: 100%
+   :height: 400px
+   :align: center
+
 To start training, we have 3 steps:
 
 1. (Optional) Make a config file

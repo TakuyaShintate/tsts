@@ -61,6 +61,7 @@ Following modules are supported.
     </tr>
     <tr>
       <td>
+        <li>AR</li>
         <li>HistricalInertia</li>
         <li>Informer</li>
         <li>NBeats</li>
