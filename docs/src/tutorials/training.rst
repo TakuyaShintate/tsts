@@ -9,7 +9,7 @@ Workflow
 
 .. image:: ../../../img/training-scheme.png
    :scale: 100%
-   :height: 400px
+   :height: 500px
    :align: center
 
 To start training, we have 3 steps:
@@ -69,10 +69,6 @@ See **tsts.cfg.defaults.py** for more details.
     LOGGER:
       # Log file and parameters are saved here
       LOG_DIR: "my-first-tsts-model"
-    MODEL:
-      NAME: "NBeats"
-      # Number of hidden units
-      NUM_H_FEATS: 512
     TRAINING:
       TRAIN_DATA_RATIO: 0.8
 
@@ -124,3 +120,5 @@ If you have specific target time series, you can pass it by **y**. Then model is
     ...
 
     forecaster.fit(X=[sin_dataset], y=[cos_dataset])
+
+Full script is `here <https://github.com/TakuyaShintate/tsts/tree/main/examples/tutorial_1_training.ipynb>`_.

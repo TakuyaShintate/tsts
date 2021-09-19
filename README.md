@@ -137,13 +137,16 @@ For inference, it needs to load parameters from a log directory generated in tra
 import torch
 from tsts.scalers import StandardScaler
 from tsts.solvers import TimeSeriesForecaster
+from tsts.utils import plot
 
 # Initialize scaler with training dataset
 sin_dataset = torch.sin(torch.arange(0.0, 100.0, 0.1))
 sin_dataset = sin_dataset.unsqueeze(-1)
-X_scaler = StandardScaler()
 # NOTE: 0.75 is default training validation dataset ratio (training: 0.75, validation: 0.25)
 num_train_samples = int(0.75 * len(sin_dataset))
+sin_dataset = sin_dataset[:num_train_samples]
+
+X_scaler = StandardScaler()
 X_scaler.fit(sin_dataset)
 
 # Define test dataset
@@ -160,9 +163,12 @@ y = torch.sin(torch.arange(110.0, 110.8, 0.1)).unsqueeze(1)
 y = X_scaler.transform(y)
 
 # Result
-print(Z)
-print(y)
+plot(Z, y)
 ```
+
+<div align="center">
+  <img src="img/result-getting-started.png" width="850"/>
+</div>
 
 ## Examples
 

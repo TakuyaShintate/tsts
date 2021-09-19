@@ -24,6 +24,7 @@ class SmoothMAE(Loss):
     """
 
     def __init__(self, beta: float = 1.0) -> None:
+        super(SmoothMAE, self).__init__()
         self.beta = beta
 
     @classmethod

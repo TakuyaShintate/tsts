@@ -30,6 +30,7 @@ def install_requires() -> List[str]:
         "tqdm",
         "yacs",
         "numba",
+        "seaborn",
     ]
     return requires
 
