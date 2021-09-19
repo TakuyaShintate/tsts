@@ -166,6 +166,8 @@ y = X_scaler.transform(y)
 plot(Z, y)
 ```
 
+Result:
+
 <div align="center">
   <img src="img/result-getting-started.png" width="700"/>
 </div>
