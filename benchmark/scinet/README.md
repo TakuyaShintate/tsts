@@ -28,4 +28,4 @@ Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ET
 
 | Type | Input | Target | Lookback | Horizon | MSE | MAE | Ensemble | Script |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| h1 | OT | OT | 96 | 48 | N/A | N/A | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/train_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/test_ett_h1.py) |
+| h1 | OT | OT | 96 | 48 | 0.1071 | 0.2559 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/train_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/test_ett_h1.py) |

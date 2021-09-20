@@ -2,16 +2,8 @@ from typing import List, Optional, Tuple
 
 import torch
 from torch import Tensor
-from torch.nn import (
-    Conv1d,
-    Dropout,
-    LeakyReLU,
-    Linear,
-    ModuleList,
-    ReplicationPad1d,
-    Sequential,
-    Tanh,
-)
+from torch.nn import (Conv1d, Dropout, LeakyReLU, Linear, ModuleList,
+                      ReplicationPad1d, Sequential, Tanh)
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
 
@@ -137,6 +129,7 @@ class SCINet(Module):
         expansion_rate: float = 4.0,
         dropout_rate: float = 0.5,
     ) -> None:
+        assert num_in_feats == num_out_feats
         super(SCINet, self).__init__()
         self.num_in_feats = num_in_feats
         self.num_out_feats = num_out_feats
@@ -217,5 +210,6 @@ class SCINet(Module):
                 current_state.append(f_odd)
                 current_state.append(f_even)
         mb_feats = self._merge_results(current_state)
+        mb_feats = mb_feats + X
         mb_feats = self._run_regressor(mb_feats)
         return mb_feats
