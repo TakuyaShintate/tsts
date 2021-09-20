@@ -20,3 +20,4 @@ Docs
     models/informer
     models/nbeats
     models/seq2seq
+    models/scinet
