@@ -75,8 +75,8 @@ _C.MODEL.NUM_HEADS = 8
 _C.MODEL.CONTRACTION_FACTOR = 5
 # Dropout rate
 _C.MODEL.DROPOUT_RATE = 0.1
-# Feed forward expansion rate (Transformer based models)
-_C.MODEL.FF_EXPANSION_RATE = 4.0
+# Expansion rate (Transformer based models and SCINet)
+_C.MODEL.EXPANSION_RATE = 4.0
 # Input length for decoder (Informer)
 _C.MODEL.DECODER_IN_LENGTH = 24
 # Stack size of NBeats
@@ -85,6 +85,8 @@ _C.MODEL.STACK_SIZE = 30
 _C.MODEL.BLOCK_TYPE = "identity"
 # Polynomial degree
 _C.MODEL.DEGREE = 2
+# Kernel size (used by SCINet)
+_C.MODEL.KERNEL_SIZE = 5
 
 _C.LOCALSCALER = CN()
 # Local scaler name

@@ -2,16 +2,26 @@
   <img src="img/tsts-logo.png" width="600"/>
 </div>
 
-[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.6.0/)
+[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.7.0/)
 [![license](https://img.shields.io/github/license/TakuyaShintate/tsts?style=flat)](https://github.com/TakuyaShintate/tsts/blob/main/LICENSE)
 
 ([Docs](https://takuyashintate.github.io/tsts/))([Benchmark](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/))
+
+## Notice
+
+I am working on benchmarking on the same conditions (now different conditions are used for each model) 🙇‍♂️
 
 ## Introduction
 
 tsts is an open-source easy-to-use toolset for time series forecasting.
 
 ## What's New
+
+### Sep, 21
+
+✨ New Model
+
+SCINet was added. I am working on stacked version of it now.
 
 ### Sep, 10
 
@@ -65,6 +75,7 @@ Following modules are supported.
         <li>HistricalInertia</li>
         <li>Informer</li>
         <li>NBeats</li>
+        <li>SCINet</li>
         <li>Seq2Seq</li>
       </td>
       <td>

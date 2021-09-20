@@ -22,7 +22,7 @@ Add following lines to config to use *Informer*.
       # Smaller value leads to higher memory efficiency
       CONTRACTION_FACTOR: 5
       # int(NUM_H_FEATS * FF_EXPANSION_RATE) is channel size of conv block after self attention
-      FF_EXPANSION_RATE: 4.0
+      EXPANSION_RATE: 4.0
       # Decoder input series length (last DECODER_IN_LENGTH values are used)
       DECODER_IN_LENGTH: 168
       # Dropout rate

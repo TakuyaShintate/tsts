@@ -159,7 +159,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-1-loading-pre-trained-model">(Step 1) Loading pre-trained model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-2-initializing-scaler">(Step 2) Initializing scaler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-3-input-data-preparation">(Step 3) Input Data Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-2-running-predict-method">(Step 2) Running <strong>predict</strong> Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-4-running-predict-method">(Step 4) Running <strong>predict</strong> Method</a></li>
 </ul>
 </li>
 </ul>
@@ -178,6 +178,11 @@
 <li class="toctree-l1"><a class="reference internal" href="seq2seq.html">Seq2Seq</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="seq2seq.html#how-to-use">How to Use</a></li>
 <li class="toctree-l2"><a class="reference internal" href="seq2seq.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scinet.html">SCINet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scinet.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scinet.html#reference">Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -205,7 +210,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-1-loading-pre-trained-model">(Step 1) Loading pre-trained model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-2-initializing-scaler">(Step 2) Initializing scaler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-3-input-data-preparation">(Step 3) Input Data Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-2-running-predict-method">(Step 2) Running <strong>predict</strong> Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/inference.html#step-4-running-predict-method">(Step 4) Running <strong>predict</strong> Method</a></li>
 </ul>
 </li>
 </ul>
@@ -224,6 +229,11 @@
 <li class="toctree-l1"><a class="reference internal" href="seq2seq.html">Seq2Seq</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="seq2seq.html#how-to-use">How to Use</a></li>
 <li class="toctree-l2"><a class="reference internal" href="seq2seq.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scinet.html">SCINet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scinet.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scinet.html#reference">Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -250,7 +260,7 @@
   <span class="c1"># Smaller value leads to higher memory efficiency</span>
   <span class="nt">CONTRACTION_FACTOR</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
   <span class="c1"># int(NUM_H_FEATS * FF_EXPANSION_RATE) is channel size of conv block after self attention</span>
-  <span class="nt">FF_EXPANSION_RATE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4.0</span>
+  <span class="nt">EXPANSION_RATE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4.0</span>
   <span class="c1"># Decoder input series length (last DECODER_IN_LENGTH values are used)</span>
   <span class="nt">DECODER_IN_LENGTH</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">168</span>
   <span class="c1"># Dropout rate</span>

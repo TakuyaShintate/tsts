@@ -6,8 +6,17 @@ import torch
 import torch.nn.functional as F
 import torch.nn.init as init
 from torch import Tensor
-from torch.nn import (BatchNorm1d, Conv1d, Dropout, Embedding, LayerNorm,
-                      Linear, MaxPool1d, ModuleList, Parameter)
+from torch.nn import (
+    BatchNorm1d,
+    Conv1d,
+    Dropout,
+    Embedding,
+    LayerNorm,
+    Linear,
+    MaxPool1d,
+    ModuleList,
+    Parameter,
+)
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
 
@@ -726,7 +735,7 @@ class Informer(Module):
         num_heads = cfg.MODEL.NUM_HEADS
         contraction_factor = cfg.MODEL.CONTRACTION_FACTOR
         dropout_rate = cfg.MODEL.DROPOUT_RATE
-        expansion_rate = cfg.MODEL.FF_EXPANSION_RATE
+        expansion_rate = cfg.MODEL.EXPANSION_RATE
         dec_in_size = cfg.MODEL.DECODER_IN_LENGTH
         model = cls(
             num_in_feats,
