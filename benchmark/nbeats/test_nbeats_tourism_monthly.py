@@ -16,7 +16,7 @@ Y = [y[~np.isnan(y)] for y in Y]
 Y = [torch.tensor(y, dtype=torch.float32) for y in Y]
 Y = [y.unsqueeze(-1) for y in Y]
 
-forecaster = TimeSeriesForecaster("./tourism_monthly.yml")
+forecaster = TimeSeriesForecaster("./nbeats-tourism-monthly.yml")
 
 # NOTE: Since NBeats uses IdentityScaler, no need to use scalers
 

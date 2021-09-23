@@ -140,7 +140,7 @@ class TimeSeriesForecaster(Solver):
             optimizer = self.build_optimizer(self.model, self.local_scaler)
             self.context_manager["optimizer"] = optimizer
         optimizer = self.context_manager["optimizer"]
-        return optimizer
+        return optimizer  # type: ignore
 
     @property
     def scheduler(self) -> Scheduler:

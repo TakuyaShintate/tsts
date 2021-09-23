@@ -9,5 +9,5 @@ X = [x[~np.isnan(x)] for x in X]
 X = [torch.tensor(x, dtype=torch.float32) for x in X]
 X = [x.unsqueeze(-1) for x in X]
 
-forecaster = TimeSeriesForecaster("./tourism_monthly.yml")
+forecaster = TimeSeriesForecaster("./nbeats-tourism-monthly.yml")
 forecaster.fit(X)
