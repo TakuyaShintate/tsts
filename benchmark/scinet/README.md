@@ -22,10 +22,28 @@
 }
 ```
 
-## ETT
+> () indicates normalized scores
+
+## ETT (Uni)
 
 Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ETT-small)
 
-| Type | Input | Target | Lookback | Horizon | MSE | MAE | Ensemble | Script |
+| Type | Input | Target | Lookback | Horizon | MSE | MAE | LocalScaler | Script |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| h1 | OT | OT | 96 | 48 | 0.1071 | 0.2559 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/train_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/test_ett_h1.py) |
+| h1 | OT | OT | 96 | 48 | 5.4206 (0.0643) | 1.7550 (0.1912) | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/train_scinet_ett_h1_48_uni.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/test_scinet_ett_h1_48_uni.py) |
+
+## ETT (Multi)
+
+Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ETT-small)
+
+| Type | Input | Target | Lookback | Horizon | MSE | MAE | LocalScaler | Script |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| h1 | HUFL HULL MUFL MULL <br> LUFL LULL OT | HUFL HULL MUFL MULL <br> LUFL LULL OT | 96 | 48 | 8.6568 (0.3850) | 1.6065 (0.4150) | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/train_scinet_ett_h1_48_multi.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/scinet/test_scinet_ett_h1_48_multi.py) |
+
+## Tourism
+
+Download the datasets [here](https://robjhyndman.com/data/27-3-Athanasopoulos1.zip)
+
+| Interval | Lookback | Horizon | MAPE | LocalScaler | Script |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| Monthly | 2H | 24 | 22.13 | LastStep | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/nbeats/train_scinet_tourism_monthly.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/nbeats/test_scinet_tourism_monthly.py) |

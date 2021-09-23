@@ -7,15 +7,17 @@
 
 ([Docs](https://takuyashintate.github.io/tsts/))([Benchmark](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/))
 
-## Notice
-
-I am working on benchmarking on the same conditions (now different conditions are used for each model) 🙇‍♂️
-
 ## Introduction
 
 tsts is an open-source easy-to-use toolset for time series forecasting.
 
 ## What's New
+
+### Sep, 23
+
+🍎 Updated Results
+
+[Results](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/) on ETTh1 (horizon=48) are updated across different models in comparable way.
 
 ### Sep, 21
 

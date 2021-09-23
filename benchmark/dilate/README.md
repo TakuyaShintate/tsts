@@ -11,10 +11,3 @@ pages = {4191--4203},
 year = {2019}
 }
 ```
-
-## ETT
-
-Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ETT-small)
-
-WIP
-

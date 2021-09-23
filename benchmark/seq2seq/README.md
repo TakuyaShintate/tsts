@@ -17,11 +17,20 @@ series = {NIPS'14}
 }
 ```
 
-## ETT
+> () indicates normalized scores
+
+## ETT (Uni)
 
 Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ETT-small)
 
 | Type | Input | Target | Lookback | Horizon | MSE | MAE | Ensemble | Script |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| h1 | OT | OT | 96 | 48 | 0.2200 | 0.3899 | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/train_seq2seq_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/test_seq2seq_ett_h1.py) |
-| h1 | OT | OT | 96 | 48 | 0.1307 | 0.2806 | AR | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/train_seq2seq_ar_ett_h1.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/test_seq2seq_ar_ett_h1.py) |
+| h1 | OT | OT | 96 | 48 | 18.2566 (0.2167) | 3.6065 (0.3929) | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/train_seq2seq_ett_h1_48_uni.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/test_seq2seq_ett_h1_48_uni.py) |
+
+## ETT (Multi)
+
+Download the datasets [here](https://github.com/zhouhaoyi/ETDataset/tree/main/ETT-small)
+
+| Type | Input | Target | Lookback | Horizon | MSE | MAE | Ensemble | Script |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| h1 | OT | OT | 96 | 48 | 15.7467 (0.8879) | 2.4629 (0.7020) | No | [train](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/train_seq2seq_ett_h1_48_multi.py)/[test](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/seq2seq/test_seq2seq_ett_h1_48_multi.py) |

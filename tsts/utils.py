@@ -94,6 +94,7 @@ def plot(
         row = i // num_max_cols
         col = i % num_max_cols
         fig.delaxes(axes[row][col])
+    fig.tight_layout()
     return (fig, axes)
 
 
