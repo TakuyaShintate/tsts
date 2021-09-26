@@ -21,6 +21,8 @@ _C.TRAINING.TRAIN_DATA_SPLIT = "col"
 _C.TRAINING.TRAIN_DATA_RATIO = 0.75
 # Number of epochs (epoch means a single iteration over whole training + VALIDidation dataset)
 _C.TRAINING.NUM_EPOCHS = 100
+# If True, datasets are split randomly (valid only when TRAIN_DATA_SPLIT = "col")
+_C.TRAINING.RANDOM_SPLIT = True
 
 _C.OPTIMIZER = CN()
 # Optimizer name
@@ -87,6 +89,8 @@ _C.MODEL.BLOCK_TYPE = "identity"
 _C.MODEL.DEGREE = 2
 # Kernel size (used by SCINet)
 _C.MODEL.KERNEL_SIZE = 5
+# Use another Linear layer to adjust the number of output feats (used by SCINet)
+_C.MODEL.USE_REGRESSOR_ACROSS_TIME = False
 
 _C.LOCALSCALER = CN()
 # Local scaler name
@@ -115,6 +119,8 @@ _C.DATASET.NAME_TRAIN = "Dataset"
 _C.DATASET.NAME_VALID = "Dataset"
 # Dataset index starts with this value
 _C.DATASET.BASE_START_INDEX = 0
+# Last BASE_END_INDEX samples are not used for training
+_C.DATASET.BASE_END_INDEX = -1
 # Normalize per dataset differently
 _C.DATASET.NORM_PER_DATASET = False
 
