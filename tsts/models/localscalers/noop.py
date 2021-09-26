@@ -25,4 +25,4 @@ class NOOP(Module):
         return local_scaler
 
     def forward(self, bias: Tensor) -> Tensor:
-        return torch.zeros_like(bias)[:, :, 0:1]
+        return bias.new_zeros((1,))
