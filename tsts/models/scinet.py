@@ -2,8 +2,16 @@ from typing import List, Optional, Tuple
 
 import torch
 from torch import Tensor
-from torch.nn import (Conv1d, Dropout, LeakyReLU, Linear, ModuleList,
-                      ReplicationPad1d, Sequential, Tanh)
+from torch.nn import (
+    Conv1d,
+    Dropout,
+    LeakyReLU,
+    Linear,
+    ModuleList,
+    ReplicationPad1d,
+    Sequential,
+    Tanh,
+)
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
 
@@ -128,8 +136,8 @@ class SCINet(Module):
         kernel_size: int = 5,
         expansion_rate: float = 4.0,
         dropout_rate: float = 0.5,
+        use_regressor_across_feats: bool = False,
     ) -> None:
-        assert num_in_feats == num_out_feats
         super(SCINet, self).__init__()
         self.num_in_feats = num_in_feats
         self.num_out_feats = num_out_feats
@@ -139,6 +147,7 @@ class SCINet(Module):
         self.kernel_size = kernel_size
         self.expansion_rate = expansion_rate
         self.dropout_rate = dropout_rate
+        self.use_regressor_across_feats = use_regressor_across_feats
         self._init_sciblocks()
         self._init_regressor()
 
@@ -150,6 +159,7 @@ class SCINet(Module):
         kernel_size = cfg.MODEL.KERNEL_SIZE
         expansion_rate = cfg.MODEL.EXPANSION_RATE
         dropout_rate = cfg.MODEL.DROPOUT_RATE
+        use_regressor_across_feats = cfg.MODEL.USE_REGRESSOR_ACROSS_TIME
         model = cls(
             num_in_feats,
             num_out_feats,
@@ -159,6 +169,7 @@ class SCINet(Module):
             kernel_size,
             expansion_rate,
             dropout_rate,
+            use_regressor_across_feats,
         )
         return model
 
@@ -181,7 +192,9 @@ class SCINet(Module):
                 self.sciblocks.append(sciblock)
 
     def _init_regressor(self) -> None:
-        self.regressor = Linear(self.lookback, self.horizon)
+        self.regressor_across_time = Linear(self.lookback, self.horizon)
+        if self.use_regressor_across_feats is True:
+            self.regressor_across_feats = Linear(self.num_in_feats, self.num_out_feats)
 
     def _merge_results(self, current_state: List[Tensor]) -> Tensor:
         mb_feats = torch.stack(current_state, dim=1)
@@ -192,8 +205,10 @@ class SCINet(Module):
 
     def _run_regressor(self, mb_feats: Tensor) -> Tensor:
         mb_feats = mb_feats.transpose(-2, -1).contiguous()
-        mb_feats = self.regressor(mb_feats)
+        mb_feats = self.regressor_across_time(mb_feats)
         mb_feats = mb_feats.transpose(-2, -1).contiguous()
+        if self.use_regressor_across_feats is True:
+            mb_feats = self.regressor_across_feats(mb_feats)
         return mb_feats
 
     def forward(

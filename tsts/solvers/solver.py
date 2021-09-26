@@ -154,7 +154,7 @@ class Solver(object):
         return optimizer
 
     def build_scheduler(self, optimizer: Optimizer) -> Scheduler:
-        scheduler = build_scheduler(optimizer, self.cfg)
+        scheduler = build_scheduler(optimizer, self.cfg)  # type: ignore
         return scheduler
 
     def build_train_dataset(
@@ -251,7 +251,7 @@ class Solver(object):
             local_scaler,
             losses,
             metrics,
-            optimizer,
+            optimizer,  # type: ignore
             scheduler,
             train_dataloader,
             valid_dataloader,

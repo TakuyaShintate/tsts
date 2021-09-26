@@ -49,6 +49,7 @@ class Dataset(_Dataset):
         lookback: int = 100,
         horizon: int = 1,
         base_start_index: int = 0,
+        base_end_index: int = -1,
     ) -> None:
         self.X = X
         self.y = y
@@ -58,6 +59,7 @@ class Dataset(_Dataset):
         self.lookback = lookback
         self.horizon = horizon
         self.base_start_index = base_start_index
+        self.base_end_index = base_end_index
 
     @classmethod
     def from_cfg(
@@ -73,6 +75,7 @@ class Dataset(_Dataset):
         lookback = cfg.IO.LOOKBACK
         horizon = cfg.IO.HORIZON
         base_start_index = cfg.DATASET.BASE_START_INDEX
+        base_end_index = cfg.DATASET.BASE_END_INDEX
         norm_per_dataset = cfg.DATASET.NORM_PER_DATASET
         if norm_per_dataset is True and image_set == "train":
             X_scaler = build_scaler(cfg)
@@ -88,12 +91,15 @@ class Dataset(_Dataset):
             lookback,
             horizon,
             base_start_index,
+            base_end_index,
         )
         return dataset
 
     def __len__(self) -> int:
         # For -1, every instance has target which horizon is larger than 0
-        num_instances = len(self.X) - 1 - self.base_start_index
+        num_instances = len(self.X) - self.base_start_index
+        if self.base_end_index > 0:
+            num_instances -= self.base_end_index
         return num_instances
 
     def __getitem__(self, i: int) -> _DataFrame:

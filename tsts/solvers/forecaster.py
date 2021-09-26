@@ -1,6 +1,8 @@
 import typing
+import warnings
 from typing import List, Optional, Tuple
 
+import numpy as np
 import torch
 from torch import Tensor
 from tsts.collators import Collator
@@ -172,7 +174,7 @@ class TimeSeriesForecaster(Solver):
         List[int]
             List of training samples per dataset
         """
-        if "train_and_valid_indices" not in self.context_manager:
+        if "num_train_samples" not in self.context_manager:
             train_data_ratio = self.cfg.TRAINING.TRAIN_DATA_RATIO
             train_data_split = self.cfg.TRAINING.TRAIN_DATA_SPLIT
             num_datasets = len(self.X)
@@ -184,7 +186,14 @@ class TimeSeriesForecaster(Solver):
                     num_train_samples.append(int(train_data_ratio * num_samples))
             # Split like [train, train, valid, valid, ...]
             else:
-                num_train_samples.append(int(train_data_ratio * num_datasets))
+                random_split = self.cfg.TRAINING.RANDOM_SPLIT
+                if random_split is True:
+                    mask = np.random.uniform(0.0, 1.0, (num_datasets,))
+                    mask = mask > (1.0 - train_data_ratio)
+                else:
+                    mask = np.full((num_datasets,), True)
+                    mask[int(train_data_ratio * num_datasets) :] = False
+                num_train_samples.append(mask.tolist())
             self.context_manager["num_train_samples"] = num_train_samples
         num_train_samples = self.context_manager["num_train_samples"]
         return num_train_samples
@@ -207,7 +216,10 @@ class TimeSeriesForecaster(Solver):
                     X_train.append(self.X[i][: self.num_train_samples[i]])
             else:
                 num_train_samples = self.num_train_samples[0]
-                X_train = self.X[:num_train_samples]
+                X_train = []
+                for (i, flag) in enumerate(num_train_samples):  # type: ignore
+                    if flag is True:
+                        X_train.append(self.X[i])
             self.context_manager["X_train"] = X_train
         X_train = self.context_manager["X_train"]
         return X_train
@@ -230,7 +242,11 @@ class TimeSeriesForecaster(Solver):
                 for i in range(num_datasets):
                     X_valid.append(self.X[i][self.num_train_samples[i] + lookback :])
             else:
-                X_valid = self.X[self.num_train_samples[0] :]
+                num_train_samples = self.num_train_samples[0]
+                X_valid = []
+                for (i, flag) in enumerate(num_train_samples):  # type: ignore
+                    if flag is False:
+                        X_valid.append(self.X[i])
             self.context_manager["X_valid"] = X_valid
         X_valid = self.context_manager["X_valid"]
         return X_valid
@@ -252,7 +268,11 @@ class TimeSeriesForecaster(Solver):
                 for i in range(num_datasets):
                     y_train.append(self.y[i][: self.num_train_samples[i]])
             else:
-                y_train = self.y[: self.num_train_samples[0]]
+                num_train_samples = self.num_train_samples[0]
+                y_train = []
+                for (i, flag) in enumerate(num_train_samples):  # type: ignore
+                    if flag is True:
+                        y_train.append(self.y[i])
             self.context_manager["y_train"] = y_train
         y_train = self.context_manager["y_train"]
         return y_train
@@ -275,7 +295,11 @@ class TimeSeriesForecaster(Solver):
                 for i in range(num_datasets):
                     y_valid.append(self.y[i][self.num_train_samples[i] + lookback :])
             else:
-                y_valid = self.y[self.num_train_samples[0] :]
+                num_train_samples = self.num_train_samples[0]
+                y_valid = []
+                for (i, flag) in enumerate(num_train_samples):  # type: ignore
+                    if flag is False:
+                        y_valid.append(self.y[i])
             self.context_manager["y_valid"] = y_valid
         y_valid = self.context_manager["y_valid"]
         return y_valid
@@ -301,9 +325,9 @@ class TimeSeriesForecaster(Solver):
                             ts = self.time_stamps[i][: self.num_train_samples[i]]
                             time_stamps_train.append(ts)
                 else:
-                    if self.time_stamps is not None:
-                        ts = self.time_stamps[0][: self.num_train_samples[0]]
-                        time_stamps_train.append(ts)
+                    warnings.warn(
+                        "time_stamps is not supported when TRAIN_DATA_SPLIT = 'col'"
+                    )
                 self.context_manager["time_stamps_train"] = time_stamps_train
             else:
                 self.context_manager["time_stamps_train"] = None
@@ -333,10 +357,9 @@ class TimeSeriesForecaster(Solver):
                             ts = self.time_stamps[i][offset:]
                             time_stamps_valid.append(ts)
                 else:
-                    if self.time_stamps is not None:
-                        offset = self.num_train_samples[0]
-                        ts = self.time_stamps[0][offset:]
-                        time_stamps_valid.append(ts)
+                    warnings.warn(
+                        "time_stamps is not supported when TRAIN_DATA_SPLIT = 'col'"
+                    )
                 self.context_manager["time_stamps_valid"] = time_stamps_valid
             else:
                 self.context_manager["time_stamps_valid"] = None
@@ -530,13 +553,14 @@ class TimeSeriesForecaster(Solver):
     def _apply_collator_to_test_data(
         self,
         X: Tensor,
+        bias: Optional[Tensor] = None,
         time_stamps: Optional[Tensor] = None,
     ) -> _TestData:
         raw_batch = (
             (
                 X,
                 torch.zeros_like(X),  # Dummy (y)
-                X,
+                X if bias is None else bias,
                 time_stamps,
                 lambda x: x,  # Dummy (X_inv_transform)
                 lambda x: x,  # Dummy (y_inv_transform)
@@ -550,6 +574,7 @@ class TimeSeriesForecaster(Solver):
     def predict(
         self,
         X: Tensor,
+        bias: Optional[Tensor] = None,
         time_stamps: Optional[Tensor] = None,
     ) -> Tensor:
         """Predict y for X.
@@ -566,7 +591,9 @@ class TimeSeriesForecaster(Solver):
         self.model.eval()
         self.local_scaler.eval()
         (X, bias, X_mask, time_stamps) = self._apply_collator_to_test_data(
-            X, time_stamps
+            X,
+            bias,
+            time_stamps,
         )
         device = self.cfg.DEVICE
         X = X.to(device)
