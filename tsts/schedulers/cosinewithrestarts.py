@@ -1,5 +1,6 @@
-from torch.optim.lr_scheduler import \
-    CosineAnnealingWarmRestarts as _CosineAnnealingWarmRestarts
+from torch.optim.lr_scheduler import (
+    CosineAnnealingWarmRestarts as _CosineAnnealingWarmRestarts,
+)
 from tsts.cfg import CfgNode as CN
 from tsts.core import SCHEDULERS
 from tsts.optimizers import Optimizer
