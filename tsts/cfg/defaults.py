@@ -35,18 +35,30 @@ _C.OPTIMIZER.WEIGHT_DECAY = 1e-4
 _C.OPTIMIZER.BASE_OPTIMIZER_NAME = "Adam"
 # Hyper parameter for SAM
 _C.OPTIMIZER.RHO = 0.05
+# Value for numerical stability
+_C.OPTIMIZER.EPS = 1e-8
 
 _C.SCHEDULER = CN()
 # Scheduler name
 _C.SCHEDULER.NAME = "CosineAnnealing"
 # Maximum number of iterations (it comes from torch)
-_C.SCHEDULER.T_MAX = 10
+_C.SCHEDULER.T_MAX = 100
 # Minimum learning rate (it comes from torch)
 _C.SCHEDULER.ETA_MIN = 0.0
 # Every STEP_SIZE steps, GAMMA is multiplied to learning rate used by StepScheduler
 _C.SCHEDULER.STEP_SIZE = 1
 # Scaling factor used by StepScheduler
 _C.SCHEDULER.GAMMA = 0.1
+# Decaying parameter 1 (used by ExponentialDecay scheduler)
+_C.SCHEDULER.DECAY_RATE = 0.96
+# Decaying parameter 2 (used by ExponentialDecay scheduler)
+_C.SCHEDULER.DECAY_STEPS = 10000.0
+# Number of iterations for the first restart
+_C.SCHEDULER.T_0 = 100
+# A factor increases T_{i} after a restart
+_C.SCHEDULER.T_MULT = 1
+# Number of warmup steps
+_C.SCHEDULER.WARMUP_STEPS = 0
 
 _C.TRAINER = CN()
 # Trainer name
@@ -124,9 +136,13 @@ _C.DATASET.BASE_END_INDEX = -1
 # Normalize per dataset differently
 _C.DATASET.NORM_PER_DATASET = False
 
-_C.SCALER = CN()
-# Scaler name
-_C.SCALER.NAME = "StandardScaler"
+_C.X_SCALER = CN()
+# Scaler (for X) name
+_C.X_SCALER.NAME = "StandardScaler"
+
+_C.Y_SCALER = CN()
+# Scaler (for y) name
+_C.Y_SCALER.NAME = "StandardScaler"
 
 _C.COLLATOR = CN()
 # Collator name
@@ -145,6 +161,10 @@ _C.DATALOADER.BATCH_SIZE_VALID = 100
 _C.DATALOADER.SHUFFLE_TRAIN = True
 # If True, shuffle Validation dataset for every epoch
 _C.DATALOADER.SHUFFLE_VALID = False
+# If True, last training batch is dropped
+_C.DATALOADER.DROP_LAST_TRAIN = True
+# If True, last validation batch is dropped
+_C.DATALOADER.DROP_LAST_VALID = False
 
 _C.LOGGER = CN()
 _C.LOGGER.NAME = "Logger"

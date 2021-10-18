@@ -105,6 +105,8 @@ Following modules are supported.
       </td>
       <td>
         <li>CosineAnnealing</li>
+        <li>CosineAnnealingWithRestarts</li>
+        <li>ExponentialDecay</li>
         <li>StepScheduler</li>
       </td>
     </td>

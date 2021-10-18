@@ -37,7 +37,10 @@ METRICS:
   NAMES: ["MAPE"]
   ARGS: [{}]
 
-SCALER:
+X_SCALER:
+  NAME: "IdentityScaler"
+
+Y_SCALER:
   NAME: "IdentityScaler"
 
 LOGGER:
