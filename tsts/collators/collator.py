@@ -40,7 +40,7 @@ class Collator(object):
         self.horizon = horizon
 
     @classmethod
-    def from_cfg(cls, cfg: CN, train: bool) -> "Collator":
+    def from_cfg(cls, cfg: CN) -> "Collator":
         """Build Collator from config.
 
         Returns
