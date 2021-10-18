@@ -92,6 +92,7 @@ class SupervisedTrainer(Trainer):
         return trainer
 
     def on_train(self) -> List[float]:
+        self.scheduler.step()
         self.model.train()
         self.local_scaler.train()
         ave_loss_vs = [0.0 for _ in range(len(self.losses))]
@@ -156,7 +157,6 @@ class SupervisedTrainer(Trainer):
                     self.optimizer.step()
                 pbar.set_description(f"(loss={total_loss_v.item():.4f})")
                 pbar.update(1)
-        self.scheduler.step()
         for i in range(len(self.losses)):
             ave_loss_vs[i] /= len(self.train_dataloader)
         return ave_loss_vs

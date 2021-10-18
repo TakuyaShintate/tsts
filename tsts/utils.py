@@ -18,7 +18,7 @@ sns.set_theme(style="darkgrid")
 
 def plot(
     Z: Tensor,
-    y: Tensor,
+    y: Optional[Tensor] = None,
     num_max_cols: int = 3,
     feat_names: Optional[List[str]] = None,
     ylabels: Optional[List[str]] = None,
@@ -27,6 +27,10 @@ def plot(
     fontsize: int = 16,
     linewidth: int = 4,
     xticks: Optional[Tensor] = None,
+    plot_diff: bool = True,
+    Z_label: str = "Z",
+    y_label: str = "y",
+    diff_label: str = "diff",
 ) -> Tuple[Figure, List[Axes]]:
     num_steps = Z.size(0)
     num_out_feats = Z.size(-1)
@@ -42,38 +46,40 @@ def plot(
     for i in range(num_out_feats):
         row = i // num_max_cols
         col = i % num_max_cols
-        diff = (Z[:, i] - y[:, i]).abs()
         axes[row][col].plot(
             xticks,
             Z[:, i],
             alpha=0.8,
-            label="Z",
+            label=Z_label,
             color="#2ca02c",
             linewidth=linewidth,
         )
-        axes[row][col].plot(
-            xticks,
-            y[:, i],
-            alpha=0.8,
-            label="y",
-            color="#d62728",
-            linewidth=linewidth,
-        )
+        if y is not None:
+            axes[row][col].plot(
+                xticks,
+                y[:, i],
+                alpha=0.8,
+                label=y_label,
+                color="#d62728",
+                linewidth=linewidth,
+            )
         # Plot difference between prediction and ground truth
-        axes[row][col].fill_between(
-            xticks,
-            diff,
-            color="#1f77b4",
-            alpha=0.8,
-        )
-        axes[row][col].plot(
-            xticks,
-            diff,
-            alpha=0.8,
-            label="diff",
-            color="#1f77b4",
-            linewidth=linewidth,
-        )
+        if plot_diff is True:
+            diff = (Z[:, i] - y[:, i]).abs()  # type: ignore
+            axes[row][col].fill_between(
+                xticks,
+                diff,
+                color="#1f77b4",
+                alpha=0.8,
+            )
+            axes[row][col].plot(
+                xticks,
+                diff,
+                alpha=0.8,
+                label=diff_label,
+                color="#1f77b4",
+                linewidth=linewidth,
+            )
         if feat_names is not None:
             axes[row][col].set_title(
                 feat_names[i],

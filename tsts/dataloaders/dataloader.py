@@ -35,9 +35,11 @@ class DataLoader(_DataLoader):
         if image_set == "train":
             batch_size = cfg.DATALOADER.BATCH_SIZE_TRAIN
             shuffle = cfg.DATALOADER.SHUFFLE_TRAIN
+            drop_last = cfg.DATALOADER.DROP_LAST_TRAIN
         elif image_set == "valid":
             batch_size = cfg.DATALOADER.BATCH_SIZE_VALID
             shuffle = cfg.DATALOADER.SHUFFLE_VALID
+            drop_last = cfg.DATALOADER.DROP_LAST_VALID
         else:
             raise ValueError
         dataloader = cls(
@@ -45,5 +47,6 @@ class DataLoader(_DataLoader):
             batch_size,
             shuffle=shuffle,
             collate_fn=collator,  # type:ignore
+            drop_last=drop_last,
         )
         return dataloader

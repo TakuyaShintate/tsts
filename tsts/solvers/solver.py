@@ -153,8 +153,16 @@ class Solver(object):
         optimizer = build_optimizer(params, self.cfg)
         return optimizer
 
-    def build_scheduler(self, optimizer: Optimizer) -> Scheduler:
-        scheduler = build_scheduler(optimizer, self.cfg)  # type: ignore
+    def build_scheduler(
+        self,
+        optimizer: Optimizer,
+        iters_per_epoch: int,
+    ) -> Scheduler:
+        scheduler = build_scheduler(
+            optimizer,  # type: ignore
+            iters_per_epoch,
+            self.cfg,
+        )
         return scheduler
 
     def build_train_dataset(

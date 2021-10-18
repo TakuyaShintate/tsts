@@ -1,4 +1,3 @@
-import torch
 from torch import Tensor
 from tsts.cfg import CfgNode as CN
 from tsts.core import LOCALSCALERS

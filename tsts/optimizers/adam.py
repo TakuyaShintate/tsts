@@ -18,16 +18,20 @@ class Adam(_Adam):
         OPTIMIZER:
           NAME: "Adam"
           LR: 0.001
+          WEIGHT_DECAY: 1.0E-5
+          EPS: 1.0E-8
     """
 
     @classmethod
     def from_cfg(cls, params: Iterable, cfg: CN) -> "Adam":
         lr = cfg.OPTIMIZER.LR
         weight_decay = cfg.OPTIMIZER.WEIGHT_DECAY
+        eps = cfg.OPTIMIZER.EPS
         optim = cls(
             params,
             lr,
             weight_decay=weight_decay,
+            eps=eps,
         )
         return optim
 

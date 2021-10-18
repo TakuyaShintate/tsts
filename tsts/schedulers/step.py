@@ -35,19 +35,32 @@ class StepScheduler(Scheduler):
     def __init__(
         self,
         optimizer: Optimizer,
+        base_lr: float,
         step_size: int,
         gamma: float = 0.1,
+        warmup_steps: int = 1,
     ) -> None:
-        self.optimizer = optimizer
+        super(StepScheduler, self).__init__(
+            optimizer,
+            base_lr,
+            warmup_steps,
+        )
         self.step_size = step_size
         self.gamma = gamma
         self._init_scheduler()
 
     @classmethod
-    def from_cfg(cls, optimizer: Optimizer, cfg: CN) -> "StepScheduler":
+    def from_cfg(
+        cls,
+        optimizer: Optimizer,
+        iters_per_epoch: int,
+        cfg: CN,
+    ) -> "StepScheduler":
+        base_lr = cfg.OPTIMIZER.LR
         step_size = cfg.SCHEDULER.STEP_SIZE
         gamma = cfg.SCHEDULER.GAMMA
-        scheduler = cls(optimizer, step_size, gamma)
+        warmup_steps = cfg.SCHEDULER.WARMUP_STEPS
+        scheduler = cls(optimizer, base_lr, step_size, gamma, warmup_steps,)
         return scheduler
 
     def _init_scheduler(self) -> None:
@@ -58,4 +71,6 @@ class StepScheduler(Scheduler):
         )
 
     def step(self) -> None:
-        self.scheduler.step()
+        if self.warmup() is False and self.T > 1.0:
+            self.scheduler.step()
+        self.T += 1.0

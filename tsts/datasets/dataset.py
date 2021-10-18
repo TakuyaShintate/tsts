@@ -4,7 +4,7 @@ from torch import Tensor
 from torch.utils.data import Dataset as _Dataset
 from tsts.cfg import CfgNode as CN
 from tsts.core import DATASETS
-from tsts.scalers import Scaler, build_scaler
+from tsts.scalers import Scaler, build_X_scaler, build_y_scaler
 
 __all__ = ["Dataset"]
 
@@ -77,9 +77,9 @@ class Dataset(_Dataset):
         base_start_index = cfg.DATASET.BASE_START_INDEX
         base_end_index = cfg.DATASET.BASE_END_INDEX
         norm_per_dataset = cfg.DATASET.NORM_PER_DATASET
-        if norm_per_dataset is True and image_set == "train":
-            X_scaler = build_scaler(cfg)
-            y_scaler = build_scaler(cfg)
+        if norm_per_dataset is True:
+            X_scaler = build_X_scaler(cfg)
+            y_scaler = build_y_scaler(cfg)
             X_scaler.fit(X)
             y_scaler.fit(y)
         dataset = cls(
