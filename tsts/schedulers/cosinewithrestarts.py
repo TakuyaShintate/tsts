@@ -40,7 +40,6 @@ class CosineAnnealingWarmRestarts(Scheduler):
         base_lr: float,
         T_0: int,
         T_mult: int = 1,
-        # m_mult: float = 1.0,
         eta_min: float = 0.0,
         warmup_steps: int = 0,
     ) -> None:
@@ -51,7 +50,6 @@ class CosineAnnealingWarmRestarts(Scheduler):
         )
         self.T_0 = T_0
         self.T_mult = T_mult
-        # self.m_mult = m_mult
         self.eta_min = eta_min
         self._init_scheduler()
 
@@ -65,7 +63,6 @@ class CosineAnnealingWarmRestarts(Scheduler):
         base_lr = cfg.OPTIMIZER.LR
         T_0 = cfg.SCHEDULER.T_0
         T_mult = cfg.SCHEDULER.T_MULT
-        # m_mult = cfg.SCHEDULER.M_MULT
         eta_min = cfg.SCHEDULER.ETA_MIN
         warmup_steps = cfg.SCHEDULER.WARMUP_STEPS
         scheduler = cls(
@@ -73,7 +70,6 @@ class CosineAnnealingWarmRestarts(Scheduler):
             base_lr,
             T_0,
             T_mult,
-            # m_mult,
             eta_min,
             warmup_steps,
         )
@@ -90,7 +86,4 @@ class CosineAnnealingWarmRestarts(Scheduler):
     def step(self) -> None:
         if self.warmup() is False and self.T > 1.0:
             self.scheduler.step()
-        # if self.T / (self.T_0 * self.T_mult ** ((self.T - 1) // self.T_0)):
-        #     for i in range(len(self.optimizer.param_groups)):
-        #         self.optimizer.param_groups[i]["lr"] *= self.m_mult
         self.T += 1.0
