@@ -57,6 +57,8 @@ _C.SCHEDULER.DECAY_STEPS = 10000.0
 _C.SCHEDULER.T_0 = 100
 # A factor increases T_{i} after a restart
 _C.SCHEDULER.T_MULT = 1
+# Decreasing factor by cycle (used by CosineAnnealingWarmRestarts)
+_C.SCHEDULER.M_MULT = 1.0
 # Number of warmup steps
 _C.SCHEDULER.WARMUP_STEPS = 0
 
