@@ -37,7 +37,7 @@ class ConvModule(Module):
 
     def _init_conv_module(self) -> None:
         self.conv_module = Sequential(
-            ReplicationPad1d(2 * (self.kernel_size // 2)),
+            ReplicationPad1d(self.kernel_size // 2),
             Conv1d(
                 self.num_in_feats,
                 int(self.expansion_rate * self.num_in_feats),
@@ -45,6 +45,7 @@ class ConvModule(Module):
             ),
             LeakyReLU(),
             Dropout(self.dropout_rate),
+            ReplicationPad1d(self.kernel_size // 2),
             Conv1d(
                 int(self.expansion_rate * self.num_in_feats),
                 self.num_in_feats,
