@@ -112,10 +112,15 @@ class SCIBlock(Module):
         return (f_even, f_odd)
 
     def _scale_and_shift(self, f_even: Tensor, f_odd: Tensor) -> Tuple[Tensor, Tensor]:
-        f_even = f_even * self.psi(f_odd).exp()
-        f_odd = f_odd * self.phi(f_even).exp()
-        f_even = f_even - self.eta(f_odd)
-        f_odd = f_odd + self.rho(f_even)
+        # Escape f_even and f_odd
+        _f_even = f_even
+        _f_odd = f_odd
+        f_even = f_even * self.psi(_f_odd).exp()
+        f_odd = f_odd * self.phi(_f_even).exp()
+        _f_even = f_even
+        _f_odd = f_odd
+        f_even = f_even - self.eta(_f_odd)
+        f_odd = f_odd + self.rho(_f_even)
         return (f_even, f_odd)
 
     def forward(self, mb_feats: Tensor) -> Tuple[Tensor, Tensor]:
