@@ -73,6 +73,4 @@ class CosineAnnealing(Scheduler):
         )
 
     def step(self) -> None:
-        if self.warmup() is False:
-            self.scheduler.step()
-        self.T += 1.0
+        self.scheduler.step()

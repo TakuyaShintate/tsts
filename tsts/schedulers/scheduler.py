@@ -15,16 +15,17 @@ class Scheduler(object):
         self.warmup_steps = warmup_steps
         self._reset_internal_state()
 
-    def _reset_internal_state(self) -> None:
-        self.T = 1.0
+    @property
+    def current_lr(self) -> float:
+        num_groups = len(self.optimizer.param_groups)
+        mean_lr = 0.0
+        for i in range(num_groups):
+            mean_lr += self.optimizer.param_groups[i]["lr"]
+        mean_lr /= num_groups
+        return mean_lr
 
-    def warmup(self) -> bool:
-        if self.warmup_steps > 0 and self.warmup_steps + 1.0 >= self.T:
-            lr = self.base_lr * (self.T / (self.warmup_steps + 1.0))
-            for i in range(len(self.optimizer.param_groups)):
-                self.optimizer.param_groups[i]["lr"] = lr
-            return True
-        return False
+    def _reset_internal_state(self) -> None:
+        pass
 
     def step(self) -> None:
         raise NotImplementedError

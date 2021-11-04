@@ -60,7 +60,13 @@ class StepScheduler(Scheduler):
         step_size = cfg.SCHEDULER.STEP_SIZE
         gamma = cfg.SCHEDULER.GAMMA
         warmup_steps = cfg.SCHEDULER.WARMUP_STEPS
-        scheduler = cls(optimizer, base_lr, step_size, gamma, warmup_steps,)
+        scheduler = cls(
+            optimizer,
+            base_lr,
+            step_size,
+            gamma,
+            warmup_steps,
+        )
         return scheduler
 
     def _init_scheduler(self) -> None:
@@ -71,6 +77,4 @@ class StepScheduler(Scheduler):
         )
 
     def step(self) -> None:
-        if self.warmup() is False and self.T > 1.0:
-            self.scheduler.step()
-        self.T += 1.0
+        self.scheduler.step()

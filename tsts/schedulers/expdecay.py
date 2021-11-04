@@ -80,6 +80,4 @@ class ExponentialDecay(Scheduler):
         )
 
     def step(self) -> None:
-        if self.warmup() is False and self.T > 1.0:
-            self.scheduler.step()
-        self.T += 1.0
+        self.scheduler.step()
