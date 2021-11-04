@@ -1,6 +1,5 @@
-from torch.optim.lr_scheduler import (
-    CosineAnnealingWarmRestarts as _CosineAnnealingWarmRestarts,
-)
+from torch.optim.lr_scheduler import \
+    CosineAnnealingWarmRestarts as _CosineAnnealingWarmRestarts
 from tsts.cfg import CfgNode as CN
 from tsts.core import SCHEDULERS
 from tsts.optimizers import Optimizer
@@ -84,6 +83,4 @@ class CosineAnnealingWarmRestarts(Scheduler):
         )
 
     def step(self) -> None:
-        if self.warmup() is False and self.T > 1.0:
-            self.scheduler.step()
-        self.T += 1.0
+        self.scheduler.step()
