@@ -21,8 +21,6 @@ Utility tool was added to launch training easily.
 
 #### Example
 
-(training)
-
 ```bash
 python tools/train.py \
     --cfg-name config \ # config path
