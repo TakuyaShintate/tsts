@@ -32,6 +32,35 @@ def plot(
     y_label: str = "y",
     diff_label: str = "diff",
 ) -> Tuple[Figure, List[Axes]]:
+    """Plot time series.
+
+    This utility function takes 2 time series and plots them in comparable way. These time series c
+    an be multivariate ones. In that case, it decomposes multivariate time series and lists them in
+    dividually. `num_max_cols` determines how many time series are plotted in a row.
+
+    Parameters
+    ----------
+    Z : Tensor
+        First time series. Model prediction is often given
+
+    y : Optional[Tensor], optional
+        Second time series. Ground truth is often given. If None is given, it does not show second
+        time series, by default None
+
+    num_max_cols : int, optional
+        Maximum number of time series shown in a row, by default 3
+
+    feat_names : Optional[List[str]], optional
+        List of feature names. They will be the titles of plots, by default None
+
+    ylabels : Optional[List[str]], optional
+        List of the labels of y axis for each plot. If None is given, no labels are shown in y axis
+        , by default None
+
+    xlabels : Optional[List[str]], optional
+        List of the labels of y axis for each plot, If None is given, no labels are shown in x axis
+        , by default None
+    """
     num_steps = Z.size(0)
     num_out_feats = Z.size(-1)
     num_rows = max(2, math.ceil(num_out_feats / num_max_cols))
@@ -64,7 +93,7 @@ def plot(
                 linewidth=linewidth,
             )
         # Plot difference between prediction and ground truth
-        if plot_diff is True:
+        if y is not None and plot_diff is True:
             diff = (Z[:, i] - y[:, i]).abs()  # type: ignore
             axes[row][col].fill_between(
                 xticks,
