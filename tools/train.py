@@ -5,11 +5,11 @@ Example
 The following example shows how to launch a new training.
 
 python tools/train.py \
-    --cfg-name your-config  # config path \
-        --train-dir some-dir  # directory which contains train data (csv files) \
-            --valid-dir another-dir  # directory which contains validation data (csv files)\
-                --in-feats a b  # list of input features \
-                    --out-feats c d  # list of output features
+    --cfg-name config \
+    --train-dir train-dir \
+    --valid-dir valid-dir \
+    --in-feats a b \
+    --out-feats c d \
 """
 
 import glob

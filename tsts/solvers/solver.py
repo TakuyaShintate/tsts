@@ -59,8 +59,8 @@ class Solver(object):
 
     def _load_meta_info(self) -> None:
         if self.verbose is True:
-            sys.stdout.write("Log directory found \n")
-            sys.stdout.write("Restoring state ...")
+            sys.stdout.write("log directory found \n")
+            sys.stdout.write("restoring state...")
         log_dir = self.cfg.LOGGER.LOG_DIR
         meta_info_path = os.path.join(log_dir, "meta.json")
         with open(meta_info_path, "r") as f:
