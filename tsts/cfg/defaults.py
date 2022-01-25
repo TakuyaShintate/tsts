@@ -160,9 +160,9 @@ _C.DATALOADER.BATCH_SIZE_TRAIN = 100
 # Batch size for validation dataset
 _C.DATALOADER.BATCH_SIZE_VALID = 100
 # Number of workers for train dataset
-_C.DATALOADER.NUM_WORKERS = 4
+_C.DATALOADER.NUM_WORKERS_TRAIN = 4
 # Number of workers for validation dataset
-_C.DATALOADER.NUM_WORKERS = 4
+_C.DATALOADER.NUM_WORKERS_VALID = 4
 # If True, shuffle train dataset for every epoch
 _C.DATALOADER.SHUFFLE_TRAIN = True
 # If True, shuffle Validation dataset for every epoch
