@@ -36,10 +36,12 @@ class DataLoader(_DataLoader):
             batch_size = cfg.DATALOADER.BATCH_SIZE_TRAIN
             shuffle = cfg.DATALOADER.SHUFFLE_TRAIN
             drop_last = cfg.DATALOADER.DROP_LAST_TRAIN
+            num_workers = cfg.DATALOADER.NUM_WORKERS
         elif image_set == "valid":
             batch_size = cfg.DATALOADER.BATCH_SIZE_VALID
             shuffle = cfg.DATALOADER.SHUFFLE_VALID
             drop_last = cfg.DATALOADER.DROP_LAST_VALID
+            num_workers = cfg.DATALOADER.NUM_WORKERS
         else:
             raise ValueError
         dataloader = cls(
@@ -48,5 +50,6 @@ class DataLoader(_DataLoader):
             shuffle=shuffle,
             collate_fn=collator,  # type:ignore
             drop_last=drop_last,
+            num_workers=num_workers,
         )
         return dataloader
