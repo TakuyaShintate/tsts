@@ -1,6 +1,6 @@
-======================
-(Tutorial 2) Inference
-======================
+====================
+(Tutorial) Inference
+====================
 
 In this tutorial, we will learn how to run inference on a test data.
 
