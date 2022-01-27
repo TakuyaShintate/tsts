@@ -135,9 +135,10 @@ class Solver(object):
         log_dir = self.cfg.LOGGER.LOG_DIR
         if self.log_dir_exist() is True:
             try:
-                local_scaler_path = os.path.join(log_dir, "local_scaler.pth")
-                state_dict = torch.load(local_scaler_path)
-                local_scaler.load_state_dict(state_dict)
+                if self.override is False:
+                    local_scaler_path = os.path.join(log_dir, "local_scaler.pth")
+                    state_dict = torch.load(local_scaler_path)
+                    local_scaler.load_state_dict(state_dict)
             except FileNotFoundError:
                 warnings.warn("Failed to load pretrained local scaler")
         return local_scaler
