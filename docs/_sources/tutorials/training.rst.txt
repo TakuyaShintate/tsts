@@ -1,6 +1,6 @@
-=====================
-(Tutorial 1) Training
-=====================
+===================
+(Tutorial) Training
+===================
 
 In this tutorial, we will learn how to start training on a custom dataset.
 
