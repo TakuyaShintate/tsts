@@ -30,6 +30,7 @@ class Trainer(object):
         max_grad_norm: float,
         device: str,
         denorm: bool,
+        cfg: CN,
     ) -> None:
         self.model = model
         self.local_scaler = local_scaler
@@ -43,6 +44,32 @@ class Trainer(object):
         self.max_grad_norm = max_grad_norm
         self.device = device
         self.denorm = denorm
+        self.cfg = cfg
+        self.current_epoch = 1
+
+    @property
+    def num_epochs(self) -> int:
+        return self.cfg.TRAINING.NUM_EPOCHS
+
+    @property
+    def use_cuda(self) -> bool:
+        if self.device == "cpu":
+            return False
+        return True
+
+    @property
+    def num_iters_per_epoch(self) -> int:
+        return len(self.train_dataloader)
+
+    def calc_eta(self, elapsed_time: float, i: int) -> str:
+        # NOTE: elapsed_time has milliseconds unit
+        total_iters = self.num_epochs * self.num_iters_per_epoch
+        current_iter = (self.current_epoch - 1) * self.num_iters_per_epoch + i
+        ms = (total_iters - current_iter) * elapsed_time
+        minute = int((ms / (1000.0 * 60.0))) % 60
+        hour = int((ms / (1000.0 * 60.0 * 60.0))) % 24
+        day = int((ms / (1000.0 * 60.0 * 60.0 * 24.0)))
+        return f"{str(day)}:{str(hour).rjust(2, '0')}:{str(minute).rjust(2, '0')}"
 
     def on_train(self) -> List[float]:
         raise NotImplementedError
@@ -88,6 +115,7 @@ class SupervisedTrainer(Trainer):
             max_grad_norm,
             device,
             denorm,
+            cfg,
         )
         return trainer
 
@@ -106,6 +134,10 @@ class SupervisedTrainer(Trainer):
                 _,
                 _,
             ) in self.train_dataloader:
+                # Timing one single iteration
+                start = torch.cuda.Event(enable_timing=True)
+                end = torch.cuda.Event(enable_timing=True)
+                start.record()
                 X = X.to(self.device)
                 y = y.to(self.device)
                 bias = bias.to(self.device)
@@ -154,14 +186,20 @@ class SupervisedTrainer(Trainer):
                     self.optimizer.step(closure)  # type: ignore
                 else:
                     self.optimizer.step()
+                pbar.update(1)
+                end.record()
+                torch.cuda.synchronize()
+                # Calc how much time it will take to finish all epochs
+                eta = self.calc_eta(start.elapsed_time(end), pbar.n)
                 pbar.set_description(
                     f"(loss={total_loss_v.item():.4f}, "
-                    f"lr={self.scheduler.current_lr:.4f})"
+                    f"lr={self.scheduler.current_lr:.4f}, "
+                    f"eta={eta})"
                 )
-                pbar.update(1)
         self.scheduler.step()
         for i in range(len(self.losses)):
             ave_loss_vs[i] /= len(self.train_dataloader)
+        self.current_epoch += 1
         return ave_loss_vs
 
     def on_val(self) -> List[float]:
