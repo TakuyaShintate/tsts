@@ -12,6 +12,7 @@ from .registry import (
     SCALERS,
     SCHEDULERS,
     TRAINERS,
+    TRANSFORMS,
 )
 
 __all__ = [
@@ -28,4 +29,5 @@ __all__ = [
     "SCALERS",
     "SCHEDULERS",
     "TRAINERS",
+    "TRANSFORMS",
 ]

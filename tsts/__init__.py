@@ -8,6 +8,7 @@ from . import (
     optimizers,
     solvers,
     thirdparty,
+    transforms,
     utils,
 )
 
@@ -21,5 +22,6 @@ __all__ = [
     "optimizers",
     "solvers",
     "thirdparty",
+    "transforms",
     "utils",
 ]

@@ -5,6 +5,7 @@ from torch.utils.data import Dataset as _Dataset
 from tsts.cfg import CfgNode as CN
 from tsts.core import DATASETS
 from tsts.scalers import Scaler, build_X_scaler, build_y_scaler
+from tsts.transforms.pipeline import Pipeline
 
 __all__ = ["Dataset"]
 
@@ -22,15 +23,16 @@ _DataFrame = Tuple[
 class Dataset(_Dataset):
     """Basic dataset.
 
-    TODO: Add transform
-
     Parameters
     ----------
     X : Tensor (M, N)
         Time series
 
-    y : Tensor, optional
-        Target for the given time series, by default None
+    y : Tensor
+        Target for the given time series
+
+    pipeline : Pipeline
+        Data augmentation pipeline
 
     lookback : int, optional
         Number of input time steps, by default 100
@@ -45,6 +47,7 @@ class Dataset(_Dataset):
         y: Tensor,
         X_scaler: Scaler,
         y_scaler: Scaler,
+        pipeline: Pipeline,
         time_stamps: Optional[Tensor] = None,
         lookback: int = 100,
         horizon: int = 1,
@@ -55,6 +58,7 @@ class Dataset(_Dataset):
         self.y = y
         self.X_scaler = X_scaler
         self.y_scaler = y_scaler
+        self.pipeline = pipeline
         self.time_stamps = time_stamps
         self.lookback = lookback
         self.horizon = horizon
@@ -70,6 +74,7 @@ class Dataset(_Dataset):
         image_set: str,
         X_scaler: Scaler,
         y_scaler: Scaler,
+        pipeline: Pipeline,
         cfg: CN,
     ) -> "Dataset":
         lookback = cfg.IO.LOOKBACK
@@ -87,6 +92,7 @@ class Dataset(_Dataset):
             y,
             X_scaler,
             y_scaler,
+            pipeline,
             time_stamps,
             lookback,
             horizon,
@@ -103,6 +109,23 @@ class Dataset(_Dataset):
         return num_instances
 
     def __getitem__(self, i: int) -> _DataFrame:
+        """Return input and target corresponding to index.
+
+        [input]
+
+               <----  X   ---->
+        ----------------------------------
+
+        [output]
+
+               <---- bias ----><--- y --->
+        ----------------------------------
+
+        Parameters
+        ----------
+        i : int
+            Data index
+        """
         i += self.base_start_index
         start = max(0, i - self.lookback + 1)
         mid = i + 1
@@ -117,6 +140,14 @@ class Dataset(_Dataset):
         X = self.X_scaler.transform(X)
         y = self.y_scaler.transform(y)
         bias = self.y_scaler.transform(bias)
+        # Apply data augmentation (pipeline could be empty)
+        # NOTE: y and bias are not None here
+        (X, y, bias, time_stamps) = self.pipeline.apply(  # type: ignore
+            X,
+            y,
+            bias,
+            time_stamps,
+        )
         return (
             X,
             y,
