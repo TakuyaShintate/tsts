@@ -53,7 +53,7 @@ setup(
     author_email="kmdbn2hs@gmail.com",
     url="https://github.com/TakuyaShintate/tsts",
     description="toolset for time series forecasting",
-    version="0.9.0",
+    version="0.10.0",
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords="tsts",
