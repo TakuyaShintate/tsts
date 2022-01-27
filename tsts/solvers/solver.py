@@ -45,10 +45,16 @@ class Solver(object):
         If True, it prints meta info on console, by default True
     """
 
-    def __init__(self, cfg_path: Optional[str] = None, verbose: bool = True) -> None:
+    def __init__(
+        self,
+        cfg_path: Optional[str] = None,
+        verbose: bool = True,
+        override: bool = False,
+    ) -> None:
         super(Solver, self).__init__()
         self.cfg_path = cfg_path
         self.verbose = verbose
+        self.override = override
         self._init_internal_state()
 
     def _init_internal_state(self) -> None:
@@ -56,7 +62,7 @@ class Solver(object):
         seed = self.cfg.SEED
         set_random_seed(seed)
         self._init_context_manager()
-        if self.log_dir_exist() is True:
+        if self.log_dir_exist() is True and self.override is False:
             self._load_meta_info()
 
     def _load_meta_info(self) -> None:
@@ -105,7 +111,7 @@ class Solver(object):
         device = self.cfg.DEVICE
         model.to(device)
         log_dir = self.cfg.LOGGER.LOG_DIR
-        if self.log_dir_exist() is True:
+        if self.log_dir_exist() is True and self.override is False:
             try:
                 model_path = os.path.join(log_dir, "model.pth")
                 state_dict = torch.load(model_path)
@@ -129,9 +135,10 @@ class Solver(object):
         log_dir = self.cfg.LOGGER.LOG_DIR
         if self.log_dir_exist() is True:
             try:
-                local_scaler_path = os.path.join(log_dir, "local_scaler.pth")
-                state_dict = torch.load(local_scaler_path)
-                local_scaler.load_state_dict(state_dict)
+                if self.override is False:
+                    local_scaler_path = os.path.join(log_dir, "local_scaler.pth")
+                    state_dict = torch.load(local_scaler_path)
+                    local_scaler.load_state_dict(state_dict)
             except FileNotFoundError:
                 warnings.warn("Failed to load pretrained local scaler")
         return local_scaler
