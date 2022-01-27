@@ -37,5 +37,5 @@ class Pipeline(object):
             Timestamps for each step of input time series
         """
         for t in self.transforms:
-            (X, y, bias, time_stamps, y) = t.apply(X, y, bias, time_stamps)
+            (X, y, bias, time_stamps) = t.apply(X, y, bias, time_stamps)
         return (X, y, bias, time_stamps)
