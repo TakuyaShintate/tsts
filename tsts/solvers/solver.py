@@ -22,6 +22,8 @@ from tsts.optimizers import build_optimizer
 from tsts.scalers import Scaler
 from tsts.schedulers import Scheduler, build_scheduler
 from tsts.trainers import Trainer, build_trainer
+from tsts.transforms import build_pipeline
+from tsts.transforms.pipeline import Pipeline
 from tsts.types import MaybeRawDataset, RawDataset
 from tsts.utils import set_random_seed
 
@@ -172,6 +174,7 @@ class Solver(object):
         time_stamps: MaybeRawDataset,
         X_scaler: Scaler,
         y_scaler: Scaler,
+        pipeline: Pipeline,
     ) -> Dataset:
         train_datasets = []
         num_datasets = len(X)
@@ -183,6 +186,7 @@ class Solver(object):
                 "train",
                 X_scaler,
                 y_scaler,
+                pipeline,
                 self.cfg,
             )
             train_datasets.append(td)
@@ -196,6 +200,7 @@ class Solver(object):
         time_stamps: MaybeRawDataset,
         X_scaler: Scaler,
         y_scaler: Scaler,
+        pipeline: Pipeline,
     ) -> Dataset:
         valid_datasets = []
         num_datasets = len(X)
@@ -207,6 +212,7 @@ class Solver(object):
                 "valid",
                 X_scaler,
                 y_scaler,
+                pipeline,
                 self.cfg,
             )
             valid_datasets.append(vd)
@@ -216,6 +222,14 @@ class Solver(object):
     def build_collator(self) -> Collator:
         collator = build_collator(self.cfg)
         return collator
+
+    def build_train_pipeline(self) -> Pipeline:
+        train_pipeline = build_pipeline("train", self.cfg)
+        return train_pipeline
+
+    def build_valid_pipeline(self) -> Pipeline:
+        valid_pipeline = build_pipeline("valid", self.cfg)
+        return valid_pipeline
 
     def build_train_dataloader(
         self,

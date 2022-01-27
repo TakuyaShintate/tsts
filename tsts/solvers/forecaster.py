@@ -17,6 +17,7 @@ from tsts.scalers import Scaler
 from tsts.scalers.builder import build_X_scaler, build_y_scaler
 from tsts.schedulers import Scheduler
 from tsts.trainers import Trainer
+from tsts.transforms.pipeline import Pipeline
 from tsts.types import MaybeRawDataset, RawDataset
 
 from .solver import Solver
@@ -402,6 +403,22 @@ class TimeSeriesForecaster(Solver):
         return typing.cast(MaybeRawDataset, time_stamps_valid)
 
     @property
+    def train_pipeline(self) -> Pipeline:
+        if "train_pipeline" not in self.context_manager:
+            train_pipeline = self.build_train_pipeline()
+            self.context_manager["train_pipeline"] = train_pipeline
+        train_pipeline = self.context_manager["train_pipeline"]
+        return train_pipeline
+
+    @property
+    def valid_pipeline(self) -> Pipeline:
+        if "valid_pipeline" not in self.context_manager:
+            valid_pipeline = self.build_valid_pipeline()
+            self.context_manager["valid_pipeline"] = valid_pipeline
+        valid_pipeline = self.context_manager["valid_pipeline"]
+        return valid_pipeline
+
+    @property
     def train_dataset(self) -> Dataset:
         """Get a training dataset.
 
@@ -419,6 +436,7 @@ class TimeSeriesForecaster(Solver):
                 self.time_stamps_train,
                 self.X_scaler,
                 self.y_scaler,
+                self.train_pipeline,
             )
             self.context_manager["train_dataset"] = train_dataset
         train_dataset = self.context_manager["train_dataset"]
@@ -442,6 +460,7 @@ class TimeSeriesForecaster(Solver):
                 self.time_stamps_valid,
                 self.X_scaler,
                 self.y_scaler,
+                self.valid_pipeline,
             )
             self.context_manager["valid_dataset"] = valid_dataset
         valid_dataset = self.context_manager["valid_dataset"]
@@ -629,10 +648,13 @@ class TimeSeriesForecaster(Solver):
         Parameters
         ----------
         X : Tensor
-            Input
+            Input time series
         """
         self.model.eval()
         self.local_scaler.eval()
+        (X, _, bias, time_stamps) = self.valid_pipeline.apply(
+            X, None, bias, time_stamps
+        )
         (X, bias, X_mask, time_stamps) = self._apply_collator_to_test_data(
             X,
             bias,

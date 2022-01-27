@@ -138,6 +138,13 @@ _C.DATASET.BASE_END_INDEX = -1
 # Normalize per dataset differently
 _C.DATASET.NORM_PER_DATASET = False
 
+_C.PIPELINE = CN()
+# List of transforms
+# Each dictionary must contain `name` and `args` pairs
+# Ex: [{"name": "GaussianNoise", "args": {"mean": 0.0, "std": 0.001}}]
+_C.PIPELINE.TRANSFORMS_TRAIN = []
+_C.PIPELINE.TRANSFORMS_VALID = []
+
 _C.X_SCALER = CN()
 # Scaler (for X) name
 _C.X_SCALER.NAME = "StandardScaler"
