@@ -153,7 +153,7 @@ def main() -> None:
     )
     print(f"{LOG} finished loading validation data!")
     print(f"{LOG} loading solver...")
-    solver = TimeSeriesForecaster(args.cfg_name)
+    solver = TimeSeriesForecaster(args.cfg_name, override=True)
     print(f"{LOG} finished loading solver!")
     print(f"{LOG} finished initialization!")
     solver.fit(
