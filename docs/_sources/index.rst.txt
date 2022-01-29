@@ -8,6 +8,7 @@ Tutorials
 
     tutorials/training
     tutorials/inference
+    tutorials/custom-data-augmentation
 
 ====
 Docs

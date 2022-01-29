@@ -35,19 +35,34 @@ class CosineAnnealing(Scheduler):
     def __init__(
         self,
         optimizer: Optimizer,
+        base_lr: float,
         T_max: int,
         eta_min: float = 0.0,
+        warmup_steps: int = 0,
     ) -> None:
-        self.optimizer = optimizer
+        super(CosineAnnealing, self).__init__(optimizer, base_lr, warmup_steps)
         self.T_max = T_max
         self.eta_min = eta_min
         self._init_scheduler()
 
     @classmethod
-    def from_cfg(cls, optimizer: Optimizer, cfg: CN) -> "CosineAnnealing":
+    def from_cfg(
+        cls,
+        optimizer: Optimizer,
+        iters_per_epoch: int,
+        cfg: CN,
+    ) -> "CosineAnnealing":
+        base_lr = cfg.OPTIMIZER.LR
         T_max = cfg.SCHEDULER.T_MAX
         eta_min = cfg.SCHEDULER.ETA_MIN
-        scheduler = cls(optimizer, T_max, eta_min)
+        warmup_steps = cfg.SCHEDULER.WARMUP_STEPS
+        scheduler = cls(
+            optimizer,
+            base_lr,
+            T_max,
+            eta_min,
+            warmup_steps,
+        )
         return scheduler
 
     def _init_scheduler(self) -> None:

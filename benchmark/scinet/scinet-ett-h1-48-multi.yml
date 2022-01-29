@@ -38,7 +38,10 @@ METRICS:
   NAMES: ["MAE", "MSE"]
   ARGS: [{}, {}]
 
-SCALER:
+X_SCALER:
+  NAME: "StandardScaler"
+
+Y_SCALER:
   NAME: "StandardScaler"
 
 LOGGER:

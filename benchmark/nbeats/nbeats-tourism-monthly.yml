@@ -24,7 +24,10 @@ LOSSES:
 METRICS:
   NAMES: ["MAPE"]
 
-SCALER:
+X_SCALER:
+  NAME: "IdentityScaler"
+
+Y_SCALER:
   NAME: "IdentityScaler"
 
 TRAINER:

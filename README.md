@@ -2,7 +2,7 @@
   <img src="img/tsts-logo.png" width="600"/>
 </div>
 
-[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.7.0/)
+[![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/0.10.0/)
 [![license](https://img.shields.io/github/license/TakuyaShintate/tsts?style=flat)](https://github.com/TakuyaShintate/tsts/blob/main/LICENSE)
 
 ([Docs](https://takuyashintate.github.io/tsts/))([Benchmark](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/))
@@ -10,26 +10,6 @@
 ## Introduction
 
 tsts is an open-source easy-to-use toolset for time series forecasting.
-
-## What's New
-
-### Sep, 23
-
-🍎 Updated Results
-
-[Results](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/) on ETTh1 (horizon=48) are updated across different models in comparable way.
-
-### Sep, 21
-
-✨ New Model
-
-SCINet was added. I am working on stacked version of it now.
-
-### Sep, 10
-
-✨ New Model  
-
-Informer and related modules were added. See [results](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/informer) for how to use it.
 
 ## Installation
 
@@ -105,6 +85,8 @@ Following modules are supported.
       </td>
       <td>
         <li>CosineAnnealing</li>
+        <li>CosineAnnealingWithRestarts</li>
+        <li>ExponentialDecay</li>
         <li>StepScheduler</li>
       </td>
     </td>

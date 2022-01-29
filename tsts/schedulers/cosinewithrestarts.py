@@ -1,23 +1,24 @@
-from torch.optim.lr_scheduler import StepLR
+from torch.optim.lr_scheduler import \
+    CosineAnnealingWarmRestarts as _CosineAnnealingWarmRestarts
 from tsts.cfg import CfgNode as CN
 from tsts.core import SCHEDULERS
 from tsts.optimizers import Optimizer
 
 from .scheduler import Scheduler
 
-__all__ = ["StepScheduler"]
+__all__ = ["CosineAnnealingWarmRestarts"]
 
 
 @SCHEDULERS.register()
-class StepScheduler(Scheduler):
-    """Step scheduler implementation.
+class CosineAnnealingWarmRestarts(Scheduler):
+    """Cosine annealing scheduler implementation.
 
     Example
     -------
     .. code-block:: python
 
         SCHEDULER:
-          NAME: "StepScheduler"
+          NAME: "CosineAnnealingWithRestarts"
           T_MAX: 10
 
     Parameters
@@ -36,17 +37,19 @@ class StepScheduler(Scheduler):
         self,
         optimizer: Optimizer,
         base_lr: float,
-        step_size: int,
-        gamma: float = 0.1,
-        warmup_steps: int = 1,
+        T_0: int,
+        T_mult: int = 1,
+        eta_min: float = 0.0,
+        warmup_steps: int = 0,
     ) -> None:
-        super(StepScheduler, self).__init__(
+        super(CosineAnnealingWarmRestarts, self).__init__(
             optimizer,
             base_lr,
             warmup_steps,
         )
-        self.step_size = step_size
-        self.gamma = gamma
+        self.T_0 = T_0
+        self.T_mult = T_mult
+        self.eta_min = eta_min
         self._init_scheduler()
 
     @classmethod
@@ -55,25 +58,28 @@ class StepScheduler(Scheduler):
         optimizer: Optimizer,
         iters_per_epoch: int,
         cfg: CN,
-    ) -> "StepScheduler":
+    ) -> "CosineAnnealingWarmRestarts":
         base_lr = cfg.OPTIMIZER.LR
-        step_size = cfg.SCHEDULER.STEP_SIZE
-        gamma = cfg.SCHEDULER.GAMMA
+        T_0 = cfg.SCHEDULER.T_0
+        T_mult = cfg.SCHEDULER.T_MULT
+        eta_min = cfg.SCHEDULER.ETA_MIN
         warmup_steps = cfg.SCHEDULER.WARMUP_STEPS
         scheduler = cls(
             optimizer,
             base_lr,
-            step_size,
-            gamma,
+            T_0,
+            T_mult,
+            eta_min,
             warmup_steps,
         )
         return scheduler
 
     def _init_scheduler(self) -> None:
-        self.scheduler = StepLR(
+        self.scheduler = _CosineAnnealingWarmRestarts(
             self.optimizer,
-            self.step_size,
-            self.gamma,
+            self.T_0,
+            self.T_mult,
+            self.eta_min,  # type: ignore
         )
 
     def step(self) -> None:

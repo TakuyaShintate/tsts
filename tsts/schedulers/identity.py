@@ -24,13 +24,30 @@ class IdentityScheduler(Scheduler):
         Target optimizer
     """
 
-    def __init__(self, optimizer: Optimizer) -> None:
-        self.optimizer = optimizer
+    def __init__(
+        self,
+        optimizer: Optimizer,
+        base_lr: float,
+        warmup_steps: int = 0,
+    ) -> None:
+        super(IdentityScheduler, self).__init__(
+            optimizer,
+            base_lr,
+            warmup_steps,
+        )
 
     @classmethod
-    def from_cfg(cls, optimizer: Optimizer, cfg: CN) -> "IdentityScheduler":
-        scheduler = cls(optimizer)
+    def from_cfg(
+        cls,
+        optimizer: Optimizer,
+        iters_per_epoch: int,
+        cfg: CN,
+    ) -> "IdentityScheduler":
+        base_lr = cfg.OPTIMIZER.LR
+        warmup_steps = cfg.SCHEDULER.WARMUP_STEPS
+        scheduler = cls(optimizer, base_lr, warmup_steps)
         return scheduler
 
     def step(self) -> None:
-        pass
+        self.warmup()
+        self.T += 1.0

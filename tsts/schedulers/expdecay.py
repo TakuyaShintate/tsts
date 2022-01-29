@@ -1,52 +1,56 @@
-from torch.optim.lr_scheduler import StepLR
+from torch.optim.lr_scheduler import LambdaLR
 from tsts.cfg import CfgNode as CN
 from tsts.core import SCHEDULERS
 from tsts.optimizers import Optimizer
 
 from .scheduler import Scheduler
 
-__all__ = ["StepScheduler"]
+__all__ = ["ExponentialDecay"]
 
 
 @SCHEDULERS.register()
-class StepScheduler(Scheduler):
-    """Step scheduler implementation.
+class ExponentialDecay(Scheduler):
+    """ExponentialDecay scheduler.
+
+    It works in the same way to ExponentialDecay scheduler defined in Keras.
 
     Example
     -------
     .. code-block:: python
 
+        TRAINING:
+          NUM_EPOCHS: 100
         SCHEDULER:
-          NAME: "StepScheduler"
-          T_MAX: 10
+          NAME: "ExponentialDecay"
+          DECAY_RATE: 0.96
 
     Parameters
     ----------
     optimizer : Optimizer
         Target optimizer
 
-    T_max : int
-        Maximum number of iterations (from pytorch)
+    num_epochs : int
+        Total number of epochs
 
-    eta_min : float, optional
-        Minimum learning rate (from pytorch), default 0.0
+    decay_rate : float, optional
+        Decaying parameter, by default 0.96
     """
 
     def __init__(
         self,
         optimizer: Optimizer,
         base_lr: float,
-        step_size: int,
-        gamma: float = 0.1,
-        warmup_steps: int = 1,
+        decay_steps: float,
+        decay_rate: float = 0.96,
+        warmup_steps: int = 0,
     ) -> None:
-        super(StepScheduler, self).__init__(
+        super(ExponentialDecay, self).__init__(
             optimizer,
             base_lr,
             warmup_steps,
         )
-        self.step_size = step_size
-        self.gamma = gamma
+        self.decay_steps = decay_steps
+        self.decay_rate = decay_rate
         self._init_scheduler()
 
     @classmethod
@@ -55,25 +59,24 @@ class StepScheduler(Scheduler):
         optimizer: Optimizer,
         iters_per_epoch: int,
         cfg: CN,
-    ) -> "StepScheduler":
+    ) -> "ExponentialDecay":
         base_lr = cfg.OPTIMIZER.LR
-        step_size = cfg.SCHEDULER.STEP_SIZE
-        gamma = cfg.SCHEDULER.GAMMA
+        decay_steps = cfg.SCHEDULER.DECAY_STEPS
+        decay_rate = cfg.SCHEDULER.DECAY_RATE
         warmup_steps = cfg.SCHEDULER.WARMUP_STEPS
         scheduler = cls(
             optimizer,
             base_lr,
-            step_size,
-            gamma,
+            decay_steps,
+            decay_rate,
             warmup_steps,
         )
         return scheduler
 
     def _init_scheduler(self) -> None:
-        self.scheduler = StepLR(
+        self.scheduler = LambdaLR(
             self.optimizer,
-            self.step_size,
-            self.gamma,
+            lambda step: self.decay_rate ** (step / self.decay_steps),
         )
 
     def step(self) -> None:

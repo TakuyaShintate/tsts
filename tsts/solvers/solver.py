@@ -22,6 +22,8 @@ from tsts.optimizers import build_optimizer
 from tsts.scalers import Scaler
 from tsts.schedulers import Scheduler, build_scheduler
 from tsts.trainers import Trainer, build_trainer
+from tsts.transforms import build_pipeline
+from tsts.transforms.pipeline import Pipeline
 from tsts.types import MaybeRawDataset, RawDataset
 from tsts.utils import set_random_seed
 
@@ -43,10 +45,16 @@ class Solver(object):
         If True, it prints meta info on console, by default True
     """
 
-    def __init__(self, cfg_path: Optional[str] = None, verbose: bool = True) -> None:
+    def __init__(
+        self,
+        cfg_path: Optional[str] = None,
+        verbose: bool = True,
+        override: bool = False,
+    ) -> None:
         super(Solver, self).__init__()
         self.cfg_path = cfg_path
         self.verbose = verbose
+        self.override = override
         self._init_internal_state()
 
     def _init_internal_state(self) -> None:
@@ -54,13 +62,13 @@ class Solver(object):
         seed = self.cfg.SEED
         set_random_seed(seed)
         self._init_context_manager()
-        if self.log_dir_exist() is True:
+        if self.log_dir_exist() is True and self.override is False:
             self._load_meta_info()
 
     def _load_meta_info(self) -> None:
         if self.verbose is True:
-            sys.stdout.write("Log directory found \n")
-            sys.stdout.write("Restoring state ...")
+            sys.stdout.write("log directory found \n")
+            sys.stdout.write("restoring state...")
         log_dir = self.cfg.LOGGER.LOG_DIR
         meta_info_path = os.path.join(log_dir, "meta.json")
         with open(meta_info_path, "r") as f:
@@ -103,7 +111,7 @@ class Solver(object):
         device = self.cfg.DEVICE
         model.to(device)
         log_dir = self.cfg.LOGGER.LOG_DIR
-        if self.log_dir_exist() is True:
+        if self.log_dir_exist() is True and self.override is False:
             try:
                 model_path = os.path.join(log_dir, "model.pth")
                 state_dict = torch.load(model_path)
@@ -127,9 +135,10 @@ class Solver(object):
         log_dir = self.cfg.LOGGER.LOG_DIR
         if self.log_dir_exist() is True:
             try:
-                local_scaler_path = os.path.join(log_dir, "local_scaler.pth")
-                state_dict = torch.load(local_scaler_path)
-                local_scaler.load_state_dict(state_dict)
+                if self.override is False:
+                    local_scaler_path = os.path.join(log_dir, "local_scaler.pth")
+                    state_dict = torch.load(local_scaler_path)
+                    local_scaler.load_state_dict(state_dict)
             except FileNotFoundError:
                 warnings.warn("Failed to load pretrained local scaler")
         return local_scaler
@@ -153,8 +162,16 @@ class Solver(object):
         optimizer = build_optimizer(params, self.cfg)
         return optimizer
 
-    def build_scheduler(self, optimizer: Optimizer) -> Scheduler:
-        scheduler = build_scheduler(optimizer, self.cfg)  # type: ignore
+    def build_scheduler(
+        self,
+        optimizer: Optimizer,
+        iters_per_epoch: int,
+    ) -> Scheduler:
+        scheduler = build_scheduler(
+            optimizer,  # type: ignore
+            iters_per_epoch,
+            self.cfg,
+        )
         return scheduler
 
     def build_train_dataset(
@@ -164,6 +181,7 @@ class Solver(object):
         time_stamps: MaybeRawDataset,
         X_scaler: Scaler,
         y_scaler: Scaler,
+        pipeline: Pipeline,
     ) -> Dataset:
         train_datasets = []
         num_datasets = len(X)
@@ -175,6 +193,7 @@ class Solver(object):
                 "train",
                 X_scaler,
                 y_scaler,
+                pipeline,
                 self.cfg,
             )
             train_datasets.append(td)
@@ -188,6 +207,7 @@ class Solver(object):
         time_stamps: MaybeRawDataset,
         X_scaler: Scaler,
         y_scaler: Scaler,
+        pipeline: Pipeline,
     ) -> Dataset:
         valid_datasets = []
         num_datasets = len(X)
@@ -199,6 +219,7 @@ class Solver(object):
                 "valid",
                 X_scaler,
                 y_scaler,
+                pipeline,
                 self.cfg,
             )
             valid_datasets.append(vd)
@@ -208,6 +229,14 @@ class Solver(object):
     def build_collator(self) -> Collator:
         collator = build_collator(self.cfg)
         return collator
+
+    def build_train_pipeline(self) -> Pipeline:
+        train_pipeline = build_pipeline("train", self.cfg)
+        return train_pipeline
+
+    def build_valid_pipeline(self) -> Pipeline:
+        valid_pipeline = build_pipeline("valid", self.cfg)
+        return valid_pipeline
 
     def build_train_dataloader(
         self,

@@ -5,13 +5,20 @@ from tsts.optimizers import Optimizer
 from .scheduler import Scheduler
 
 
-def build_scheduler(optimizer: Optimizer, cfg: CN) -> Scheduler:
+def build_scheduler(
+    optimizer: Optimizer,
+    iters_per_epoch: int,
+    cfg: CN,
+) -> Scheduler:
     """Build learning rate scheduler.
 
     Parameters
     ----------
     optimizer : Optimizer
         Target optimizer
+
+    iters_per_epoch : int
+        Number of iterations per epoch
 
     cfg : CN
         Global config
@@ -23,5 +30,5 @@ def build_scheduler(optimizer: Optimizer, cfg: CN) -> Scheduler:
     """
     scheduler_name = cfg.SCHEDULER.NAME
     cls = SCHEDULERS[scheduler_name]
-    scheduler = cls.from_cfg(optimizer, cfg)
+    scheduler = cls.from_cfg(optimizer, iters_per_epoch, cfg)
     return scheduler
