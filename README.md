@@ -11,43 +11,6 @@
 
 tsts is an open-source easy-to-use toolset for time series forecasting.
 
-## What's New
-
-### Jan, 20, 2022
-
-✨ New Tool
-
-Utility tool was added to launch training easily.
-
-#### Example
-
-```bash
-python tools/train.py \
-    --cfg-name config \ # config path
-    --train-dir train-dir \ # directory which contains train data (csv files)
-    --valid-dir valid-dir \ # directory which contains validation data (csv files)
-    --in-feats a b \ # list of input features
-    --out-feats c d \ # list of output features
-```
-
-### Sep, 23, 2021
-
-🍎 Updated Results
-
-[Results](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/) on ETTh1 (horizon=48) are updated across different models in comparable way.
-
-### Sep, 21, 2021
-
-✨ New Model
-
-SCINet was added. I am working on stacked version of it now.
-
-### Sep, 10, 2021
-
-✨ New Model  
-
-Informer and related modules were added. See [results](https://github.com/TakuyaShintate/tsts/tree/main/benchmark/informer) for how to use it.
-
 ## Installation
 
 ```
