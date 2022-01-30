@@ -115,6 +115,7 @@ def load_sample(args: Namespace, filename: str, cfg: CN) -> Tuple[Tensor, Tensor
         Input/output time series
     """
     df = pd.read_csv(filename)
+    df = df.fillna(0.0)
     x = torch.tensor(df[args.in_feats].values, dtype=torch.float32)
     y = torch.tensor(df[args.out_feats].values)
     y = torch.cat([y, torch.zeros((cfg.IO.HORIZON - 1, len(args.out_feats)))])
