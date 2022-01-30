@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>tsts - SCINet</title>
+<title>tsts - Custom Data Augmentation</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous"/>
@@ -39,7 +39,8 @@
       <script src="../../app-data.js"></script>
 <link rel="index" title="Index" href="../genindex.html" />
 <link rel="search" title="Search" href="../search.html" />
-<link rel="prev" title="Seq2Seq" href="seq2seq.html" />
+<link rel="next" title="Informer" href="../models/informer.html" />
+<link rel="prev" title="Train on Custom Dataset" href="train.html" />
 
 </head>
 <body class="full-height test">
@@ -58,8 +59,8 @@
 
       </div>
       <div id="hdr-centre" class="text-center stretch">
-        <h3 title="SCINet">SCINet</h3>
-        <h6>SCINet</h6>
+        <h3 title="Custom Data Augmentation">Custom Data Augmentation</h3>
+        <h6>Custom Data Augmentation</h6>
       </div>
       <div id="hdr-search">
         
@@ -76,7 +77,7 @@
       </div>
 
       <div id="hdr-source">
-        <a href="../_sources/models/scinet.rst.txt" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
+        <a href="../_sources/tutorials/data-augmentation.rst.txt" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
       </div>
 
       <div id="hdr-right">
@@ -85,15 +86,18 @@
   <div class="prev-next">
     
       <div class="pull-left">
-        <a class="btn btn-default prev" href="seq2seq.html" title="Previous chapter (Seq2Seq)"><i class="fa fa-chevron-left mr-1em" aria-hidden="true"></i><span class="btn-text">Seq2Seq</span></a>
+        <a class="btn btn-default prev" href="train.html" title="Previous chapter (Train on Custom Dataset)"><i class="fa fa-chevron-left mr-1em" aria-hidden="true"></i><span class="btn-text">Train on Custom Dataset</span></a>
       </div>
     
+      <div class="pull-right">
+        <a class="btn btn-default next" href="../models/informer.html" title="Next chapter (Informer)"><span class="btn-text">Informer</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
+      </div>
     </div>
   
       </div>
       <div id="alt-hdr-right">
 
-        <a href="seq2seq.html"><i class="fa fa-chevron-left mr-8"></i></a>
+        <a href="train.html"><i class="fa fa-chevron-left mr-8"></i></a>
 
 
         <a href="../index.html"><i class="fa fa-home mr-8"></i></a>
@@ -104,6 +108,8 @@
 
         <a href="../genindex.html"><i class="fa fa-list mr-8"></i></a>
 
+
+        <a href="../models/informer.html"><i class="fa fa-chevron-right"></i></a>
 
       </div>
     </div>
@@ -140,34 +146,34 @@
         
   
     <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train on Custom Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/data-augmentation.html">Custom Data Augmentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/data-augmentation.html#step-1-define-a-new-custom-data-augmentation">(Step 1) Define a new custom data augmentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/data-augmentation.html#step-2-use-the-data-augmentation">(Step 2) Use the data augmentation</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="train.html">Train on Custom Dataset</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#custom-data-augmentation">Custom Data Augmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-define-a-new-custom-data-augmentation">(Step 1) Define a new custom data augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-use-the-data-augmentation">(Step 2) Use the data augmentation</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="informer.html">Informer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="informer.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="informer.html#reference">Reference</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../models/informer.html#informer">Informer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../models/informer.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/informer.html#reference">Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nbeats.html">NBeats</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nbeats.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nbeats.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/nbeats.html#nbeats">NBeats</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../models/nbeats.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/nbeats.html#reference">Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq.html">Seq2Seq</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="seq2seq.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="seq2seq.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/seq2seq.html#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../models/seq2seq.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/seq2seq.html#reference">Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#scinet">SCINet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/scinet.html#scinet">SCINet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../models/scinet.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/scinet.html#reference">Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -182,34 +188,34 @@
             
   
     <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train on Custom Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/data-augmentation.html">Custom Data Augmentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/data-augmentation.html#step-1-define-a-new-custom-data-augmentation">(Step 1) Define a new custom data augmentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/data-augmentation.html#step-2-use-the-data-augmentation">(Step 2) Use the data augmentation</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="train.html">Train on Custom Dataset</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#custom-data-augmentation">Custom Data Augmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-define-a-new-custom-data-augmentation">(Step 1) Define a new custom data augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-use-the-data-augmentation">(Step 2) Use the data augmentation</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="informer.html">Informer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="informer.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="informer.html#reference">Reference</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../models/informer.html#informer">Informer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../models/informer.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/informer.html#reference">Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nbeats.html">NBeats</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nbeats.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nbeats.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/nbeats.html#nbeats">NBeats</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../models/nbeats.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/nbeats.html#reference">Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq.html">Seq2Seq</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="seq2seq.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="seq2seq.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/seq2seq.html#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../models/seq2seq.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/seq2seq.html#reference">Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#scinet">SCINet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/scinet.html#scinet">SCINet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../models/scinet.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/scinet.html#reference">Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -218,27 +224,41 @@
           </div>
           <div class="body">
             
-  <div class="section" id="scinet">
-<h1>SCINet<a class="headerlink" href="#scinet" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="how-to-use">
-<h2>How to Use<a class="headerlink" href="#how-to-use" title="Permalink to this headline">¶</a></h2>
-<p>Add following lines to config to use <em>SCINet</em>.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MODEL</span><span class="p">:</span>
-  <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;SCINet&quot;</span>
-  <span class="c1"># Number of levels</span>
-  <span class="nt">DEPTH</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
-  <span class="c1"># Kernel size of conv modules</span>
-  <span class="nt">KERNEL_SIZE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
-  <span class="c1"># Expansion rate of conv modules</span>
-  <span class="nt">EXPANSION_RATE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4.0</span>
-  <span class="c1"># Dropout rate</span>
-  <span class="nt">DROPOUT_RATE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+  <div class="section" id="custom-data-augmentation">
+<h1>Custom Data Augmentation<a class="headerlink" href="#custom-data-augmentation" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will learn how to define and use a new custom data augmentation method.</p>
+<div class="section" id="step-1-define-a-new-custom-data-augmentation">
+<h2>(Step 1) Define a new custom data augmentation<a class="headerlink" href="#step-1-define-a-new-custom-data-augmentation" title="Permalink to this headline">¶</a></h2>
+<p>First, we need to define a new custom data augmentation and register it to <cite>tsts</cite> by using <cite>TRANSFORMS</cite> registry. Let’s make flip data augmentation which flips positive/negative sign of input time series.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">from</span> <span class="nn">tsts.core</span> <span class="kn">import</span> <span class="n">TRANSFORMS</span>
+<span class="kn">from</span> <span class="nn">tsts.transforms.transform</span> <span class="kn">import</span> <span class="n">Transform</span>
+
+
+<span class="nd">@TRANSFORMS</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">RandomFlip</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">time_stamps</span><span class="p">):</span>
+        <span class="c1"># X is input time series which shape is (length, features)</span>
+        <span class="c1"># y is the target</span>
+        <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="o">-</span><span class="n">X</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">y</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">time_stamps</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="reference">
-<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://arxiv.org/abs/2106.09305?utm_source=feedburner&amp;utm_medium=feed&amp;utm_campaign=Feed%3A+arxiv%2FQSXk+%28ExcitingAds%21+cs+updates+on+arXiv.org%29">Time Series is a Special Sequence: Forecasting with Sample Convolution and Interaction</a></p>
+<div class="section" id="step-2-use-the-data-augmentation">
+<h2>(Step 2) Use the data augmentation<a class="headerlink" href="#step-2-use-the-data-augmentation" title="Permalink to this headline">¶</a></h2>
+<p>We can use the data augmentation defined above by adding the following block to our config.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">PIPELINE</span><span class="p">:</span>
+    <span class="nt">TRANSFORMS_TRAIN</span><span class="p">:</span> <span class="p p-Indicator">[{</span><span class="s">&quot;name&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;RandomFlip&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;args&quot;</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="s">&quot;p&quot;</span><span class="p p-Indicator">:</span> <span class="nv">0.5</span><span class="p p-Indicator">}}]</span>
+</pre></div>
+</div>
 </div>
 </div>
 

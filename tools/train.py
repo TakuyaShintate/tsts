@@ -39,13 +39,13 @@ LOG = "[" + ColorText.GREEN + "log" + ColorText.END + "]"
 
 
 def parse_args() -> Namespace:
-    parser = ArgumentParser(description="Detect anomalities")
+    parser = ArgumentParser(description="Train forecasting model")
     parser.add_argument("--cfg-name", help="config file path")
     parser.add_argument("--train-dir", help="directory containing train samples")
     parser.add_argument("--valid-dir", help="directory containing extra valid samples")
     parser.add_argument("--in-feats", type=str, nargs="+", help="input features")
     parser.add_argument("--out-feats", type=str, nargs="+", help="output features")
-    parser.add_argument("--lagging", action="store_false")
+    parser.add_argument("--lagging", action="store_true")
     args = parser.parse_args()
     return args
 
@@ -111,6 +111,7 @@ def load_timeseries_data(
     Y = []
     for path in glob.glob(f"{target_dir}/*.csv"):
         df = pd.read_csv(path)
+        df = df.fillna(0.0)
         x = df[args.in_feats]
         y = df[args.out_feats]
         x = x.values

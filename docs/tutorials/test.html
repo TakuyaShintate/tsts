@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>tsts - Train on a Custom Dataset</title>
+<title>tsts - Test on a Custom Dataset</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous"/>
@@ -39,8 +39,8 @@
       <script src="../../app-data.js"></script>
 <link rel="index" title="Index" href="../genindex.html" />
 <link rel="search" title="Search" href="../search.html" />
-<link rel="next" title="Test on a Custom Dataset" href="test.html" />
-<link rel="prev" title="Documentations" href="../index.html" />
+<link rel="next" title="Data Augmentation" href="../modules/dataaug.html" />
+<link rel="prev" title="Train on a Custom Dataset" href="train.html" />
 
 </head>
 <body class="full-height test">
@@ -59,8 +59,8 @@
 
       </div>
       <div id="hdr-centre" class="text-center stretch">
-        <h3 title="Train on a Custom Dataset">Train on a Custom Dataset</h3>
-        <h6>Train on a Custom Dataset</h6>
+        <h3 title="Test on a Custom Dataset">Test on a Custom Dataset</h3>
+        <h6>Test on a Custom Dataset</h6>
       </div>
       <div id="hdr-search">
         
@@ -77,7 +77,7 @@
       </div>
 
       <div id="hdr-source">
-        <a href="../_sources/tutorials/train.rst.txt" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
+        <a href="../_sources/tutorials/test.rst.txt" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
       </div>
 
       <div id="hdr-right">
@@ -86,18 +86,18 @@
   <div class="prev-next">
     
       <div class="pull-left">
-        <a class="btn btn-default prev" href="../index.html" title="Previous chapter (Documentations)"><i class="fa fa-chevron-left mr-1em" aria-hidden="true"></i><span class="btn-text">Documentations</span></a>
+        <a class="btn btn-default prev" href="train.html" title="Previous chapter (Train on a Custom Dataset)"><i class="fa fa-chevron-left mr-1em" aria-hidden="true"></i><span class="btn-text">Train on a Custom Dataset</span></a>
       </div>
     
       <div class="pull-right">
-        <a class="btn btn-default next" href="test.html" title="Next chapter (Test on a Custom Dataset)"><span class="btn-text">Test on a Custom Dataset</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
+        <a class="btn btn-default next" href="../modules/dataaug.html" title="Next chapter (Data Augmentation)"><span class="btn-text">Data Augmentation</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
       </div>
     </div>
   
       </div>
       <div id="alt-hdr-right">
 
-        <a href="../index.html"><i class="fa fa-chevron-left mr-8"></i></a>
+        <a href="train.html"><i class="fa fa-chevron-left mr-8"></i></a>
 
 
         <a href="../index.html"><i class="fa fa-home mr-8"></i></a>
@@ -109,7 +109,7 @@
         <a href="../genindex.html"><i class="fa fa-list mr-8"></i></a>
 
 
-        <a href="test.html"><i class="fa fa-chevron-right"></i></a>
+        <a href="../modules/dataaug.html"><i class="fa fa-chevron-right"></i></a>
 
       </div>
     </div>
@@ -147,19 +147,26 @@
   
     <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#train-on-a-custom-dataset">Train on a Custom Dataset</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Train on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="train.html#directory-structure">🗂 Directory Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="train.html#create-config">2. Create Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="train.html#config">📝 Config</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#test-on-a-custom-dataset">Test on a Custom Dataset</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#directory-structure">🗂 Directory Structure</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#create-config">2. Create Config</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#config">📝 Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-forecasting-model">2. Test Forecasting Model</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#train-forecasting-model">3. Train Forecasting Model</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="test.html">Test on a Custom Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul>
@@ -167,7 +174,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dataaug.html#gaussian-noise">Gaussian Noise</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/losses.html#loss-functions">Loss Functions</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/losses.html">Loss Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#dilate">DILATE</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#reference">🔍 Reference</a></li>
 </ul>
@@ -243,19 +250,26 @@
   
     <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#train-on-a-custom-dataset">Train on a Custom Dataset</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Train on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="train.html#directory-structure">🗂 Directory Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="train.html#create-config">2. Create Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="train.html#config">📝 Config</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#test-on-a-custom-dataset">Test on a Custom Dataset</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#directory-structure">🗂 Directory Structure</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#create-config">2. Create Config</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#config">📝 Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-forecasting-model">2. Test Forecasting Model</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#train-forecasting-model">3. Train Forecasting Model</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="test.html">Test on a Custom Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul>
@@ -263,7 +277,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dataaug.html#gaussian-noise">Gaussian Noise</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/losses.html#loss-functions">Loss Functions</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/losses.html">Loss Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#dilate">DILATE</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#reference">🔍 Reference</a></li>
 </ul>
@@ -332,49 +346,32 @@
           </div>
           <div class="body">
             
-  <div class="section" id="train-on-a-custom-dataset">
-<h1>Train on a Custom Dataset<a class="headerlink" href="#train-on-a-custom-dataset" title="Permalink to this headline">¶</a></h1>
-<p><strong>tools/train.py</strong> can be used to train forecasting models on a custom dataset.</p>
+  <div class="section" id="test-on-a-custom-dataset">
+<h1>Test on a Custom Dataset<a class="headerlink" href="#test-on-a-custom-dataset" title="Permalink to this headline">¶</a></h1>
+<p><strong>tools/test.py</strong> can be used to test forecasting models on a custom dataset.</p>
 <div class="section" id="create-a-custom-dataset">
 <h2>1. Create a Custom Dataset<a class="headerlink" href="#create-a-custom-dataset" title="Permalink to this headline">¶</a></h2>
-<p>Put <strong>.csv</strong> files to train directory (used for training) and valid directory (used for validation).</p>
+<p>Put .csv files to test directory (in the same way to train).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Any directory names can be used</p>
 </div>
 <div class="section" id="directory-structure">
 <h3>🗂 Directory Structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="../_images/train-tool.jpg"><img alt="../_images/train-tool.jpg" class="align-center" src="../_images/train-tool.jpg" style="width: 605.0px; height: 358.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/test-tool.jpg"><img alt="../_images/test-tool.jpg" class="align-center" src="../_images/test-tool.jpg" style="width: 885.0px; height: 357.0px;" /></a>
 </div>
 </div>
-<div class="section" id="create-config">
-<h2>2. Create Config<a class="headerlink" href="#create-config" title="Permalink to this headline">¶</a></h2>
-<p>To specify training settings, create config file.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Refer to <strong>tsts/cfg/defaults.py</strong> for available options</p>
-</div>
-<div class="section" id="config">
-<h3>📝 Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LOGGER</span><span class="p">:</span>
-  <span class="n">LOG_DIR</span><span class="p">:</span> <span class="s2">&quot;./log&quot;</span>
-
-<span class="n">MODEL</span><span class="p">:</span>
-  <span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;SCINet&quot;</span>
-  <span class="n">DEPTH</span><span class="p">:</span> <span class="mi">3</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="train-forecasting-model">
-<h2>3. Train Forecasting Model<a class="headerlink" href="#train-forecasting-model" title="Permalink to this headline">¶</a></h2>
-<p>Run <strong>tools/train.py</strong> with the custom dataset and config. Input/output feature names have to be specified too.</p>
+<div class="section" id="test-forecasting-model">
+<h2>2. Test Forecasting Model<a class="headerlink" href="#test-forecasting-model" title="Permalink to this headline">¶</a></h2>
+<p>Run <strong>tools/test.py</strong> with the custom dataset and config. Input/output feature names have to be specified too.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python tools/train.py <span class="se">\</span>
  --cfg-name config.yml <span class="se">\</span>
  --train-dir train <span class="se">\</span>
  --valid-dir valid <span class="se">\</span>
+ --test-dir <span class="nb">test</span> <span class="se">\</span>
  --in-feats input_feat1 input_feat2 <span class="se">\</span>
  --out-feats output_feat1 output_feat2 <span class="se">\</span>
+ --out-dir log <span class="se">\</span>
 </pre></div>
 </div>
 </div>

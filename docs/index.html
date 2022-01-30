@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tutorials</title>
+<title>Documentations</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous"/>
@@ -39,7 +39,7 @@
       <script src="app-data.js"></script>
 <link rel="index" title="Index" href="genindex.html" />
 <link rel="search" title="Search" href="search.html" />
-<link rel="next" title="(Tutorial) Training" href="tutorials/training.html" />
+<link rel="next" title="Train on a Custom Dataset" href="tutorials/train.html" />
 
 </head>
 <body class="full-height test">
@@ -58,8 +58,8 @@
 
       </div>
       <div id="hdr-centre" class="text-center stretch">
-        <h3 title="Tutorials">Tutorials</h3>
-        <h6>Tutorials</h6>
+        <h3 title="Documentations">Documentations</h3>
+        <h6>Documentations</h6>
       </div>
       <div id="hdr-search">
         
@@ -85,7 +85,7 @@
   <div class="prev-next">
     
       <div class="pull-right">
-        <a class="btn btn-default next" href="tutorials/training.html" title="Next chapter ((Tutorial) Training)"><span class="btn-text">(Tutorial) Training</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
+        <a class="btn btn-default next" href="tutorials/train.html" title="Next chapter (Train on a Custom Dataset)"><span class="btn-text">Train on a Custom Dataset</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
       </div>
     </div>
   
@@ -100,7 +100,7 @@
         <a href="genindex.html"><i class="fa fa-list mr-8"></i></a>
 
 
-        <a href="tutorials/training.html"><i class="fa fa-chevron-right"></i></a>
+        <a href="tutorials/train.html"><i class="fa fa-chevron-right"></i></a>
 
       </div>
     </div>
@@ -136,49 +136,96 @@
       
         
   
-    <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
+    <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/training.html">(Tutorial) Training</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/training.html#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/training.html#step-1-config">(Step 1) Config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/training.html#step-2-dataset-preparation">(Step 2) Dataset Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/training.html#step-3-start-training">(Step 3) Start Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Train on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#directory-structure">🗂 Directory Structure</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/inference.html">(Tutorial) Inference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#step-1-loading-pre-trained-model">(Step 1) Loading pre-trained model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#step-2-initializing-scaler">(Step 2) Initializing scaler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#step-3-input-data-preparation">(Step 3) Input Data Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#step-4-running-predict-method">(Step 4) Running <strong>predict</strong> Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#create-config">2. Create Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#config">📝 Config</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/custom-data-augmentation.html">(Tutorial) Custom Data Augmentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/custom-data-augmentation.html#step-1-define-a-new-custom-data-augmentation">(Step 1) Define a new custom data augmentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/custom-data-augmentation.html#step-2-use-the-data-augmentation">(Step 2) Use the data augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/test.html">Test on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/test.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/test.html#directory-structure">🗂 Directory Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/test.html#test-forecasting-model">2. Test Forecasting Model</a></li>
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Models</span></p>
+<p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="models/informer.html">Informer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/informer.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models/informer.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/dataaug.html">Data Augmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/dataaug.html#gaussian-noise">Gaussian Noise</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models/nbeats.html">NBeats</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/nbeats.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models/nbeats.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/losses.html">Loss Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#dilate">DILATE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/losses.html#reference">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models/seq2seq.html">Seq2Seq</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/seq2seq.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models/seq2seq.html#reference">Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#smooth-mae">Smooth MAE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/losses.html#id1">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models/scinet.html">SCINet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/scinet.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models/scinet.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/models.html">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#informer">Informer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#reference">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#n-beats">N-BEATS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id1">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#scinet">SCINet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id2">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id3">🔍 Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/optimizers.html">Optimizers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#adam">Adam</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#reference">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#adamw">AdamW</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id1">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sam">SAM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id2">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sgd">SGD</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/scalers.html">Scalers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/scalers.html#identity-scaler">Identity Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/scalers.html#min-max-scaler">Min-Max Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/scalers.html#standard-scaler">Standard Scaler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/schedulers.html">LR Schedulers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#cosine-annealing">Cosine Annealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#cosine-annealing-warm-restarts">Cosine Annealing Warm Restarts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#exponential-decay">Exponential Decay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#identity">Identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#step">Step</a></li>
 </ul>
 </li>
 </ul>
@@ -192,49 +239,96 @@
           <div id="mnav">
             
   
-    <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
+    <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/training.html">(Tutorial) Training</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/training.html#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/training.html#step-1-config">(Step 1) Config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/training.html#step-2-dataset-preparation">(Step 2) Dataset Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/training.html#step-3-start-training">(Step 3) Start Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Train on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#directory-structure">🗂 Directory Structure</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/inference.html">(Tutorial) Inference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#step-1-loading-pre-trained-model">(Step 1) Loading pre-trained model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#step-2-initializing-scaler">(Step 2) Initializing scaler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#step-3-input-data-preparation">(Step 3) Input Data Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/inference.html#step-4-running-predict-method">(Step 4) Running <strong>predict</strong> Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#create-config">2. Create Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#config">📝 Config</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/custom-data-augmentation.html">(Tutorial) Custom Data Augmentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/custom-data-augmentation.html#step-1-define-a-new-custom-data-augmentation">(Step 1) Define a new custom data augmentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/custom-data-augmentation.html#step-2-use-the-data-augmentation">(Step 2) Use the data augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/test.html">Test on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/test.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/test.html#directory-structure">🗂 Directory Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/test.html#test-forecasting-model">2. Test Forecasting Model</a></li>
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Models</span></p>
+<p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="models/informer.html">Informer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/informer.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models/informer.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/dataaug.html">Data Augmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/dataaug.html#gaussian-noise">Gaussian Noise</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models/nbeats.html">NBeats</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/nbeats.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models/nbeats.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/losses.html">Loss Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#dilate">DILATE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/losses.html#reference">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models/seq2seq.html">Seq2Seq</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/seq2seq.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models/seq2seq.html#reference">Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/losses.html#smooth-mae">Smooth MAE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/losses.html#id1">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models/scinet.html">SCINet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/scinet.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models/scinet.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/models.html">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#informer">Informer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#reference">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#n-beats">N-BEATS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id1">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#scinet">SCINet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id2">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id3">🔍 Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/optimizers.html">Optimizers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#adam">Adam</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#reference">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#adamw">AdamW</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id1">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sam">SAM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id2">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sgd">SGD</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/scalers.html">Scalers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/scalers.html#identity-scaler">Identity Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/scalers.html#min-max-scaler">Min-Max Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/scalers.html#standard-scaler">Standard Scaler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/schedulers.html">LR Schedulers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#cosine-annealing">Cosine Annealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#cosine-annealing-warm-restarts">Cosine Annealing Warm Restarts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#exponential-decay">Exponential Decay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#identity">Identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/schedulers.html#step">Step</a></li>
 </ul>
 </li>
 </ul>
@@ -243,26 +337,24 @@
           </div>
           <div class="body">
             
-  <div class="section" id="tutorials">
-<h1>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="documentations">
+<h1>Documentations<a class="headerlink" href="#documentations" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Basic</span></p>
+<p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/training.html">(Tutorial) Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/inference.html">(Tutorial) Inference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/custom-data-augmentation.html">(Tutorial) Custom Data Augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Train on a Custom Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/test.html">Test on a Custom Dataset</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="docs">
-<h1>Docs<a class="headerlink" href="#docs" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Models</span></p>
+<p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="models/informer.html">Informer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models/nbeats.html">NBeats</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models/seq2seq.html">Seq2Seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models/scinet.html">SCINet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/dataaug.html">Data Augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/losses.html">Loss Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/scalers.html">Scalers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/schedulers.html">LR Schedulers</a></li>
 </ul>
 </div>
 </div>

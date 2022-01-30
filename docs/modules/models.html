@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>tsts - Informer</title>
+<title>tsts - Models</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous"/>
@@ -39,8 +39,8 @@
       <script src="../../app-data.js"></script>
 <link rel="index" title="Index" href="../genindex.html" />
 <link rel="search" title="Search" href="../search.html" />
-<link rel="next" title="NBeats" href="nbeats.html" />
-<link rel="prev" title="Custom Data Augmentation" href="../tutorials/data-augmentation.html" />
+<link rel="next" title="Optimizers" href="optimizers.html" />
+<link rel="prev" title="Loss Functions" href="losses.html" />
 
 </head>
 <body class="full-height test">
@@ -59,8 +59,8 @@
 
       </div>
       <div id="hdr-centre" class="text-center stretch">
-        <h3 title="Informer">Informer</h3>
-        <h6>Informer</h6>
+        <h3 title="Models">Models</h3>
+        <h6>Models</h6>
       </div>
       <div id="hdr-search">
         
@@ -77,7 +77,7 @@
       </div>
 
       <div id="hdr-source">
-        <a href="../_sources/models/informer.rst.txt" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
+        <a href="../_sources/modules/models.rst.txt" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
       </div>
 
       <div id="hdr-right">
@@ -86,18 +86,18 @@
   <div class="prev-next">
     
       <div class="pull-left">
-        <a class="btn btn-default prev" href="../tutorials/data-augmentation.html" title="Previous chapter (Custom Data Augmentation)"><i class="fa fa-chevron-left mr-1em" aria-hidden="true"></i><span class="btn-text">Custom Data Augmentation</span></a>
+        <a class="btn btn-default prev" href="losses.html" title="Previous chapter (Loss Functions)"><i class="fa fa-chevron-left mr-1em" aria-hidden="true"></i><span class="btn-text">Loss Functions</span></a>
       </div>
     
       <div class="pull-right">
-        <a class="btn btn-default next" href="nbeats.html" title="Next chapter (NBeats)"><span class="btn-text">NBeats</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
+        <a class="btn btn-default next" href="optimizers.html" title="Next chapter (Optimizers)"><span class="btn-text">Optimizers</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
       </div>
     </div>
   
       </div>
       <div id="alt-hdr-right">
 
-        <a href="../tutorials/data-augmentation.html"><i class="fa fa-chevron-left mr-8"></i></a>
+        <a href="losses.html"><i class="fa fa-chevron-left mr-8"></i></a>
 
 
         <a href="../index.html"><i class="fa fa-home mr-8"></i></a>
@@ -109,7 +109,7 @@
         <a href="../genindex.html"><i class="fa fa-list mr-8"></i></a>
 
 
-        <a href="nbeats.html"><i class="fa fa-chevron-right"></i></a>
+        <a href="optimizers.html"><i class="fa fa-chevron-right"></i></a>
 
       </div>
     </div>
@@ -145,35 +145,88 @@
       
         
   
-    <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
+    <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train on Custom Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/data-augmentation.html">Custom Data Augmentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/data-augmentation.html#step-1-define-a-new-custom-data-augmentation">(Step 1) Define a new custom data augmentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/data-augmentation.html#step-2-use-the-data-augmentation">(Step 2) Use the data augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/train.html#directory-structure">🗂 Directory Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#create-config">2. Create Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/train.html#config">📝 Config</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Models</span></p>
+<p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#informer">Informer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataaug.html">Data Augmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataaug.html#gaussian-noise">Gaussian Noise</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nbeats.html">NBeats</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nbeats.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nbeats.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="losses.html">Loss Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#dilate">DILATE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="losses.html#reference">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq.html">Seq2Seq</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="seq2seq.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="seq2seq.html#reference">Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#smooth-mae">Smooth MAE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="losses.html#id1">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="scinet.html">SCINet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="scinet.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scinet.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#models">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#informer">Informer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reference">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#n-beats">N-BEATS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scinet">SCINet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">🔍 Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optimizers.html">Optimizers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#adam">Adam</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimizers.html#reference">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#adamw">AdamW</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id1">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#sam">SAM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id2">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#sgd">SGD</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scalers.html">Scalers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scalers.html#identity-scaler">Identity Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scalers.html#min-max-scaler">Min-Max Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scalers.html#standard-scaler">Standard Scaler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="schedulers.html">LR Schedulers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#cosine-annealing">Cosine Annealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#cosine-annealing-warm-restarts">Cosine Annealing Warm Restarts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#exponential-decay">Exponential Decay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#identity">Identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#step">Step</a></li>
 </ul>
 </li>
 </ul>
@@ -187,35 +240,88 @@
           <div id="mnav">
             
   
-    <p class="caption" role="heading"><span class="caption-text">Basic</span></p>
+    <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train on Custom Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/data-augmentation.html">Custom Data Augmentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/data-augmentation.html#step-1-define-a-new-custom-data-augmentation">(Step 1) Define a new custom data augmentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/data-augmentation.html#step-2-use-the-data-augmentation">(Step 2) Use the data augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/train.html#directory-structure">🗂 Directory Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#create-config">2. Create Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/train.html#config">📝 Config</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Models</span></p>
+<p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#informer">Informer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataaug.html">Data Augmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataaug.html#gaussian-noise">Gaussian Noise</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nbeats.html">NBeats</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nbeats.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nbeats.html#reference">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="losses.html">Loss Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#dilate">DILATE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="losses.html#reference">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq.html">Seq2Seq</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="seq2seq.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="seq2seq.html#reference">Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#smooth-mae">Smooth MAE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="losses.html#id1">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="scinet.html">SCINet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="scinet.html#how-to-use">How to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scinet.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#models">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#informer">Informer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reference">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#n-beats">N-BEATS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scinet">SCINet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">🔍 Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optimizers.html">Optimizers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#adam">Adam</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimizers.html#reference">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#adamw">AdamW</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id1">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#sam">SAM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id2">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#sgd">SGD</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scalers.html">Scalers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scalers.html#identity-scaler">Identity Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scalers.html#min-max-scaler">Min-Max Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scalers.html#standard-scaler">Standard Scaler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="schedulers.html">LR Schedulers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#cosine-annealing">Cosine Annealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#cosine-annealing-warm-restarts">Cosine Annealing Warm Restarts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#exponential-decay">Exponential Decay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#identity">Identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schedulers.html#step">Step</a></li>
 </ul>
 </li>
 </ul>
@@ -224,11 +330,19 @@
           </div>
           <div class="body">
             
-  <div class="section" id="informer">
-<h1>Informer<a class="headerlink" href="#informer" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="how-to-use">
-<h2>How to Use<a class="headerlink" href="#how-to-use" title="Permalink to this headline">¶</a></h2>
-<p>Add following lines to config to use <em>Informer</em>.</p>
+  <div class="section" id="models">
+<h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="catalog">
+<p class="topic-title">Catalog</p>
+<ul class="simple">
+<li><a class="reference internal" href="#informer" id="id4">Informer</a></li>
+<li><a class="reference internal" href="#n-beats" id="id5">N-BEATS</a></li>
+<li><a class="reference internal" href="#scinet" id="id6">SCINet</a></li>
+<li><a class="reference internal" href="#seq2seq" id="id7">Seq2Seq</a></li>
+</ul>
+</div>
+<div class="section" id="informer">
+<h2><a class="toc-backref" href="#id4">Informer</a><a class="headerlink" href="#informer" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MODEL</span><span class="p">:</span>
   <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;Informer&quot;</span>
   <span class="c1"># Number of hidden units</span>
@@ -249,10 +363,67 @@
   <span class="nt">DROPOUT_RATE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.05</span>
 </pre></div>
 </div>
-</div>
 <div class="section" id="reference">
-<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
+<h3>🔍 Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://arxiv.org/abs/2012.07436">Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting</a></p>
+</div>
+</div>
+<div class="section" id="n-beats">
+<h2><a class="toc-backref" href="#id5">N-BEATS</a><a class="headerlink" href="#n-beats" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MODEL</span><span class="p">:</span>
+  <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;NBeats&quot;</span>
+  <span class="c1"># Number of hidden units</span>
+  <span class="nt">NUM_H_FEATS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">512</span>
+  <span class="c1"># Depth of each block (set small value if dataset has high mean and variance)</span>
+  <span class="nt">DEPTH</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+  <span class="c1"># Number of blocks</span>
+  <span class="nt">STACK_SIZE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+  <span class="c1"># Block type (option: {&quot;identity&quot;, &quot;trend&quot;})</span>
+  <span class="nt">BLOCK_TYPE</span><span class="p">:</span> <span class="s">&quot;identity&quot;</span>
+  <span class="c1"># Polynomial degree (used only if BLOCK_TYPE == &quot;trend&quot;)</span>
+  <span class="nt">DEGREE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+</pre></div>
+</div>
+<div class="section" id="id1">
+<h3>🔍 Reference<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://arxiv.org/abs/1905.10437">N-BEATS: Neural basis expansion analysis for interpretable time series forecasting</a></p>
+</div>
+</div>
+<div class="section" id="scinet">
+<h2><a class="toc-backref" href="#id6">SCINet</a><a class="headerlink" href="#scinet" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MODEL</span><span class="p">:</span>
+  <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;SCINet&quot;</span>
+  <span class="c1"># Number of levels</span>
+  <span class="nt">DEPTH</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+  <span class="c1"># Kernel size of conv modules</span>
+  <span class="nt">KERNEL_SIZE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+  <span class="c1"># Expansion rate of conv modules</span>
+  <span class="nt">EXPANSION_RATE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4.0</span>
+  <span class="c1"># Dropout rate</span>
+  <span class="nt">DROPOUT_RATE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+</pre></div>
+</div>
+<div class="section" id="id2">
+<h3>🔍 Reference<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://arxiv.org/abs/2106.09305?utm_source=feedburner&amp;utm_medium=feed&amp;utm_campaign=Feed%3A+arxiv%2FQSXk+%28ExcitingAds%21+cs+updates+on+arXiv.org%29">Time Series is a Special Sequence: Forecasting with Sample Convolution and Interaction</a></p>
+</div>
+</div>
+<div class="section" id="seq2seq">
+<h2><a class="toc-backref" href="#id7">Seq2Seq</a><a class="headerlink" href="#seq2seq" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MODEL</span><span class="p">:</span>
+  <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;Seq2Seq&quot;</span>
+  <span class="c1"># Number of hidden units</span>
+  <span class="nt">NUM_H_FEATS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">64</span>
+  <span class="c1"># Number of encoders</span>
+  <span class="nt">NUM_ENCODERS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+  <span class="c1"># Number of decoders</span>
+  <span class="nt">NUM_DECODERS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+</pre></div>
+</div>
+<div class="section" id="id3">
+<h3>🔍 Reference<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://arxiv.org/abs/1409.3215">Sequence to Sequence Learning with Neural Networks</a></p>
+</div>
 </div>
 </div>
 

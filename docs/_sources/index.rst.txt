@@ -1,24 +1,21 @@
-=========
-Tutorials
-=========
+==============
+Documentations
+==============
 
 .. toctree::
     :maxdepth: 1
-    :caption: Basic
+    :caption: ⚡️ Getting Started
 
-    tutorials/training
-    tutorials/inference
-    tutorials/custom-data-augmentation
-
-====
-Docs
-====
+    tutorials/train
+    tutorials/test
 
 .. toctree::
     :maxdepth: 1
-    :caption: Models
+    :caption: 📗 Catalog
 
-    models/informer
-    models/nbeats
-    models/seq2seq
-    models/scinet
+    modules/dataaug
+    modules/losses
+    modules/models
+    modules/optimizers
+    modules/scalers
+    modules/schedulers
