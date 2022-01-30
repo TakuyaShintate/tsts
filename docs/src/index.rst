@@ -7,6 +7,7 @@ Documentations
     :caption: ⚡️ Getting Started
 
     tutorials/train
+    tutorials/test
 
 .. toctree::
     :maxdepth: 1

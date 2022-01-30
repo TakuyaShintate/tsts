@@ -48,8 +48,8 @@ Run **tools/train.py** with the custom dataset and config. Input/output feature 
 .. code-block:: bash
 
    python tools/train.py \
-    --cfg-name "config.yml" \
-    --train-dir "train" \
-    --valid-dir "valid" \
-    --in-feats "input_feat1 input_feat2" \
-    --out-feats "output_feat1 output_feat2" \
+    --cfg-name config.yml \
+    --train-dir train \
+    --valid-dir valid \
+    --in-feats input_feat1 input_feat2 \
+    --out-feats output_feat1 output_feat2 \

@@ -39,7 +39,7 @@
       <script src="../../app-data.js"></script>
 <link rel="index" title="Index" href="../genindex.html" />
 <link rel="search" title="Search" href="../search.html" />
-<link rel="next" title="Data Augmentation" href="../modules/dataaug.html" />
+<link rel="next" title="Test on a Custom Dataset" href="test.html" />
 <link rel="prev" title="Documentations" href="../index.html" />
 
 </head>
@@ -90,7 +90,7 @@
       </div>
     
       <div class="pull-right">
-        <a class="btn btn-default next" href="../modules/dataaug.html" title="Next chapter (Data Augmentation)"><span class="btn-text">Data Augmentation</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
+        <a class="btn btn-default next" href="test.html" title="Next chapter (Test on a Custom Dataset)"><span class="btn-text">Test on a Custom Dataset</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
       </div>
     </div>
   
@@ -109,7 +109,7 @@
         <a href="../genindex.html"><i class="fa fa-list mr-8"></i></a>
 
 
-        <a href="../modules/dataaug.html"><i class="fa fa-chevron-right"></i></a>
+        <a href="test.html"><i class="fa fa-chevron-right"></i></a>
 
       </div>
     </div>
@@ -159,6 +159,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#train-forecasting-model">3. Train Forecasting Model</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="test.html">Test on a Custom Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul>
@@ -166,7 +167,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dataaug.html#gaussian-noise">Gaussian Noise</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/losses.html">Loss Functions</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/losses.html#loss-functions">Loss Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#dilate">DILATE</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#reference">🔍 Reference</a></li>
 </ul>
@@ -254,6 +255,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#train-forecasting-model">3. Train Forecasting Model</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="test.html">Test on a Custom Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul>
@@ -261,7 +263,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dataaug.html#gaussian-noise">Gaussian Noise</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/losses.html">Loss Functions</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/losses.html#loss-functions">Loss Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#dilate">DILATE</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#reference">🔍 Reference</a></li>
 </ul>
@@ -342,7 +344,7 @@
 </div>
 <div class="section" id="directory-structure">
 <h3>🗂 Directory Structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="../_images/train-tool.jpg"><img alt="../_images/train-tool.jpg" class="align-center" src="../_images/train-tool.jpg" style="width: 935.0px; height: 536.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/train-tool.jpg"><img alt="../_images/train-tool.jpg" class="align-center" src="../_images/train-tool.jpg" style="width: 605.0px; height: 358.0px;" /></a>
 </div>
 </div>
 <div class="section" id="create-config">
@@ -368,11 +370,11 @@
 <h2>3. Train Forecasting Model<a class="headerlink" href="#train-forecasting-model" title="Permalink to this headline">¶</a></h2>
 <p>Run <strong>tools/train.py</strong> with the custom dataset and config. Input/output feature names have to be specified too.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python tools/train.py <span class="se">\</span>
- --cfg-name <span class="s2">&quot;config.yml&quot;</span> <span class="se">\</span>
- --train-dir <span class="s2">&quot;train&quot;</span> <span class="se">\</span>
- --valid-dir <span class="s2">&quot;valid&quot;</span> <span class="se">\</span>
- --in-feats <span class="s2">&quot;input_feat1 input_feat2&quot;</span> <span class="se">\</span>
- --out-feats <span class="s2">&quot;output_feat1 output_feat2&quot;</span> <span class="se">\</span>
+ --cfg-name config.yml <span class="se">\</span>
+ --train-dir train <span class="se">\</span>
+ --valid-dir valid <span class="se">\</span>
+ --in-feats input_feat1 input_feat2 <span class="se">\</span>
+ --out-feats output_feat1 output_feat2 <span class="se">\</span>
 </pre></div>
 </div>
 </div>

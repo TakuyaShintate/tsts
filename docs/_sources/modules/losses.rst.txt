@@ -39,6 +39,7 @@ Mean Absolute Percentage Error (MAPE)
 
     LOSS:
       NAME: ["MAPE"]
+      ARGS: []
 
 ------------------------
 Mean Squared Error (MSE)
@@ -48,6 +49,7 @@ Mean Squared Error (MSE)
 
     LOSS:
       NAME: ["MSE"]
+      ARGS: []
 
 ----------
 Smooth MAE
