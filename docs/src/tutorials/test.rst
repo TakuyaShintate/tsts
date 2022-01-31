@@ -27,7 +27,7 @@ Run **tools/test.py** with the custom dataset and config. Input/output feature n
 
 .. code-block:: bash
 
-   python tools/train.py \
+   python tools/test.py \
     --cfg-name config.yml \
     --train-dir train \
     --valid-dir valid \
