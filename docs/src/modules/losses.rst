@@ -12,8 +12,8 @@ DILATE
 
 .. code-block:: yaml
 
-    LOSS:
-      NAME: ["DILATE"]
+    LOSSES:
+      NAMES: ["DILATE"]
       ARGS: [{"alpha": 0.5, "gamma": 0.001}]
 
 🔍 Reference
@@ -27,8 +27,8 @@ Mean Absolute Error (MAE)
 
 .. code-block:: yaml
 
-    LOSS:
-      NAME: ["MAE"]
+    LOSSES:
+      NAMES: ["MAE"]
       ARGS: []
 
 -------------------------------------
@@ -37,8 +37,8 @@ Mean Absolute Percentage Error (MAPE)
 
 .. code-block:: yaml
 
-    LOSS:
-      NAME: ["MAPE"]
+    LOSSES:
+      NAMES: ["MAPE"]
       ARGS: []
 
 ------------------------
@@ -47,8 +47,8 @@ Mean Squared Error (MSE)
 
 .. code-block:: yaml
 
-    LOSS:
-      NAME: ["MSE"]
+    LOSSES:
+      NAMES: ["MSE"]
       ARGS: []
 
 ----------

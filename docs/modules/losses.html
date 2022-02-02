@@ -159,7 +159,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/test.html">Test on a Custom Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/test.html">Test on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/test.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/test.html#directory-structure">🗂 Directory Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/test.html#test-forecasting-model">2. Test Forecasting Model</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul class="current">
@@ -255,7 +262,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/test.html">Test on a Custom Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/test.html">Test on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/test.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/test.html#directory-structure">🗂 Directory Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/test.html#test-forecasting-model">2. Test Forecasting Model</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
 <ul class="current">
@@ -346,8 +360,8 @@
 </div>
 <div class="section" id="dilate">
 <h2><a class="toc-backref" href="#id2">DILATE</a><a class="headerlink" href="#dilate" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">LOSS</span><span class="p">:</span>
-  <span class="nt">NAME</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;DILATE&quot;</span><span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">LOSSES</span><span class="p">:</span>
+  <span class="nt">NAMES</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;DILATE&quot;</span><span class="p p-Indicator">]</span>
   <span class="nt">ARGS</span><span class="p">:</span> <span class="p p-Indicator">[{</span><span class="s">&quot;alpha&quot;</span><span class="p p-Indicator">:</span> <span class="nv">0.5</span><span class="p p-Indicator">,</span> <span class="s">&quot;gamma&quot;</span><span class="p p-Indicator">:</span> <span class="nv">0.001</span><span class="p p-Indicator">}]</span>
 </pre></div>
 </div>
@@ -358,24 +372,24 @@
 </div>
 <div class="section" id="mean-absolute-error-mae">
 <h2><a class="toc-backref" href="#id3">Mean Absolute Error (MAE)</a><a class="headerlink" href="#mean-absolute-error-mae" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">LOSS</span><span class="p">:</span>
-  <span class="nt">NAME</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;MAE&quot;</span><span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">LOSSES</span><span class="p">:</span>
+  <span class="nt">NAMES</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;MAE&quot;</span><span class="p p-Indicator">]</span>
   <span class="nt">ARGS</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="mean-absolute-percentage-error-mape">
 <h2><a class="toc-backref" href="#id4">Mean Absolute Percentage Error (MAPE)</a><a class="headerlink" href="#mean-absolute-percentage-error-mape" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">LOSS</span><span class="p">:</span>
-  <span class="nt">NAME</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;MAPE&quot;</span><span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">LOSSES</span><span class="p">:</span>
+  <span class="nt">NAMES</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;MAPE&quot;</span><span class="p p-Indicator">]</span>
   <span class="nt">ARGS</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="mean-squared-error-mse">
 <h2><a class="toc-backref" href="#id5">Mean Squared Error (MSE)</a><a class="headerlink" href="#mean-squared-error-mse" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">LOSS</span><span class="p">:</span>
-  <span class="nt">NAME</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;MSE&quot;</span><span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">LOSSES</span><span class="p">:</span>
+  <span class="nt">NAMES</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;MSE&quot;</span><span class="p p-Indicator">]</span>
   <span class="nt">ARGS</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
 </pre></div>
 </div>
