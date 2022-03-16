@@ -36,6 +36,8 @@ class ColorText(object):
 
 
 LOG = "[" + ColorText.GREEN + "log" + ColorText.END + "]"
+ERROR = "[" + ColorText.RED + "error" + ColorText.END + "]"
+WARNING = "[" + ColorText.BLUE + "warning" + ColorText.END + "]"
 
 
 def parse_args() -> Namespace:
@@ -102,6 +104,7 @@ def load_cfg(cfg_name: str) -> CN:
 
 
 def load_timeseries_data(
+    cfg: CN,
     args: Namespace,
     target_dir: str,
     lookback: int,
@@ -109,6 +112,8 @@ def load_timeseries_data(
 ) -> Tuple[List[Tensor], ...]:
     X = []
     Y = []
+    if len(glob.glob(f"{target_dir}/*.csv")) == 0:
+        raise ValueError(f"{ERROR} found no files in {target_dir}")
     for path in glob.glob(f"{target_dir}/*.csv"):
         df = pd.read_csv(path)
         df = df.fillna(0.0)
@@ -116,6 +121,9 @@ def load_timeseries_data(
         y = df[args.out_feats]
         x = x.values
         y = y.values
+        if len(x) < cfg.IO.HORIZON + 1:
+            print(f"{WARNING} {path} is smaller than the minimum size, so skipped")
+            continue
         x = torch.tensor(x, dtype=torch.float32)
         y = torch.tensor(y, dtype=torch.float32)
         if args.lagging is True:
@@ -126,6 +134,9 @@ def load_timeseries_data(
         else:
             X.append(x)
             Y.append(y)
+    # No valid files
+    if len(X) == 0:
+        raise ValueError(f"{ERROR} found no valid files in {target_dir}")
     return (X, Y)
 
 
@@ -138,6 +149,7 @@ def main() -> None:
     # Load train data
     print(f"{LOG} loading train data...")
     (X_train, Y_train) = load_timeseries_data(
+        cfg,
         args,
         args.train_dir,
         lookback,
@@ -147,6 +159,7 @@ def main() -> None:
     # Load valid data
     print(f"{LOG} loading validation data...")
     (X_valid, Y_valid) = load_timeseries_data(
+        cfg,
         args,
         args.valid_dir,
         lookback,
