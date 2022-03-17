@@ -121,7 +121,7 @@ def load_timeseries_data(
         y = df[args.out_feats]
         x = x.values
         y = y.values
-        if len(x) < cfg.IO.HORIZON + 1:
+        if len(x) < cfg.DATASET.BASE_START_INDEX + cfg.DATASET.BASE_END_INDEX + 1:
             print(f"{WARNING} {path} is smaller than the minimum size, so skipped")
             continue
         x = torch.tensor(x, dtype=torch.float32)
