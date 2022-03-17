@@ -117,7 +117,7 @@ def load_sample(args: Namespace, filename: str, cfg: CN) -> Tuple[Tensor, Tensor
     df = pd.read_csv(filename)
     df = df.fillna(0.0)
     x = torch.tensor(df[args.in_feats].values, dtype=torch.float32)
-    y = torch.tensor(df[args.out_feats].values)
+    y = torch.tensor(df[args.out_feats].values, dtype=torch.float32)
     if args.lagging is True:
         y = torch.cat([torch.zeros((cfg.IO.LOOKBACK, len(args.out_feats))), y])
     return (x, y)
@@ -161,6 +161,7 @@ def build_scalers(cfg: CN, args: Namespace) -> Tuple[Scaler, Scaler]:
 def infer_step(
     args: Namespace,
     x: Tensor,
+    y: Tensor,
     solver: TimeSeriesForecaster,
     X_scaler: Scaler,
     Y_scaler: Scaler,
@@ -223,7 +224,8 @@ def infer_step(
         for i in tqdm(range(lookback, end_steps)):
             # Transform input time series and reverse transform predicted time series
             x_scale = X_scaler.transform(x[i - lookback : i])
-            z_scale = Y_scaler.inv_transform(solver.predict(x_scale))
+            b_scale = Y_scaler.transform(y[i - lookback : i])
+            z_scale = Y_scaler.inv_transform(solver.predict(x_scale, b_scale))
             z[i : i + horizon] += z_scale
             c[i : i + horizon] += 1.0
     z = z / c.unsqueeze(-1).clamp(min=1.0)
@@ -276,6 +278,7 @@ def predict(
         z = infer_step(
             args,
             x,
+            y,
             solver,
             X_scaler,
             Y_scaler,
