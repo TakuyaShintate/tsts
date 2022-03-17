@@ -10,7 +10,7 @@ Train on a Custom Dataset
 
 Put **.csv** files to train directory (used for training) and valid directory (used for validation).
 
-.. note:: Any directory names can be used
+.. note:: Any directory names can be used.
 
 🗂 Directory Structure
 ----------------------
@@ -25,7 +25,7 @@ Put **.csv** files to train directory (used for training) and valid directory (u
 
 To specify training settings, create config file.
 
-.. note:: Refer to **tsts/cfg/defaults.py** for available options
+.. note:: See :ref:`config structure <config>` for the details.
 
 📝 Config
 ---------

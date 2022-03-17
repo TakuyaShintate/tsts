@@ -39,7 +39,7 @@
       <script src="app-data.js"></script>
 <link rel="index" title="Index" href="genindex.html" />
 <link rel="search" title="Search" href="search.html" />
-<link rel="next" title="Train on a Custom Dataset" href="tutorials/train.html" />
+<link rel="next" title="How a Config File is Structured" href="projects/config.html" />
 
 </head>
 <body class="full-height test">
@@ -85,7 +85,7 @@
   <div class="prev-next">
     
       <div class="pull-right">
-        <a class="btn btn-default next" href="tutorials/train.html" title="Next chapter (Train on a Custom Dataset)"><span class="btn-text">Train on a Custom Dataset</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
+        <a class="btn btn-default next" href="projects/config.html" title="Next chapter (How a Config File is Structured)"><span class="btn-text">How a Config File is Structured</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
       </div>
     </div>
   
@@ -100,7 +100,7 @@
         <a href="genindex.html"><i class="fa fa-list mr-8"></i></a>
 
 
-        <a href="tutorials/train.html"><i class="fa fa-chevron-right"></i></a>
+        <a href="projects/config.html"><i class="fa fa-chevron-right"></i></a>
 
       </div>
     </div>
@@ -136,7 +136,29 @@
       
         
   
-    <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
+    <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="projects/config.html">How a Config File is Structured</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#general-settings">General Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#input-output">Input &amp; Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#optimizer">Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#learning-rate-scheduler">Learning Rate Scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#trainer">Trainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#model">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#local-scaler">Local Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#loss-function">Loss Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#metric">Metric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#dataset">Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#pipeline">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#scaler">Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#dataloader">Dataloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#logger">Logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#putting-it-together">Putting It Together</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Train on a Custom Dataset</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
@@ -185,15 +207,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/models.html#n-beats">N-BEATS</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id1">🔍 Reference</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="modules/models.html#scinet">SCINet</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="modules/models.html#id2">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="modules/models.html#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#scinet">SCINet</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="modules/models.html#id3">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id4">🔍 Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -204,11 +226,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#adamw">AdamW</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id1">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id2">🔍 Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sam">SAM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id3">🔍 Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sgd">SGD</a></li>
@@ -239,7 +261,29 @@
           <div id="mnav">
             
   
-    <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
+    <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="projects/config.html">How a Config File is Structured</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#general-settings">General Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#input-output">Input &amp; Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#optimizer">Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#learning-rate-scheduler">Learning Rate Scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#trainer">Trainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#model">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#local-scaler">Local Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#loss-function">Loss Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#metric">Metric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#dataset">Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#pipeline">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#scaler">Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#dataloader">Dataloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#logger">Logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#putting-it-together">Putting It Together</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Train on a Custom Dataset</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
@@ -288,15 +332,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/models.html#n-beats">N-BEATS</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id1">🔍 Reference</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="modules/models.html#scinet">SCINet</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="modules/models.html#id2">🔍 Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="modules/models.html#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#scinet">SCINet</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="modules/models.html#id3">🔍 Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/models.html#seq2seq">Seq2Seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id4">🔍 Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -307,11 +351,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#adamw">AdamW</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id1">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id2">🔍 Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sam">SAM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id3">🔍 Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sgd">SGD</a></li>
@@ -339,6 +383,12 @@
             
   <div class="section" id="documentations">
 <h1>Documentations<a class="headerlink" href="#documentations" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="projects/config.html">How a Config File is Structured</a></li>
+</ul>
+</div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>

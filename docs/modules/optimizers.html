@@ -145,7 +145,17 @@
       
         
   
-    <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
+    <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../projects/config.html">How a Config File is Structured</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#general-settings">General Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#input-output">Input &amp; Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#optimizer">Optimizer</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train on a Custom Dataset</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
@@ -213,11 +223,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#adamw">AdamW</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">🔍 Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#sam">SAM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">🔍 Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#sgd">SGD</a></li>
@@ -248,7 +258,17 @@
           <div id="mnav">
             
   
-    <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
+    <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../projects/config.html">How a Config File is Structured</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#general-settings">General Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#input-output">Input &amp; Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#optimizer">Optimizer</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train on a Custom Dataset</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
@@ -316,11 +336,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#adamw">AdamW</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">🔍 Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#sam">SAM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">🔍 Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#sgd">SGD</a></li>
@@ -347,18 +367,18 @@
           <div class="body">
             
   <div class="section" id="optimizers">
-<h1>Optimizers<a class="headerlink" href="#optimizers" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Optimizers<a class="headerlink" href="#optimizers" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="catalog">
 <p class="topic-title">Catalog</p>
 <ul class="simple">
-<li><a class="reference internal" href="#adam" id="id3">Adam</a></li>
-<li><a class="reference internal" href="#adamw" id="id4">AdamW</a></li>
-<li><a class="reference internal" href="#sam" id="id5">SAM</a></li>
-<li><a class="reference internal" href="#sgd" id="id6">SGD</a></li>
+<li><a class="reference internal" href="#adam" id="id4">Adam</a></li>
+<li><a class="reference internal" href="#adamw" id="id5">AdamW</a></li>
+<li><a class="reference internal" href="#sam" id="id6">SAM</a></li>
+<li><a class="reference internal" href="#sgd" id="id7">SGD</a></li>
 </ul>
 </div>
 <div class="section" id="adam">
-<h2><a class="toc-backref" href="#id3">Adam</a><a class="headerlink" href="#adam" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Adam</a><a class="headerlink" href="#adam" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">OPTIMIZER</span><span class="p">:</span>
   <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;Adam&quot;</span>
   <span class="nt">LR</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.001</span>
@@ -372,7 +392,7 @@
 </div>
 </div>
 <div class="section" id="adamw">
-<h2><a class="toc-backref" href="#id4">AdamW</a><a class="headerlink" href="#adamw" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">AdamW</a><a class="headerlink" href="#adamw" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">OPTIMIZER</span><span class="p">:</span>
     <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;AdamW&quot;</span>
     <span class="nt">LR</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.001</span>
@@ -380,13 +400,13 @@
     <span class="nt">EPS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0E-8</span>
 </pre></div>
 </div>
-<div class="section" id="id1">
-<h3>🔍 Reference<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>🔍 Reference<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://arxiv.org/abs/1711.05101">Decoupled Weight Decay Regularization</a></p>
 </div>
 </div>
 <div class="section" id="sam">
-<h2><a class="toc-backref" href="#id5">SAM</a><a class="headerlink" href="#sam" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">SAM</a><a class="headerlink" href="#sam" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">OPTIMIZER</span><span class="p">:</span>
   <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;SAM&quot;</span>
   <span class="nt">LR</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.001</span>
@@ -396,13 +416,13 @@
   <span class="nt">EPS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0E-8</span>
 </pre></div>
 </div>
-<div class="section" id="id2">
-<h3>🔍 Reference<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>🔍 Reference<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://arxiv.org/abs/2010.01412">Sharpness-Aware Minimization for Efficiently Improving Generalization</a></p>
 </div>
 </div>
 <div class="section" id="sgd">
-<h2><a class="toc-backref" href="#id6">SGD</a><a class="headerlink" href="#sgd" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">SGD</a><a class="headerlink" href="#sgd" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">OPTIMIZER</span><span class="p">:</span>
   <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;SGD&quot;</span>
   <span class="nt">LR</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.001</span>
