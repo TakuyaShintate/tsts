@@ -1,3 +1,5 @@
+.. _losses:
+
 ==============
 Loss Functions
 ==============
@@ -29,7 +31,7 @@ Mean Absolute Error (MAE)
 
     LOSSES:
       NAMES: ["MAE"]
-      ARGS: []
+      ARGS: [{}]
 
 -------------------------------------
 Mean Absolute Percentage Error (MAPE)
@@ -39,7 +41,7 @@ Mean Absolute Percentage Error (MAPE)
 
     LOSSES:
       NAMES: ["MAPE"]
-      ARGS: []
+      ARGS: [{}]
 
 ------------------------
 Mean Squared Error (MSE)
@@ -49,7 +51,7 @@ Mean Squared Error (MSE)
 
     LOSSES:
       NAMES: ["MSE"]
-      ARGS: []
+      ARGS: [{}]
 
 ----------
 Smooth MAE
@@ -59,7 +61,7 @@ Smooth MAE
 
     LOSSES:
       NAMES: ["SmoothMAE"]
-      ARGS: [{"beta": 1.0 / 9.0}]
+      ARGS: [{"beta": 0.11}]
 
 🔍 Reference
 ------------

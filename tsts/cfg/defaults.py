@@ -17,11 +17,11 @@ _C.IO.HORIZON = 48
 _C.TRAINING = CN()
 # How to split train dataset {"col" or "row"}
 _C.TRAINING.TRAIN_DATA_SPLIT = "col"
-# Ratio of training dataset over VALIDidation dataset
+# Ratio of train dataset size over val dataset size
 _C.TRAINING.TRAIN_DATA_RATIO = 0.75
-# Number of epochs (epoch means a single iteration over whole training + VALIDidation dataset)
+# Number of epochs
 _C.TRAINING.NUM_EPOCHS = 100
-# If True, datasets are split randomly (valid only when TRAIN_DATA_SPLIT = "col")
+# If True, datasets are split randomly (valid only if TRAIN_DATA_SPLIT = "col")
 _C.TRAINING.RANDOM_SPLIT = True
 
 _C.OPTIMIZER = CN()
@@ -146,11 +146,11 @@ _C.PIPELINE.TRANSFORMS_TRAIN = []
 _C.PIPELINE.TRANSFORMS_VALID = []
 
 _C.X_SCALER = CN()
-# Scaler (for X) name
+# Scaler for input time series
 _C.X_SCALER.NAME = "StandardScaler"
 
 _C.Y_SCALER = CN()
-# Scaler (for y) name
+# Scaler for output time series
 _C.Y_SCALER.NAME = "StandardScaler"
 
 _C.COLLATOR = CN()
@@ -162,9 +162,9 @@ _C.DATALOADER = CN()
 _C.DATALOADER.NAME_TRAIN = "DataLoader"
 # Validation dataloader name
 _C.DATALOADER.NAME_VALID = "DataLoader"
-# Batch size for train dataset
+# Batch size of train dataset
 _C.DATALOADER.BATCH_SIZE_TRAIN = 100
-# Batch size for validation dataset
+# Batch size of validation dataset
 _C.DATALOADER.BATCH_SIZE_VALID = 100
 # Number of workers for train dataset
 _C.DATALOADER.NUM_WORKERS_TRAIN = 4

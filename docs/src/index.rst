@@ -2,6 +2,13 @@
 Documentations
 ==============
 
+
+.. toctree::
+    :maxdepth: 1
+    :caption: 🌏 About Project
+
+    projects/config
+
 .. toctree::
     :maxdepth: 1
     :caption: ⚡️ Getting Started
