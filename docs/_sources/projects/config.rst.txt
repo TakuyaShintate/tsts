@@ -4,6 +4,18 @@
 How a Config File is Structured
 ===============================
 
+You may specify config file to inplace default settings when you start a new training. In this page, availabe options are explained section by section.
+
+.. code-block:: bash 
+
+    python tools/train.py --cfg-name "" ...
+
+.. code-block:: python
+
+    ...
+    cfg_name = ""
+    farecaster = TimeSeriesForecaster(cfg_name)
+
 General Settings
 ================
 
@@ -52,11 +64,13 @@ If TRAIN_DATA_SPLIT is "col", each csv file is divided into train and val datase
       NUM_EPOCHS: 100
       # If True, datasets are split randomly (valid only if TRAIN_DATA_SPLIT = "col")
       RANDOM_SPLIT: False
+      # Try to load pretrained model & local scaler in this directory
+      PRETRAIN: None
 
 Optimizer
 =========
 
-See a full list of :ref:`available optimizers <optimizers>`.
+See a full list of :ref:`optimizers <optimizers>`.
 
 .. code-block:: yaml
     :emphasize-lines: 4,5,6,7,8
@@ -73,7 +87,7 @@ See a full list of :ref:`available optimizers <optimizers>`.
 Learning Rate Scheduler
 =======================
 
-See a full list of :ref:`available learning rate schedulers <schedulers>`.
+See a full list of :ref:`learning rate schedulers <schedulers>`.
 
 .. code-block:: yaml
     :emphasize-lines: 4,5,6
@@ -279,6 +293,8 @@ Putting It Together
       NUM_EPOCHS: 100
       # If True, datasets are split randomly (valid only if TRAIN_DATA_SPLIT = "col")
       RANDOM_SPLIT: False
+      # Try to load pretrained model & local scaler in this directory
+      PRETRAIN: None
 
     OPTIMIZER:
       # Optimizer name

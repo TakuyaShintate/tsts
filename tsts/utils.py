@@ -1,6 +1,8 @@
 import math
 import os
 import random
+import warnings
+from collections import OrderedDict
 from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
@@ -148,3 +150,16 @@ def set_random_seed(seed: int = 42) -> None:
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+
+
+def merge_state_dict(src: OrderedDict, tgt: OrderedDict) -> OrderedDict:
+    new_state_dict = OrderedDict()
+    for (k, v) in zip(src.keys(), tgt.values()):
+        if v.size() == src[k].size():
+            new_state_dict[k] = v
+        # NOTE: This usually happens if the number of input/output vars is different from the one
+        # during pretraining. In this case, randomly initialized params are used.
+        else:
+            warnings.warn(f"{k} does not match between src and tgt")
+            new_state_dict[k] = src[k]
+    return new_state_dict

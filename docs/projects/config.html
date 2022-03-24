@@ -392,6 +392,15 @@
             
   <div class="section" id="how-a-config-file-is-structured">
 <span id="config"></span><h1>How a Config File is Structured<a class="headerlink" href="#how-a-config-file-is-structured" title="Permalink to this headline">¶</a></h1>
+<p>You may specify config file to inplace default settings when you start a new training. In this page, availabe options are explained section by section.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python tools/train.py --cfg-name <span class="s2">&quot;&quot;</span> ...
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="n">cfg_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">farecaster</span> <span class="o">=</span> <span class="n">TimeSeriesForecaster</span><span class="p">(</span><span class="n">cfg_name</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="section" id="general-settings">
 <h2>General Settings<a class="headerlink" href="#general-settings" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="c1"># Which device to use</span>
@@ -431,12 +440,14 @@
 </span><span class="hll">  <span class="nt">NUM_EPOCHS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
 </span><span class="hll">  <span class="c1"># If True, datasets are split randomly (valid only if TRAIN_DATA_SPLIT = &quot;col&quot;)</span>
 </span><span class="hll">  <span class="nt">RANDOM_SPLIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
-</span></pre></div>
+</span>  <span class="c1"># Try to load pretrained model &amp; local scaler in this directory</span>
+  <span class="nt">PRETRAIN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">None</span>
+</pre></div>
 </div>
 </div>
 <div class="section" id="optimizer">
 <h2>Optimizer<a class="headerlink" href="#optimizer" title="Permalink to this headline">¶</a></h2>
-<p>See a full list of <a class="reference internal" href="../modules/optimizers.html#optimizers"><span class="std std-ref">available optimizers</span></a>.</p>
+<p>See a full list of <a class="reference internal" href="../modules/optimizers.html#optimizers"><span class="std std-ref">optimizers</span></a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">TRAINING</span><span class="p">:</span>
   <span class="l l-Scalar l-Scalar-Plain">...</span>
 
@@ -450,7 +461,7 @@
 </div>
 <div class="section" id="learning-rate-scheduler">
 <h2>Learning Rate Scheduler<a class="headerlink" href="#learning-rate-scheduler" title="Permalink to this headline">¶</a></h2>
-<p>See a full list of <a class="reference internal" href="../modules/schedulers.html#schedulers"><span class="std std-ref">available learning rate schedulers</span></a>.</p>
+<p>See a full list of <a class="reference internal" href="../modules/schedulers.html#schedulers"><span class="std std-ref">learning rate schedulers</span></a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">OPTIMIZER</span><span class="p">:</span>
   <span class="l l-Scalar l-Scalar-Plain">...</span>
 
@@ -628,6 +639,8 @@
   <span class="nt">NUM_EPOCHS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
   <span class="c1"># If True, datasets are split randomly (valid only if TRAIN_DATA_SPLIT = &quot;col&quot;)</span>
   <span class="nt">RANDOM_SPLIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+  <span class="c1"># Try to load pretrained model &amp; local scaler in this directory</span>
+  <span class="nt">PRETRAIN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">None</span>
 
 <span class="nt">OPTIMIZER</span><span class="p">:</span>
   <span class="c1"># Optimizer name</span>

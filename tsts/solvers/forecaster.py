@@ -1,5 +1,7 @@
+import os
 import typing
 import warnings
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -19,6 +21,7 @@ from tsts.schedulers import Scheduler
 from tsts.trainers import Trainer
 from tsts.transforms.pipeline import Pipeline
 from tsts.types import MaybeRawDataset, RawDataset
+from tsts.utils import merge_state_dict
 
 from .solver import Solver
 
@@ -671,6 +674,28 @@ class TimeSeriesForecaster(Solver):
         Z = Z[0].detach().cpu()
         return Z
 
+    def _load_pretrained_modules(self) -> None:
+        # Load pretrained model
+        model_path = os.path.join(
+            self.cfg.TRAINING.PRETRAIN,
+            "model.pth",
+        )
+        if Path(model_path).exists() is True:
+            src = self.model.state_dict()
+            tgt = torch.load(model_path)
+            state_dict = merge_state_dict(src, tgt)
+            self.model.load_state_dict(state_dict)
+        # Load pretrained local scaler
+        local_scaler_path = os.path.join(
+            self.cfg.TRAINING.PRETRAIN,
+            "local_scaler.pth",
+        )
+        if Path(local_scaler_path).exists() is True:
+            src = self.local_scaler.state_dict()
+            tgt = torch.load(local_scaler_path)
+            state_dict = merge_state_dict(src, tgt)
+            self.local_scaler.load_state_dict(state_dict)
+
     def fit(
         self,
         X: RawDataset,
@@ -703,6 +728,8 @@ class TimeSeriesForecaster(Solver):
             y_valid,
             time_stamps_valid,
         )
+        if self.cfg.TRAINING.PRETRAIN is not None:
+            self._load_pretrained_modules()
         for i in range(num_epochs):
             (ave_loss_vals, ave_scores) = self.trainer.step()
             self.logger.log(i, ave_loss_vals, ave_scores)
