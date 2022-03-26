@@ -29,11 +29,11 @@ If you want to measure the performance of your model on a given benchmark, see "
 
 ### Using `tools/train.py`/`tools/test.py`
 
-1. Preparation of data to be used for training
+#### 1. Preparation of data to be used for training
 
 Save the training data (CSV file), validation data, and test data in their respective directories. The name of the directory is arbitrary. If there are multiple training, validation, and test data, please save them all in their respective directories.
 
-#### Example of CSV file
+##### Example of CSV file
 
 > It allows selection of input and output variables to be used at runtime
 
@@ -41,7 +41,7 @@ Save the training data (CSV file), validation data, and test data in their respe
 | ----- | ----- | ----- |
 | xxxxx | yyyyy | zzzzz |
 
-2. Create a config file
+#### 2. Create a config file
 
 Create a config file describing the settings during training. You can specify the model, Data Augmentation, Optimizer, Learning Rate Scheduler, etc. See [documentations](https://takuyashintate.github.io/tsts/projects/config.html) for details on the possible configuration items.
 
@@ -53,7 +53,7 @@ LOGGER:
   LOG_DIR: "my-first-model"
 ```
 
-3. Training
+#### 3. Training
 
 Execute the command below to begin training. Once training begins, model parameters and a log file will be created in the directory specified in 2 (`my-first-model` here). The log file will contain loss and metric values for each epoch.
 
@@ -72,7 +72,7 @@ python tools/train.py \
     --out-feats <list of output feature names>
 ```
 
-4. Testing a trained model
+#### 4. Testing a trained model
 
 After training is complete, the command below can be executed to obtain the prediction results for the test data. CSV files containing the prediction results, the correct labels, and their errors will be saved in the directory specified by `--out-dir`, and images of them plotted. Results are saved for each test data.
 
