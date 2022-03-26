@@ -7,9 +7,15 @@
 [![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/1.0.0/)
 [![license](https://img.shields.io/github/license/TakuyaShintate/tsts?style=flat)](https://github.com/TakuyaShintate/tsts/blob/main/LICENSE)
 
-[English](https://github.com/TakuyaShintate/tsts/blob/main)/[日本語](https://github.com/TakuyaShintate/tsts/blob/main/LICENSE)
+English/[日本語](README_JP.md)
 
 ([documentations](https://takuyashintate.github.io/tsts/))
+
+## ❓ About this project
+
+`tsts` is an open source project that provides state-of-the-art time series forecasting methods.
+
+It allows for more flexible model building, such as building models in combination with autoregressive (AR) models and other models. In addition to models, `tsts` also provides the latest modules for data augmentation, loss functions, and optimizers, etc.
 
 ## ⛏ Installation
 
@@ -37,12 +43,12 @@ Save the training data (CSV file), validation data, and test data in their respe
 
 2. Create a config file
 
-Create a config file describing the settings during training. You can specify the model, Data Augmentation, Optimizer, Learning Rate Scheduler, etc. See [Documentation](https://takuyashintate.github.io/tsts/projects/config.html) for details on the possible configuration items.
+Create a config file describing the settings during training. You can specify the model, Data Augmentation, Optimizer, Learning Rate Scheduler, etc. See [documentations](https://takuyashintate.github.io/tsts/projects/config.html) for details on the possible configuration items.
 
-For simplicity, we will use a minimal config file here. Save the following as `my_first_model.yml`. You can use a different model or methodology by copying the target section from [Documentation](https://takuyashintate.github.io/tsts/).
+For simplicity, we will use a minimal config file here. Save the following as `my_first_model.yml`. You can use a different model or methodology by copying the target section from [documentations](https://takuyashintate.github.io/tsts/).
 
 ```yaml
-# `my_first_model.yml`として保存してください
+# Save as `my_first_model.yml`
 LOGGER:
   LOG_DIR: "my-first-model"
 ```
@@ -69,6 +75,8 @@ python tools/train.py \
 4. Testing a trained model
 
 After training is complete, the command below can be executed to obtain the prediction results for the test data. CSV files containing the prediction results, the correct labels, and their errors will be saved in the directory specified by `--out-dir`, and images of them plotted. Results are saved for each test data.
+
+> The first few lines of the prediction result and the last few lines of the correct answer label are padded with zeros to adjust their size
 
 ```
 python tools/test.py \

@@ -6,11 +6,15 @@
 
 [![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/1.0.0/)[![license](https://img.shields.io/github/license/TakuyaShintate/tsts?style=flat)](https://github.com/TakuyaShintate/tsts/blob/main/LICENSE)
 
+[English](README.md)/日本語
+
 ([ドキュメンテーション](https://takuyashintate.github.io/tsts/))
 
-## 🌎 このプロジェクトについて
+## ❓ このプロジェクトについて
 
-自己回帰（AR）モデルなどと組み合わせてモデルを構築するなど、より柔軟なモデルの構築が可能です。
+最新の時系列予測手法を提供するオープンソースプロジェクトです。
+
+自己回帰（AR）モデルなどと組み合わせてモデルを構築するなど、より柔軟なモデルの構築が可能です。また、モデルの他にData Augmentationや損失関数、オプティマイザーに関しても最新のモジュールを提供しています。
 
 ## ⛏ インストール方法
 
