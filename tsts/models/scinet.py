@@ -37,19 +37,19 @@ class ConvModule(Module):
 
     def _init_conv_module(self) -> None:
         self.conv_module = Sequential(
-            ReplicationPad1d(self.kernel_size // 2),
+            ReplicationPad1d((self.kernel_size - 1) // 2 + 1),
             Conv1d(
                 self.num_in_feats,
                 int(self.expansion_rate * self.num_in_feats),
                 self.kernel_size,
             ),
-            LeakyReLU(),
+            LeakyReLU(negative_slope=0.01, inplace=True),
             Dropout(self.dropout_rate),
-            ReplicationPad1d(self.kernel_size // 2),
+            # ReplicationPad1d(self.kernel_size // 2),
             Conv1d(
                 int(self.expansion_rate * self.num_in_feats),
                 self.num_in_feats,
-                self.kernel_size,
+                3,
             ),
             Tanh(),
         )
@@ -120,8 +120,8 @@ class SCIBlock(Module):
         f_odd = f_odd * self.phi(_f_even).exp()
         _f_even = f_even
         _f_odd = f_odd
-        f_even = f_even - self.eta(_f_odd)
-        f_odd = f_odd + self.rho(_f_even)
+        f_even = f_even + self.eta(_f_odd)
+        f_odd = f_odd - self.rho(_f_even)
         return (f_even, f_odd)
 
     def forward(self, mb_feats: Tensor) -> Tuple[Tensor, Tensor]:
@@ -188,7 +188,7 @@ class SCINet(Module):
         )
         self.sciblocks = ModuleList([sciblock])
         for d in range(1, self.depth):
-            for _ in range(2 ** d):
+            for _ in range(2**d):
                 sciblock = SCIBlock(
                     self.num_in_feats,
                     self.kernel_size,
@@ -198,9 +198,17 @@ class SCINet(Module):
                 self.sciblocks.append(sciblock)
 
     def _init_regressor(self) -> None:
-        self.regressor_across_time = Linear(self.lookback, self.horizon)
+        self.regressor_across_time = Conv1d(
+            self.lookback,
+            self.horizon,
+            1,
+            bias=False,
+        )
         if self.use_regressor_across_feats is True:
-            self.regressor_across_feats = Linear(self.num_in_feats, self.num_out_feats)
+            self.regressor_across_feats = Linear(
+                self.num_in_feats,
+                self.num_out_feats,
+            )
 
     def _merge_results(self, current_state: List[Tensor]) -> Tensor:
         mb_feats = torch.stack(current_state, dim=1)
@@ -210,9 +218,9 @@ class SCINet(Module):
         return mb_feats
 
     def _run_regressor(self, mb_feats: Tensor) -> Tensor:
-        mb_feats = mb_feats.transpose(-2, -1).contiguous()
+        # mb_feats = mb_feats.transpose(-2, -1).contiguous()
         mb_feats = self.regressor_across_time(mb_feats)
-        mb_feats = mb_feats.transpose(-2, -1).contiguous()
+        # mb_feats = mb_feats.transpose(-2, -1).contiguous()
         if self.use_regressor_across_feats is True:
             mb_feats = self.regressor_across_feats(mb_feats)
         return mb_feats
@@ -225,7 +233,7 @@ class SCINet(Module):
     ) -> Tensor:
         current_state = [X]
         for d in range(self.depth):
-            for i in range(2 ** d):
+            for i in range(2**d):
                 f = current_state.pop(0)
                 (f_even, f_odd) = self.sciblocks[i](f)
                 current_state.append(f_odd)
