@@ -15,7 +15,7 @@ English/[日本語](README_JP.md)
 
 `tsts` is an open source project that provides state-of-the-art time series forecasting methods.
 
-It allows for more flexible model building, such as building models in combination with autoregressive (AR) models and other models. In addition to models, `tsts` also provides the latest modules for data augmentation, loss functions, and optimizers, etc.
+It allows for more flexible model building, such as building models in combination with autoregressive (AR) models and deep learning models. In addition to models, `tsts` also provides the latest modules for data augmentation, loss functions, and optimizers, etc.
 
 ## ⛏ Installation
 

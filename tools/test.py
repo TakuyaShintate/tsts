@@ -244,6 +244,11 @@ def save_result(
     filename: str,
     cfg: CN,
 ) -> None:
+    if args.zero_padding is False:
+        lookback = cfg.IO.LOOKBACK
+        horizon = cfg.IO.HORIZON
+        z = z[lookback:-horizon]
+        y = y[lookback:-horizon]
     (fig, _) = plot(
         z,
         y,
@@ -255,11 +260,6 @@ def save_result(
     )
     filepath = os.path.join(args.out_dir, filename)
     fig.savefig(filepath + ".png")
-    if args.zero_padding is False:
-        lookback = cfg.IO.LOOKBACK
-        horizon = cfg.IO.HORIZON
-        z = z[lookback:-horizon]
-        y = y[lookback:-horizon]
     data = torch.cat([z, y, torch.abs(z - y)], dim=1)
     # Update column names
     columns = []
