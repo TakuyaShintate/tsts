@@ -31,11 +31,11 @@ If you want to measure the performance of your model on a given benchmark, see "
 
 #### 1. Preparation of data to be used for training
 
-Save the training data (CSV file), validation data, and test data in their respective directories. The name of the directory is arbitrary. If there are multiple training, validation, and test data, please save them all in their respective directories.
+Save the training data (CSV files), validation data, and test data in their respective directories. The name of the directory is arbitrary. If there are multiple training, validation, and test data, please save them all in their respective directories.
 
 ##### Example of CSV file
 
-> It allows selection of input and output variables to be used at runtime
+> You may select input and output variables to be used at runtime
 
 | feat0 | feat1 | feat2 |
 | ----- | ----- | ----- |
@@ -75,8 +75,6 @@ python tools/train.py \
 #### 4. Testing a trained model
 
 After training is complete, the command below can be executed to obtain the prediction results for the test data. CSV files containing the prediction results, the correct labels, and their errors will be saved in the directory specified by `--out-dir`, and images of them plotted. Results are saved for each test data.
-
-> The first few lines of the prediction result and the last few lines of the correct answer label are padded with zeros to adjust their size
 
 ```
 python tools/test.py \

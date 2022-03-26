@@ -38,6 +38,7 @@ def parse_args() -> Namespace:
     parser.add_argument("--out-feats", type=str, nargs="+", help="output features")
     parser.add_argument("--out-dir", type=str, help="output directory")
     parser.add_argument("--lagging", action="store_true")
+    parser.add_argument("--zero-padding", action="store_true")
     args = parser.parse_args()
     return args
 
@@ -210,6 +211,7 @@ def infer_step(
         Output time series (N - H, M': H is the horizon and M' is the number of output features)
     """
     num_out_feats = len(args.out_feats)
+    mae = 0.0
     with torch.no_grad():
         num_steps = len(x)
         # If lagging is True, target is left shifted by lookback when it is loaded
@@ -226,8 +228,10 @@ def infer_step(
             x_scale = X_scaler.transform(x[i - lookback : i])
             b_scale = Y_scaler.transform(y[i - lookback : i])
             z_scale = Y_scaler.inv_transform(solver.predict(x_scale, b_scale))
+            mae += (z_scale - y[i : i + horizon]).abs().mean().item()
             z[i : i + horizon] += z_scale
             c[i : i + horizon] += 1.0
+    print(f"{LOG} mae (denorm): {mae / (end_steps - lookback)}")
     z = z / c.unsqueeze(-1).clamp(min=1.0)
     # Remove last `horizon` steps
     return z
@@ -238,6 +242,7 @@ def save_result(
     z: Tensor,
     y: Tensor,
     filename: str,
+    cfg: CN,
 ) -> None:
     (fig, _) = plot(
         z,
@@ -250,6 +255,11 @@ def save_result(
     )
     filepath = os.path.join(args.out_dir, filename)
     fig.savefig(filepath + ".png")
+    if args.zero_padding is False:
+        lookback = cfg.IO.LOOKBACK
+        horizon = cfg.IO.HORIZON
+        z = z[lookback:-horizon]
+        y = y[lookback:-horizon]
     data = torch.cat([z, y, torch.abs(z - y)], dim=1)
     # Update column names
     columns = []
@@ -290,6 +300,7 @@ def predict(
             z,
             y,
             filename.split("/")[-1],
+            cfg,
         )
 
 
