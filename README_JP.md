@@ -100,6 +100,8 @@ python tools/test.py \
 
 学習済みのモデルを使用して任意の値で予測を行います。
 
+> 入力値は（タイムステップ数, 変数の数）の形をしている必要があります
+
 ```python
 import glob
 import os

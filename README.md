@@ -101,6 +101,8 @@ Same procedure as when using `tools/train.py` & `tools/test.py`.
 
 Forecasts are made with arbitrary values with a trained model.
 
+> Size of input values must be of (number of time steps, number of variables)
+
 ```python
 import glob
 import os
