@@ -25,9 +25,11 @@ pip install tsts
 
 ## 🚀 Getting Started
 
-If you want to measure the performance of your model on a given benchmark, see "Using `tools/train.py`/`tools/test.py`" or "Using the API" if you want to make predictions online.
+If you want to measure the performance of your model on a given benchmark, see "Using `tools/train.py` & `tools/test.py`" or "Using the API" if you want to make predictions online.
 
-### Using `tools/train.py`/`tools/test.py`
+### Using `tools/train.py` & `tools/test.py`
+
+✅ Less code is required for learning & inference
 
 #### 1. Preparation of data to be used for training
 
@@ -89,4 +91,79 @@ python tools/test.py \
 
 ### Using API
 
-Under construction 🔧
+✅ Can be used to predict future values
+
+#### 1~3. Data Preparation ~ Learning
+
+Same procedure as when using `tools/train.py` & `tools/test.py`.
+
+#### 4. Testing a trained model
+
+Forecasts are made with arbitrary values with a trained model.
+
+> Size of input values must be of (number of time steps, number of variables)
+
+```python
+import glob
+import os
+
+import pandas as pd
+import torch
+from tsts.cfg import get_cfg_defaults
+from tsts.scalers import build_X_scaler, build_y_scaler
+from tsts.solvers import TimeSeriesForecaster
+from tsts.utils import plot
+
+
+IN_FEATS = "<list of input feature names>"
+OUT_FEATS = "<list of output feature names>"
+
+
+def load_cfg(cfg_name):
+    cfg = get_cfg_defaults()
+    cfg.merge_from_file(cfg_name)
+    return cfg
+
+
+def load_sample(cfg, filename):
+    df = pd.read_csv(filename)
+    df = df.fillna(0.0)
+    # Take only the values of input & output variables
+    x = torch.tensor(df[IN_FEATS].values, dtype=torch.float32)
+    y = torch.tensor(df[OUT_FEATS].values, dtype=torch.float32)
+    return (x, y)
+  
+
+def build_scalers(cfg):
+    X_scaler = build_X_scaler(cfg)
+    y_scaler = build_y_scaler(cfg)
+    X = []
+    Y = []
+    for filename in glob.glob(os.path.join("<dir to contain training data>", "*.csv")):
+        # Initialize input & output values
+        (x, y) = load_sample(cfg, filename)
+        X.append(x)
+        Y.append(y)
+    X_scaler.fit_batch(X)
+    y_scaler.fit_batch(Y)
+    return (X_scaler, y_scaler)
+
+
+# Load merged config
+cfg = load_cfg("my_first_model.yml")
+# Build input & output value scalers
+(X_scaler, y_scaler) = build_scalers(cfg)
+solver = TimeSeriesForecaster("my_first_model.yml")
+# Initialize inputs to the model (`torch.Tensor`)
+# NOTE: This input value does not have to be on the device specified in training
+test_input = "..."
+# Before passing input values to the model, scale the values in the same way as during training
+test_input = X_scaler.transform(test_input)
+test_output = solver.predict(test_input)
+# Restore the result to the original scale
+test_output = y_scaler.inv_transform(test_output)
+
+# Plot the result
+# NOTE: One figure is assigned to one variable
+plot(test_output)
+```
