@@ -45,7 +45,6 @@ class ConvModule(Module):
             ),
             LeakyReLU(negative_slope=0.01, inplace=True),
             Dropout(self.dropout_rate),
-            # ReplicationPad1d(self.kernel_size // 2),
             Conv1d(
                 int(self.expansion_rate * self.num_in_feats),
                 self.num_in_feats,
@@ -55,9 +54,9 @@ class ConvModule(Module):
         )
 
     def forward(self, mb_feats: Tensor) -> Tensor:
-        mb_feats = mb_feats.transpose(-2, -1).contiguous()
+        mb_feats = mb_feats.permute(0, 2, 1)
         mb_feats = self.conv_module(mb_feats)
-        mb_feats = mb_feats.transpose(-2, -1).contiguous()
+        mb_feats = mb_feats.permute(0, 2, 1)
         return mb_feats
 
 
@@ -158,7 +157,12 @@ class SCINet(Module):
         self._init_regressor()
 
     @classmethod
-    def from_cfg(cls, num_in_feats: int, num_out_feats: int, cfg: CN) -> "SCINet":
+    def from_cfg(
+        cls,
+        num_in_feats: int,
+        num_out_feats: int,
+        cfg: CN,
+    ) -> "SCINet":
         lookback = cfg.IO.LOOKBACK
         horizon = cfg.IO.HORIZON
         depth = cfg.MODEL.DEPTH
@@ -180,14 +184,8 @@ class SCINet(Module):
         return model
 
     def _init_sciblocks(self) -> None:
-        sciblock = SCIBlock(
-            self.num_in_feats,
-            self.kernel_size,
-            self.expansion_rate,
-            self.dropout_rate,
-        )
-        self.sciblocks = ModuleList([sciblock])
-        for d in range(1, self.depth):
+        self.sciblocks = ModuleList()
+        for d in range(self.depth):
             for _ in range(2**d):
                 sciblock = SCIBlock(
                     self.num_in_feats,
@@ -198,11 +196,9 @@ class SCINet(Module):
                 self.sciblocks.append(sciblock)
 
     def _init_regressor(self) -> None:
-        self.regressor_across_time = Conv1d(
+        self.regressor_across_time = Linear(
             self.lookback,
             self.horizon,
-            1,
-            bias=False,
         )
         if self.use_regressor_across_feats is True:
             self.regressor_across_feats = Linear(
@@ -213,14 +209,14 @@ class SCINet(Module):
     def _merge_results(self, current_state: List[Tensor]) -> Tensor:
         mb_feats = torch.stack(current_state, dim=1)
         (batch_size, num_f, num_steps, num_feats) = mb_feats.size()
-        mb_feats = mb_feats.transpose(1, 2).contiguous()
-        mb_feats = mb_feats.view(batch_size, num_steps * num_f, num_feats)
+        mb_feats = mb_feats.permute(0, 2, 1, 3)
+        mb_feats = mb_feats.reshape(batch_size, num_steps * num_f, num_feats)
         return mb_feats
 
     def _run_regressor(self, mb_feats: Tensor) -> Tensor:
-        # mb_feats = mb_feats.transpose(-2, -1).contiguous()
+        mb_feats = mb_feats.permute(0, 2, 1)
         mb_feats = self.regressor_across_time(mb_feats)
-        # mb_feats = mb_feats.transpose(-2, -1).contiguous()
+        mb_feats = mb_feats.permute(0, 2, 1)
         if self.use_regressor_across_feats is True:
             mb_feats = self.regressor_across_feats(mb_feats)
         return mb_feats
@@ -232,13 +228,19 @@ class SCINet(Module):
         time_stamps: Optional[Tensor] = None,
     ) -> Tensor:
         current_state = [X]
+        counter = 0
         for d in range(self.depth):
-            for i in range(2**d):
+            for _ in range(2**d):
                 f = current_state.pop(0)
-                (f_even, f_odd) = self.sciblocks[i](f)
-                current_state.append(f_odd)
+                (f_even, f_odd) = self.sciblocks[counter](f)
                 current_state.append(f_even)
-        mb_feats = self._merge_results(current_state)
-        mb_feats = mb_feats + X
+                current_state.append(f_odd)
+                counter += 1
+        for d in range(self.depth)[::-1]:
+            for _ in range(2**d):
+                f_even = current_state.pop(0)
+                f_odd = current_state.pop(0)
+                current_state.append(self._merge_results([f_even, f_odd]))
+        mb_feats = current_state[0] + X
         mb_feats = self._run_regressor(mb_feats)
         return mb_feats
