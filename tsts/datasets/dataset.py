@@ -127,9 +127,9 @@ class Dataset(_Dataset):
             Data index
         """
         i += self.base_start_index
-        start = max(0, i - self.lookback + 1)
-        mid = i + 1
-        end = i + 1 + self.horizon
+        start = max(0, i - self.lookback)
+        mid = i
+        end = i + self.horizon
         X = self.X[start:mid]
         y = self.y[mid:end]
         bias = self.y[start:mid]

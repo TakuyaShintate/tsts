@@ -16,6 +16,7 @@ Batch = Tuple[
     List[Callable],
 ]
 MaybeRawDataset = List[Optional[Tensor]]
+MaybeTensor = Optional[Tensor]
 RawBatch = Tuple[
     Tuple[
         Tensor,

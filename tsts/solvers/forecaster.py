@@ -20,14 +20,14 @@ from tsts.scalers.builder import build_X_scaler, build_y_scaler
 from tsts.schedulers import Scheduler
 from tsts.trainers import Trainer
 from tsts.transforms.pipeline import Pipeline
-from tsts.types import MaybeRawDataset, RawDataset
+from tsts.types import MaybeRawDataset, MaybeTensor, RawDataset
 from tsts.utils import merge_state_dict
 
 from .solver import Solver
 
 __all__ = ["TimeSeriesForecaster"]
 
-_TestData = Tuple[Tensor, Tensor, Tensor, Optional[Tensor]]
+_TestData = Tuple[Tensor, Tensor, Tensor, MaybeTensor]
 
 
 class TimeSeriesForecaster(Solver):
@@ -617,8 +617,8 @@ class TimeSeriesForecaster(Solver):
     def _apply_collator_to_test_data(
         self,
         X: Tensor,
-        bias: Optional[Tensor] = None,
-        time_stamps: Optional[Tensor] = None,
+        bias: MaybeTensor = None,
+        time_stamps: MaybeTensor = None,
     ) -> _TestData:
         bias = X if bias is None else bias
         raw_batch = (
@@ -639,8 +639,8 @@ class TimeSeriesForecaster(Solver):
     def predict(
         self,
         X: Tensor,
-        bias: Optional[Tensor] = None,
-        time_stamps: Optional[Tensor] = None,
+        bias: MaybeTensor = None,
+        time_stamps: MaybeTensor = None,
     ) -> Tensor:
         """Predict y for X.
 
@@ -656,7 +656,10 @@ class TimeSeriesForecaster(Solver):
         self.model.eval()
         self.local_scaler.eval()
         (X, _, bias, time_stamps) = self.valid_pipeline.apply(
-            X, None, bias, time_stamps
+            X,
+            None,
+            bias,
+            time_stamps,
         )
         (X, bias, X_mask, time_stamps) = self._apply_collator_to_test_data(
             X,

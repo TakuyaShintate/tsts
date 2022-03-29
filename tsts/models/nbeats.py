@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Type, Union
+from typing import Tuple, Type, Union
 
 import numpy as np
 import torch
@@ -6,6 +6,7 @@ from torch import Tensor
 from torch.nn import Linear, Module, ModuleList, ReLU
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
+from tsts.types import MaybeTensor
 
 __all__ = ["NBeats"]
 
@@ -266,7 +267,8 @@ class NBeats(Module):
         self,
         X: Tensor,
         X_mask: Tensor,
-        time_stamps: Optional[Tensor] = None,
+        bias: MaybeTensor = None,
+        time_stamps: MaybeTensor = None,
     ) -> Tensor:
         """Return prediction.
 

@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Tuple
 
 import torch
 from torch import Tensor
@@ -14,6 +14,7 @@ from torch.nn import (
 )
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
+from tsts.types import MaybeTensor
 
 from .module import Module
 
@@ -206,12 +207,21 @@ class SCINet(Module):
                 self.num_out_feats,
             )
 
-    def _merge_results(self, current_state: List[Tensor]) -> Tensor:
-        mb_feats = torch.stack(current_state, dim=1)
-        (batch_size, num_f, num_steps, num_feats) = mb_feats.size()
-        mb_feats = mb_feats.permute(0, 2, 1, 3)
-        mb_feats = mb_feats.reshape(batch_size, num_steps * num_f, num_feats)
-        return mb_feats
+    def _merge_results(self, f_even: Tensor, f_odd: Tensor) -> Tensor:
+        # mb_feats = torch.stack(current_state, dim=1)
+        # (batch_size, num_f, num_steps, num_feats) = mb_feats.size()
+        # mb_feats = mb_feats.permute(0, 2, 1, 3)
+        # mb_feats = mb_feats.reshape(batch_size, num_steps * num_f, num_feats)
+        f_even = f_even.permute(1, 0, 2)
+        f_odd = f_odd.permute(1, 0, 2)
+        mlen = min((f_even.shape[0], f_odd.shape[0]))
+        _ = []
+        for i in range(mlen):
+            _.append(f_even[i].unsqueeze(0))
+            _.append(f_odd[i].unsqueeze(0))
+        if f_even.shape[0] > f_odd.shape[0]:
+            _.append(f_even[-1].unsqueeze(0))
+        return torch.cat(_, 0).permute(1, 0, 2)
 
     def _run_regressor(self, mb_feats: Tensor) -> Tensor:
         mb_feats = mb_feats.permute(0, 2, 1)
@@ -225,7 +235,8 @@ class SCINet(Module):
         self,
         X: Tensor,
         X_mask: Tensor,
-        time_stamps: Optional[Tensor] = None,
+        bias: MaybeTensor = None,
+        time_stamps: MaybeTensor = None,
     ) -> Tensor:
         current_state = [X]
         counter = 0
@@ -240,7 +251,7 @@ class SCINet(Module):
             for _ in range(2**d):
                 f_even = current_state.pop(0)
                 f_odd = current_state.pop(0)
-                current_state.append(self._merge_results([f_even, f_odd]))
+                current_state.append(self._merge_results(f_even, f_odd))
         mb_feats = current_state[0] + X
         mb_feats = self._run_regressor(mb_feats)
         return mb_feats

@@ -1,5 +1,5 @@
 import typing
-from typing import Optional, Tuple
+from typing import Tuple
 
 import numpy as np
 import torch
@@ -19,6 +19,7 @@ from torch.nn import (
 )
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
+from tsts.types import MaybeTensor
 
 from .module import Module
 
@@ -839,7 +840,8 @@ class Informer(Module):
         self,
         X: Tensor,
         X_mask: Tensor,
-        time_stamps: Optional[Tensor] = None,
+        bias: MaybeTensor = None,
+        time_stamps: MaybeTensor = None,
     ) -> Tensor:
         """Return prediction.
 
@@ -863,7 +865,10 @@ class Informer(Module):
             mb_enc_feats += self.temporal_embedding_enc(time_stamps_X)
         mb_enc_feats = self.dropout(mb_enc_feats)
         mb_enc_feats = self._run_encoders(mb_enc_feats)
-        X_dec1 = X[:, -self.dec_in_size :]
+        if bias is not None:
+            X_dec1 = bias[:, -self.dec_in_size :]
+        else:
+            X_dec1 = X[:, -self.dec_in_size :]
         (b, _, u) = X_dec1.size()
         X_dec2 = torch.zeros(b, self.horizon, u)
         device = X_dec1.device
