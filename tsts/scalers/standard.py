@@ -37,7 +37,7 @@ class StandardScaler(Scaler):
         self.mean = mean / num_instances
         for i in range(len(X_or_ys)):
             std += ((X_or_ys[i] - self.mean) ** 2).sum(0)
-        std /= (num_instances - 1)
+        std /= num_instances - 1
         self.std = std.sqrt()
 
     def transform(self, X_or_y: Tensor) -> Tensor:

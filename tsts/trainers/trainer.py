@@ -134,6 +134,7 @@ class SupervisedTrainer(Trainer):
                 _,
                 _,
             ) in self.train_dataloader:
+                self.optimizer.zero_grad()
                 # Timing one single iteration
                 start = torch.cuda.Event(enable_timing=True)
                 end = torch.cuda.Event(enable_timing=True)
@@ -148,7 +149,7 @@ class SupervisedTrainer(Trainer):
 
                 # NOTE: This is for second step optimziers like SAM
                 def closure() -> Tensor:
-                    Z = self.model(X, X_mask, time_stamps)
+                    Z = self.model(X, X_mask, bias, time_stamps)
                     device = Z.device
                     total_loss_v = torch.tensor(
                         0.0,
@@ -162,9 +163,8 @@ class SupervisedTrainer(Trainer):
                     total_loss_v.backward()
                     return total_loss_v
 
-                Z = self.model(X, X_mask, time_stamps)
+                Z = self.model(X, X_mask, bias, time_stamps)
                 Z = Z + self.local_scaler(bias)
-                self.optimizer.zero_grad()
                 device = Z.device
                 total_loss_v = torch.tensor(
                     0.0,
@@ -231,7 +231,7 @@ class SupervisedTrainer(Trainer):
                 if time_stamps is not None:
                     time_stamps = time_stamps.to(self.device)
                 with torch.no_grad():
-                    Z = self.model(X, X_mask, time_stamps)
+                    Z = self.model(X, X_mask, bias, time_stamps)
                     Z = Z + self.local_scaler(bias)
                 batch_size = X.size(0)
                 if self.denorm is True:
