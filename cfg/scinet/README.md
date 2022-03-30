@@ -2,7 +2,7 @@
 
 ## ETTh1
 
-The first 8640 data points were used for training. Of the remaining data points, 2880-n were used for validation and the last 2880-n for testing, where n is the length of lookback. MAE and MSE values were calculated using standardized predictions
+The first 8640 data points were used for training. Of the remaining data points, 2880-n were used for validation and the last 8640-n for testing, where n is the length of lookback. MAE and MSE values were calculated using standardized predictions. "HUFL HULL MUFL MULL LUFL LULL OT" are the input/output variables selected.
 
 | lookback | horizon | val | test | config |
 | :-----: | :-----: | :-----: | :-----: | :-----: |
