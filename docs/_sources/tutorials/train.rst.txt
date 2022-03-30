@@ -15,9 +15,9 @@ Save the training data (CSV files), validation data, and test data in their resp
 2. Create a config file
 ----------------------------------------------------
 
-Create a config file describing the settings during training. You can specify the model, Data Augmentation, Optimizer, Learning Rate Scheduler, etc. See [documentations](https://takuyashintate.github.io/tsts/projects/config.html) for details on the possible configuration items.
+Create a config file describing the settings during training. You can specify the model, Data Augmentation, Optimizer, Learning Rate Scheduler, etc.
 
-For simplicity, we will use a minimal config file here. Save the following as `my_first_model.yml`. You can use a different model or methodology by copying the target section from [documentations](https://takuyashintate.github.io/tsts/).
+For simplicity, we will use a minimal config file here. Save the following as `my_first_model.yml`.
 
 .. code-block:: yaml
 
