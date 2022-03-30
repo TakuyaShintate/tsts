@@ -23,6 +23,12 @@ It allows for more flexible model building, such as building models in combinati
 pip install tsts
 ```
 
+Or install the development version by
+
+```
+pip install git+https://github.com/takuyashintate/tsts
+```
+
 ## ⚡️Config Samples
 
 See [samples](cfg) for examples of how each model is used.

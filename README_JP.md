@@ -22,6 +22,12 @@
 pip install tsts
 ```
 
+または以下のコマンドで開発中のバージョンをインストールしてください。
+
+```
+pip install git+https://github.com/takuyashintate/tsts
+```
+
 ## ⚡️ コンフィグサンプル
 
 各モデルの使用例に関しては、[サンプル](cfg)を参照してください。
