@@ -1,4 +1,8 @@
+# [Time Series is a Special Sequence: Forecasting with Sample Convolution and Interaction](https://arxiv.org/abs/2106.09305)
+
 ## ETTh1
+
+The first 8640 data points were used for training. Of the remaining data points, 2880-n were used for validation and the last 2880-n for testing, where n is the length of lookback. MAE and MSE values were calculated using standardized predictions
 
 | lookback | horizon | val | test | config |
 | :-----: | :-----: | :-----: | :-----: | :-----: |
