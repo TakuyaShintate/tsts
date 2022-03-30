@@ -212,6 +212,7 @@ def infer_step(
     """
     num_out_feats = len(args.out_feats)
     mae = 0.0
+    mse = 0.0
     with torch.no_grad():
         num_steps = len(x)
         # If lagging is True, target is left shifted by lookback when it is loaded
@@ -226,12 +227,16 @@ def infer_step(
         for i in tqdm(range(lookback, end_steps)):
             # Transform input time series and reverse transform predicted time series
             x_scale = X_scaler.transform(x[i - lookback : i])
+            y_scale = Y_scaler.transform(y[i : i + horizon])
             b_scale = Y_scaler.transform(y[i - lookback : i])
-            z_scale = Y_scaler.inv_transform(solver.predict(x_scale, b_scale))
-            mae += (z_scale - y[i : i + horizon]).abs().mean().item()
+            pred = solver.predict(x_scale, b_scale)
+            z_scale = Y_scaler.inv_transform(pred)
+            mae += (pred - y_scale).abs().mean().item()
+            mse += ((pred - y_scale) ** 2).mean().item()
             z[i : i + horizon] += z_scale
             c[i : i + horizon] += 1.0
-    print(f"{LOG} mae (denorm): {mae / (end_steps - lookback)}")
+    print(f"{LOG} mae: {mae / (end_steps - lookback)}")
+    print(f"{LOG} mse: {mse / (end_steps - lookback)}")
     z = z / c.unsqueeze(-1).clamp(min=1.0)
     # Remove last `horizon` steps
     return z

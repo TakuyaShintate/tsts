@@ -4,6 +4,8 @@
 LR Schedulers
 =============
 
+The learning rate scheduler can be changed by adding a `SCHEDULER` section to the config. The default learning rate scheduler is `CosineAnnealing`.
+
 .. contents:: Catalog
     :depth: 1
     :local:

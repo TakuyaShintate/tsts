@@ -23,6 +23,16 @@ It allows for more flexible model building, such as building models in combinati
 pip install tsts
 ```
 
+Or install the development version by
+
+```
+pip install git+https://github.com/takuyashintate/tsts
+```
+
+## ⚡️Config Samples
+
+See [samples](cfg) for examples of how each model is used.
+
 ## 🚀 Getting Started
 
 If you want to measure the performance of your model on a given benchmark, see "Using `tools/train.py` & `tools/test.py`" or "Using the API" if you want to make predictions online.

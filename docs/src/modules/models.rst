@@ -4,6 +4,8 @@
 Models
 ======
 
+Models can be changed by adding a `MODELS` section to the config. The default model is `Seq2Seq`.
+
 .. contents:: Catalog
     :depth: 1
     :local:
@@ -33,7 +35,7 @@ Informer
       # Dropout rate
       DROPOUT_RATE: 0.05
 
-🔍 Reference
+Reference
 ------------
 
 `Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting <https://arxiv.org/abs/2012.07436>`_
@@ -57,7 +59,7 @@ N-BEATS
       # Polynomial degree (used only if BLOCK_TYPE == "trend")
       DEGREE: 2
 
-🔍 Reference
+Reference
 ------------
 
 `N-BEATS: Neural basis expansion analysis for interpretable time series forecasting <https://arxiv.org/abs/1905.10437>`_
@@ -79,7 +81,7 @@ SCINet
       # Dropout rate
       DROPOUT_RATE: 0.5
 
-🔍 Reference
+Reference
 ------------
 
 `Time Series is a Special Sequence: Forecasting with Sample Convolution and Interaction <https://arxiv.org/abs/2106.09305?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+arxiv%2FQSXk+%28ExcitingAds%21+cs+updates+on+arXiv.org%29>`_
@@ -99,7 +101,7 @@ Seq2Seq
       # Number of decoders 
       NUM_DECODERS: 1
 
-🔍 Reference
+Reference
 ------------
 
 `Sequence to Sequence Learning with Neural Networks <https://arxiv.org/abs/1409.3215>`_

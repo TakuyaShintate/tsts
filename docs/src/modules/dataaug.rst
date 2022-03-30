@@ -4,6 +4,8 @@
 Data Augmentation
 =================
 
+Data augmentation can be applied during training by adding a `PIPELINE` section to the configuration. Multiple data augmentations can be applied in combination by adding multiple data augmentations to the list.
+
 .. contents:: Catalog
     :depth: 1
     :local:
@@ -12,7 +14,7 @@ Data Augmentation
 Gaussian Noise
 --------------
 
-Adds gaussian noise to input time series
+Add gaussian noise to input values.
 
 .. code-block:: yaml
 

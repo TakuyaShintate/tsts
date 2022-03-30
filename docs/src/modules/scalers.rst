@@ -2,7 +2,7 @@
 Scalers
 =======
 
-Scales input/output time series to match them to model's input/output range
+Scalers for input and output variables can be changed by adding a `X_SCALER`/`Y_SCALER` section to the config. The `X_SCALER` section represents the input variable scaler and the `Y_SCALER` section represents the output variable scaler.
 
 .. contents:: Catalog
     :depth: 1
@@ -12,7 +12,7 @@ Scales input/output time series to match them to model's input/output range
 Identity Scaler
 ---------------
 
-Apply identity scaling (values are not changed at all)
+Apply identity scaling (values are not changed at all).
 
 .. code-block:: yaml
 
@@ -26,7 +26,7 @@ Apply identity scaling (values are not changed at all)
 Min-Max Scaler
 --------------
 
-Scales values to a certain range (0-1)
+Scale values to a certain range (0-1).
 
 .. code-block:: yaml
 
@@ -40,7 +40,7 @@ Scales values to a certain range (0-1)
 Standard Scaler
 ---------------
 
-Standardizes values
+Standardize values.
 
 .. code-block:: yaml
 

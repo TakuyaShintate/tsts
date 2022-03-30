@@ -4,6 +4,8 @@
 Optimizers
 ==========
 
+The optimizer can be changed by adding a `OPTIMIZER` section to the config. The default optimizer is `Adam`.
+
 .. contents:: Catalog
     :depth: 1
     :local:
@@ -20,7 +22,7 @@ Adam
       WEIGHT_DECAY: 1.0E-5
       EPS: 1.0E-8
 
-🔍 Reference
+Reference
 ------------
 
 `Adam: A Method for Stochastic Optimization <https://arxiv.org/abs/1412.6980>`_
@@ -37,7 +39,7 @@ AdamW
         WEIGHT_DECAY: 1.0E-5
         EPS: 1.0E-8
 
-🔍 Reference
+Reference
 ------------
 
 `Decoupled Weight Decay Regularization <https://arxiv.org/abs/1711.05101>`_
@@ -56,7 +58,7 @@ SAM
       WEIGHT_DECAY: 1.0E-5
       EPS: 1.0E-8
 
-🔍 Reference
+Reference
 ------------
 
 `Sharpness-Aware Minimization for Efficiently Improving Generalization <https://arxiv.org/abs/2010.01412>`_
