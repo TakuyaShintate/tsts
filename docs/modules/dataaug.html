@@ -47,6 +47,7 @@
           
   <div class="section" id="data-augmentation">
 <span id="transforms"></span><h1>Data Augmentation<a class="headerlink" href="#data-augmentation" title="Permalink to this headline">¶</a></h1>
+<p>Data augmentation can be applied during training by adding a <cite>PIPELINE</cite> section to the configuration. Multiple data augmentations can be applied in combination by adding multiple data augmentations to the list.</p>
 <div class="contents local topic" id="catalog">
 <p class="topic-title">Catalog</p>
 <ul class="simple">
@@ -55,7 +56,7 @@
 </div>
 <div class="section" id="gaussian-noise">
 <h2><a class="toc-backref" href="#id1">Gaussian Noise</a><a class="headerlink" href="#gaussian-noise" title="Permalink to this headline">¶</a></h2>
-<p>Adds gaussian noise to input time series</p>
+<p>Add gaussian noise to input values.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">PIPELINE</span><span class="p">:</span>
   <span class="nt">TRANSFORMS_TRAIN</span><span class="p">:</span>
     <span class="p p-Indicator">[{</span><span class="s">&quot;name&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;GaussianNoise&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;args&quot;</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="s">&quot;mean&quot;</span><span class="p p-Indicator">:</span> <span class="nv">0.0</span><span class="p p-Indicator">,</span> <span class="s">&quot;std&quot;</span><span class="p p-Indicator">:</span> <span class="nv">0.1</span><span class="p p-Indicator">}}]</span>

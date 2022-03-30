@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#2D2D2D" />
   
-  <title>tsts :: Train on a Custom Dataset</title>
+  <title>tsts :: Train &amp; Test on a Custom Dataset</title>
   
 
   <link rel="icon" type="image/png" sizes="32x32" href="../_static/img/favicon-32x32.png">
@@ -45,50 +45,55 @@
       <div id="main-content-container">
         <div id="main-content" role="main">
           
-  <div class="section" id="train-on-a-custom-dataset">
-<h1>Train on a Custom Dataset<a class="headerlink" href="#train-on-a-custom-dataset" title="Permalink to this headline">¶</a></h1>
-<p><strong>tools/train.py</strong> can be used to train forecasting models on a custom dataset.</p>
-<div class="section" id="create-a-custom-dataset">
-<h2>1. Create a Custom Dataset<a class="headerlink" href="#create-a-custom-dataset" title="Permalink to this headline">¶</a></h2>
-<p>Put <strong>.csv</strong> files to train directory (used for training) and valid directory (used for validation).</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Any directory names can be used.</p>
+  <div class="section" id="train-test-on-a-custom-dataset">
+<h1>Train &amp; Test on a Custom Dataset<a class="headerlink" href="#train-test-on-a-custom-dataset" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="using-tools-train-py-tools-test-py">
+<h2>Using <cite>tools/train.py</cite> &amp; <cite>tools/test.py</cite><a class="headerlink" href="#using-tools-train-py-tools-test-py" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="preparation-of-data-to-be-used-for-training">
+<h3>1. Preparation of data to be used for training<a class="headerlink" href="#preparation-of-data-to-be-used-for-training" title="Permalink to this headline">¶</a></h3>
+<p>Save the training data (CSV files), validation data, and test data in their respective directories. The name of the directory is arbitrary. If there are multiple training, validation, and test data, please save them all in their respective directories.</p>
 </div>
-<div class="section" id="directory-structure">
-<h3>🗂 Directory Structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="../_images/train-tool.jpg"><img alt="../_images/train-tool.jpg" class="align-center" src="../_images/train-tool.jpg" style="width: 605.0px; height: 358.0px;" /></a>
-</div>
-</div>
-<div class="section" id="create-config">
-<h2>2. Create Config<a class="headerlink" href="#create-config" title="Permalink to this headline">¶</a></h2>
-<p>To specify training settings, create config file.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>See <a class="reference internal" href="../projects/config.html#config"><span class="std std-ref">config structure</span></a> for the details.</p>
-</div>
-<div class="section" id="config">
-<h3>📝 Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LOGGER</span><span class="p">:</span>
-  <span class="n">LOG_DIR</span><span class="p">:</span> <span class="s2">&quot;./log&quot;</span>
-
-<span class="n">MODEL</span><span class="p">:</span>
-  <span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;SCINet&quot;</span>
-  <span class="n">DEPTH</span><span class="p">:</span> <span class="mi">3</span>
+<div class="section" id="create-a-config-file">
+<h3>2. Create a config file<a class="headerlink" href="#create-a-config-file" title="Permalink to this headline">¶</a></h3>
+<p>Create a config file describing the settings during training. You can specify the model, Data Augmentation, Optimizer, Learning Rate Scheduler, etc. See [documentations](<a class="reference external" href="https://takuyashintate.github.io/tsts/projects/config.html">https://takuyashintate.github.io/tsts/projects/config.html</a>) for details on the possible configuration items.</p>
+<p>For simplicity, we will use a minimal config file here. Save the following as <cite>my_first_model.yml</cite>. You can use a different model or methodology by copying the target section from [documentations](<a class="reference external" href="https://takuyashintate.github.io/tsts/">https://takuyashintate.github.io/tsts/</a>).</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save as `my_first_model.yml`</span>
+<span class="nt">LOGGER</span><span class="p">:</span>
+  <span class="nt">LOG_DIR</span><span class="p">:</span> <span class="s">&quot;my-first-model&quot;</span>
 </pre></div>
 </div>
 </div>
+<div class="section" id="training">
+<h3>3. Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h3>
+<p>Execute the command below to begin training. Once training begins, model parameters and a log file will be created in the directory specified in 2 (<cite>my-first-model</cite> here). The log file will contain loss and metric values for each epoch.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Loss functions and metrics can be changed as well as models</p>
 </div>
-<div class="section" id="train-forecasting-model">
-<h2>3. Train Forecasting Model<a class="headerlink" href="#train-forecasting-model" title="Permalink to this headline">¶</a></h2>
-<p>Run <strong>tools/train.py</strong> with the custom dataset and config. Input/output feature names have to be specified too.</p>
+<p>Specify the directory where the training and validation data are stored in <cite>–train-dir</cite> and <cite>–valid-dir</cite>. Specify a list of input variable names and a list of output variable names in <cite>–in-feats</cite> and <cite>–out-feats</cite>.</p>
+<p>Sometimes you may want to predict the value of an output variable at the same time as the input variable (i.e., you want to predict the value of an output variable at time t-n to t for the value of an input variable at time t-n to t). In such cases, add the <cite>–lagging</cite> option.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python tools/train.py <span class="se">\</span>
- --cfg-name config.yml <span class="se">\</span>
- --train-dir train <span class="se">\</span>
- --valid-dir valid <span class="se">\</span>
- --in-feats input_feat1 input_feat2 <span class="se">\</span>
- --out-feats output_feat1 output_feat2 <span class="se">\</span>
+   --cfg-name my_first_model.yml <span class="se">\</span>
+   --train-dir &lt;dir to contain training data&gt; <span class="se">\</span>
+   --valid-dir &lt;dir to contain validation data&gt; <span class="se">\</span>
+   --in-feats &lt;list of input feature names&gt; <span class="se">\</span>
+   --out-feats &lt;list of output feature names&gt;
 </pre></div>
+</div>
+</div>
+<div class="section" id="testing-a-trained-model">
+<h3>4. Testing a trained model<a class="headerlink" href="#testing-a-trained-model" title="Permalink to this headline">¶</a></h3>
+<p>After training is complete, the command below can be executed to obtain the prediction results for the test data. CSV files containing the prediction results, the correct labels, and their errors will be saved in the directory specified by <cite>–out-dir</cite>, and images of them plotted. Results are saved for each test data.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python tools/test.py <span class="se">\</span>
+   --cfg-name my_first_model.yml <span class="se">\</span>
+   --train-dir &lt;dir to contain training data&gt; <span class="se">\</span>
+   --valid-dir &lt;dir to contain validation data&gt; <span class="se">\</span>
+   --test-dir &lt;dir to contain <span class="nb">test</span> data&gt; <span class="se">\</span>
+   --in-feats &lt;list of input feature names&gt; <span class="se">\</span>
+   --out-feats &lt;list of output feature names&gt; <span class="se">\</span>
+   --out-dir &lt;result is saved in this directory&gt;
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -117,6 +122,7 @@
     <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../projects/config.html">How a Config File is Structured</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../projects/config.html#general-settings">General Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../projects/config.html#input-output">Input &amp; Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../projects/config.html#training">Training</a></li>
@@ -138,24 +144,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Train on a Custom Dataset</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#directory-structure">🗂 Directory Structure</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Train &amp; Test on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-tools-train-py-tools-test-py">Using <cite>tools/train.py</cite> &amp; <cite>tools/test.py</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preparation-of-data-to-be-used-for-training">1. Preparation of data to be used for training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-config-file">2. Create a config file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#training">3. Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testing-a-trained-model">4. Testing a trained model</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#create-config">2. Create Config</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#config">📝 Config</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#train-forecasting-model">3. Train Forecasting Model</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="test.html">Test on a Custom Dataset</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="test.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="test.html#directory-structure">🗂 Directory Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="test.html#test-forecasting-model">2. Test Forecasting Model</a></li>
 </ul>
 </li>
 </ul>
@@ -167,48 +163,48 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/losses.html">Loss Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#dilate">DILATE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#smooth-mae">Smooth MAE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#id1">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#id1">Reference</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/models.html">Models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/models.html#informer">Informer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/models.html#n-beats">N-BEATS</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id2">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/models.html#scinet">SCINet</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id3">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id3">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/models.html#seq2seq">Seq2Seq</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id4">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id4">Reference</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optimizers.html">Optimizers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/optimizers.html#adam">Adam</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/optimizers.html#adamw">AdamW</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#id2">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/optimizers.html#sam">SAM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#id3">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#id3">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/optimizers.html#sgd">SGD</a></li>

@@ -47,7 +47,7 @@
           
   <div class="section" id="scalers">
 <h1>Scalers<a class="headerlink" href="#scalers" title="Permalink to this headline">¶</a></h1>
-<p>Scales input/output time series to match them to model’s input/output range</p>
+<p>Scalers for input and output variables can be changed by adding a <cite>X_SCALER</cite>/<cite>Y_SCALER</cite> section to the config. The <cite>X_SCALER</cite> section represents the input variable scaler and the <cite>Y_SCALER</cite> section represents the output variable scaler.</p>
 <div class="contents local topic" id="catalog">
 <p class="topic-title">Catalog</p>
 <ul class="simple">
@@ -58,7 +58,7 @@
 </div>
 <div class="section" id="identity-scaler">
 <h2><a class="toc-backref" href="#id1">Identity Scaler</a><a class="headerlink" href="#identity-scaler" title="Permalink to this headline">¶</a></h2>
-<p>Apply identity scaling (values are not changed at all)</p>
+<p>Apply identity scaling (values are not changed at all).</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">X_SCALER</span><span class="p">:</span>
   <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;IdentityScaler&quot;</span>
 
@@ -69,7 +69,7 @@
 </div>
 <div class="section" id="min-max-scaler">
 <h2><a class="toc-backref" href="#id2">Min-Max Scaler</a><a class="headerlink" href="#min-max-scaler" title="Permalink to this headline">¶</a></h2>
-<p>Scales values to a certain range (0-1)</p>
+<p>Scale values to a certain range (0-1).</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">X_SCALER</span><span class="p">:</span>
   <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;MinMaxScaler&quot;</span>
 
@@ -80,7 +80,7 @@
 </div>
 <div class="section" id="standard-scaler">
 <h2><a class="toc-backref" href="#id3">Standard Scaler</a><a class="headerlink" href="#standard-scaler" title="Permalink to this headline">¶</a></h2>
-<p>Standardizes values</p>
+<p>Standardize values.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">X_SCALER</span><span class="p">:</span>
   <span class="nt">NAME</span><span class="p">:</span> <span class="s">&quot;StandardScaler&quot;</span>
 
@@ -165,48 +165,48 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">Loss Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="losses.html#dilate">DILATE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="losses.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="losses.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="losses.html#smooth-mae">Smooth MAE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="losses.html#id1">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="losses.html#id1">Reference</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="models.html">Models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="models.html#informer">Informer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="models.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="models.html#n-beats">N-BEATS</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="models.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#id2">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="models.html#scinet">SCINet</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="models.html#id3">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#id3">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="models.html#seq2seq">Seq2Seq</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="models.html#id4">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#id4">Reference</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="optimizers.html">Optimizers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="optimizers.html#adam">Adam</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="optimizers.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimizers.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="optimizers.html#adamw">AdamW</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id2">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="optimizers.html#sam">SAM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id3">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id3">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="optimizers.html#sgd">SGD</a></li>

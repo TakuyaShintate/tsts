@@ -47,14 +47,13 @@
           
   <div class="section" id="how-a-config-file-is-structured">
 <span id="config"></span><h1>How a Config File is Structured<a class="headerlink" href="#how-a-config-file-is-structured" title="Permalink to this headline">¶</a></h1>
-<p>You may specify config file to inplace default settings when you start a new training. In this page, availabe options are explained section by section.</p>
+<p>Indicates items that can be changed in the configuration. See <cite>Catalog</cite> for the modules available in each section. If you want to try out &amp; test, copy and use <cite>Putting It Together</cite> at the bottom. Modules that can be changed in the config include models, optimizers, loss functions, and data augmentation, etc. Other modules that can be changed include the device to be used, how training and test data are split, etc.</p>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<p>Config can be specified and used during training. In this case, the value of the config is reflected.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python tools/train.py --cfg-name <span class="s2">&quot;&quot;</span> ...
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
-<span class="n">cfg_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">farecaster</span> <span class="o">=</span> <span class="n">TimeSeriesForecaster</span><span class="p">(</span><span class="n">cfg_name</span><span class="p">)</span>
-</pre></div>
 </div>
 <div class="section" id="general-settings">
 <h2>General Settings<a class="headerlink" href="#general-settings" title="Permalink to this headline">¶</a></h2>
@@ -82,7 +81,6 @@
 </div>
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
-<p>If TRAIN_DATA_SPLIT is “col”, each csv file is divided into train and val datasets while csv files are divided into train and val datasets if TRAIN_DATA_SPLIT is “row”.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">IO</span><span class="p">:</span>
   <span class="l l-Scalar l-Scalar-Plain">...</span>
 
@@ -95,9 +93,9 @@
 </span><span class="hll">  <span class="nt">NUM_EPOCHS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
 </span><span class="hll">  <span class="c1"># If True, datasets are split randomly (valid only if TRAIN_DATA_SPLIT = &quot;col&quot;)</span>
 </span><span class="hll">  <span class="nt">RANDOM_SPLIT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
-</span>  <span class="c1"># Try to load pretrained model &amp; local scaler in this directory</span>
-  <span class="nt">PRETRAIN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">None</span>
-</pre></div>
+</span><span class="hll">  <span class="c1"># Try to load pretrained model &amp; local scaler in this directory</span>
+</span><span class="hll">  <span class="nt">PRETRAIN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">None</span>
+</span></pre></div>
 </div>
 </div>
 <div class="section" id="optimizer">
@@ -400,6 +398,7 @@
     <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">How a Config File is Structured</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#general-settings">General Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-output">Input &amp; Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#training">Training</a></li>
@@ -450,48 +449,48 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/losses.html">Loss Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#dilate">DILATE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/losses.html#smooth-mae">Smooth MAE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#id1">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/losses.html#id1">Reference</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/models.html">Models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/models.html#informer">Informer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/models.html#n-beats">N-BEATS</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id2">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/models.html#scinet">SCINet</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id3">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id3">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/models.html#seq2seq">Seq2Seq</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id4">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/models.html#id4">Reference</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optimizers.html">Optimizers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/optimizers.html#adam">Adam</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/optimizers.html#adamw">AdamW</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#id2">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/optimizers.html#sam">SAM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#id3">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/optimizers.html#id3">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/optimizers.html#sgd">SGD</a></li>

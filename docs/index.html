@@ -47,6 +47,7 @@
           
   <div class="section" id="documentations">
 <h1>Documentations<a class="headerlink" href="#documentations" title="Permalink to this headline">¶</a></h1>
+<p>See <cite>About Project</cite> to learn the basics about this project. Check <cite>Getting Started</cite> to learn how to train &amp; test with the data you have. See <cite>Catalog</cite> if you want to know how to change sections of the config to use the desired modules. You can copy and paste items into the config to use them.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
 <ul>
@@ -56,8 +57,7 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Train on a Custom Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/test.html">Test on a Custom Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Train &amp; Test on a Custom Dataset</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -97,6 +97,7 @@
     <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="projects/config.html">How a Config File is Structured</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="projects/config.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="projects/config.html#general-settings">General Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="projects/config.html#input-output">Input &amp; Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="projects/config.html#training">Training</a></li>
@@ -118,24 +119,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Train on a Custom Dataset</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#directory-structure">🗂 Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/train.html">Train &amp; Test on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#using-tools-train-py-tools-test-py">Using <cite>tools/train.py</cite> &amp; <cite>tools/test.py</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#preparation-of-data-to-be-used-for-training">1. Preparation of data to be used for training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#create-a-config-file">2. Create a config file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#training">3. Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#testing-a-trained-model">4. Testing a trained model</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#create-config">2. Create Config</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/train.html#config">📝 Config</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/test.html">Test on a Custom Dataset</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/test.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/test.html#directory-structure">🗂 Directory Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/test.html#test-forecasting-model">2. Test Forecasting Model</a></li>
 </ul>
 </li>
 </ul>
@@ -147,48 +138,48 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/losses.html">Loss Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/losses.html#dilate">DILATE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/losses.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/losses.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/losses.html#smooth-mae">Smooth MAE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/losses.html#id1">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/losses.html#id1">Reference</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/models.html">Models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/models.html#informer">Informer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/models.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/models.html#n-beats">N-BEATS</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id2">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/models.html#scinet">SCINet</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id3">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id3">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/models.html#seq2seq">Seq2Seq</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id4">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/models.html#id4">Reference</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/optimizers.html">Optimizers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#adam">Adam</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#reference">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#adamw">AdamW</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id2">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id2">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sam">SAM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id3">🔍 Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/optimizers.html#id3">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/optimizers.html#sgd">SGD</a></li>

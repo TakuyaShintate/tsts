@@ -4,17 +4,16 @@
 How a Config File is Structured
 ===============================
 
-You may specify config file to inplace default settings when you start a new training. In this page, availabe options are explained section by section.
+Indicates items that can be changed in the configuration. See `Catalog` for the modules available in each section. If you want to try out & test, copy and use `Putting It Together` at the bottom. Modules that can be changed in the config include models, optimizers, loss functions, and data augmentation, etc. Other modules that can be changed include the device to be used, how training and test data are split, etc.
+
+Basic Usage
+===========
+
+Config can be specified and used during training. In this case, the value of the config is reflected.
 
 .. code-block:: bash 
 
     python tools/train.py --cfg-name "" ...
-
-.. code-block:: python
-
-    ...
-    cfg_name = ""
-    farecaster = TimeSeriesForecaster(cfg_name)
 
 General Settings
 ================
@@ -47,10 +46,8 @@ Input & Output
 Training
 ========
 
-If TRAIN_DATA_SPLIT is "col", each csv file is divided into train and val datasets while csv files are divided into train and val datasets if TRAIN_DATA_SPLIT is "row".
-
 .. code-block:: yaml
-    :emphasize-lines: 4,5,6,7,8,9,10,11,12
+    :emphasize-lines: 4,5,6,7,8,9,10,11,12,13,14
 
     IO:
       ...
