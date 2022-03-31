@@ -1,50 +1,191 @@
+
+
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#2D2D2D" />
   
-  <title>tsts :: LR Schedulers</title>
-  
-
-  <link rel="icon" type="image/png" sizes="32x32" href="../_static/img/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="../_static/img/favicon-16x16.png">
-  <link rel="index" title="Index" href="../genindex.html"/>
-
-  <link rel="stylesheet" href="../_static/css/insegel.css"/>
-  <link rel="stylesheet" href="../_static/css/custom.css"/>
-
-  <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-      <script type="text/javascript" src="../_static/documentation_options.js"></script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
+  <title>LR Schedulers &mdash; tsts  documentation</title>
   
 
-  <script src="https://email.tl.fortawesome.com/c/eJxNjUEOgyAQAF8jR7Kw6wIHDh7sP1Cw2mgxgmn6-3JsMqc5zEQfE8dkxOY1KKMUOI3ACFKRJpSW2AAp7ontYIaxI6i7XPJVwyeVfCQ550Os3jLrGSNOLgbdAy6s0PBk2TFNjEbsfq31LB0OnX407pJa5v2faRadwSW63mn5KuLyR9j2tgx3zecanl-55R_-jjPs"></script> 
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.min.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.min.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Scalers" href="scalers.html" /> 
+
 </head>
 
 <body>
-  <div id="insegel-container">
     <header>
-      <div id="logo-container">
-          
-          <h1>tsts</h1>
-          
-      </div>
-      <div id="project-container">
-        
-        <h1>Documentation</h1>
-        
-      </div>
+        <div class="container">
+            <a class="site-nav-toggle hidden-lg-up"><i class="icon-menu"></i></a>
+            <a class="site-title" href="../index.html">
+                tsts
+            </a>
+        </div>
     </header>
 
-    <div id="content-container">
 
-      <div id="main-content-container">
-        <div id="main-content" role="main">
+<div class="breadcrumbs-outer hidden-xs-down">
+    <div class="container">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a></li>
+        
+      <li>LR Schedulers</li>
+    
+    
+      <li class="breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/schedulers.rst.txt" rel="nofollow"> View page source</a>
           
+        
+      </li>
+    
+  </ul>
+</div>
+    </div>
+</div>
+    <div class="main-outer">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-3 site-nav">
+                    
+<div role="search">
+    <form class="search" action="../search.html" method="get">
+        <div class="icon-input">
+            <input type="text" name="q" placeholder="Search" />
+            <span class="icon-search"></span>
+        </div>
+        <input type="submit" value="Go" class="d-hidden" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+                    <div class="site-nav-tree">
+                        
+                            
+                            
+                                <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../projects/config.html">How a Config File is Structured</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#general-settings">General Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#input-output">Input &amp; Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#optimizer">Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#learning-rate-scheduler">Learning Rate Scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#trainer">Trainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#model">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#local-scaler">Local Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#loss-function">Loss Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#metric">Metric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#dataset">Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#pipeline">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#scaler">Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#dataloader">Dataloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#logger">Logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#putting-it-together">Putting It Together</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train &amp; Test on a Custom Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#using-tools-train-py-tools-test-py">Using <cite>tools/train.py</cite> &amp; <cite>tools/test.py</cite></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dataaug.html">Data Augmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataaug.html#gaussian-noise">Gaussian Noise</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="losses.html">Loss Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#dilate">DILATE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#smooth-mae">Smooth MAE</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models.html#informer">Informer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#n-beats">N-BEATS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#scinet">SCINet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#seq2seq">Seq2Seq</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optimizers.html">Optimizers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#adam">Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#adamw">AdamW</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#sam">SAM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers.html#sgd">SGD</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scalers.html">Scalers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scalers.html#identity-scaler">Identity Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scalers.html#min-max-scaler">Min-Max Scaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scalers.html#standard-scaler">Standard Scaler</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LR Schedulers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cosine-annealing">Cosine Annealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cosine-annealing-warm-restarts">Cosine Annealing Warm Restarts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exponential-decay">Exponential Decay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#identity">Identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step">Step</a></li>
+</ul>
+</li>
+</ul>
+
+                            
+                        
+                    </div>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="document">
+                        
+                            
   <div class="section" id="lr-schedulers">
 <span id="schedulers"></span><h1>LR Schedulers<a class="headerlink" href="#lr-schedulers" title="Permalink to this headline">¶</a></h1>
 <p>The learning rate scheduler can be changed by adding a <cite>SCHEDULER</cite> section to the config. The default learning rate scheduler is <cite>CosineAnnealing</cite>.</p>
@@ -101,193 +242,41 @@
 </div>
 
 
-        </div>
-      </div>
-
-      <div id="side-menu-container">
-
-        <div id="search" role="search">
-        <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-            <input type="text" name="q" placeholder="Search..." />
-            <input type="hidden" name="check_keywords" value="yes" />
-            <input type="hidden" name="area" value="default" />
-        </form>
-</div>
-
-        <div id="side-menu" role="navigation">
-
-          
-  
-    
-  
-  
-    <p class="caption" role="heading"><span class="caption-text">🌏 About Project</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../projects/config.html">How a Config File is Structured</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#general-settings">General Settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#input-output">Input &amp; Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#training">Training</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#optimizer">Optimizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#learning-rate-scheduler">Learning Rate Scheduler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#trainer">Trainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#model">Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#local-scaler">Local Scaler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#loss-function">Loss Function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#metric">Metric</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#dataset">Dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#pipeline">Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#scaler">Scaler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#dataloader">Dataloader</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#logger">Logger</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../projects/config.html#putting-it-together">Putting It Together</a></li>
-</ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">⚡️ Getting Started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/train.html">Train on a Custom Dataset</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../tutorials/train.html#directory-structure">🗂 Directory Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#create-config">2. Create Config</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../tutorials/train.html#config">📝 Config</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/train.html#train-forecasting-model">3. Train Forecasting Model</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/test.html">Test on a Custom Dataset</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/test.html#create-a-custom-dataset">1. Create a Custom Dataset</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../tutorials/test.html#directory-structure">🗂 Directory Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials/test.html#test-forecasting-model">2. Test Forecasting Model</a></li>
-</ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">📗 Catalog</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="dataaug.html">Data Augmentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dataaug.html#gaussian-noise">Gaussian Noise</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="losses.html">Loss Functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="losses.html#dilate">DILATE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="losses.html#reference">Reference</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-error-mae">Mean Absolute Error (MAE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-absolute-percentage-error-mape">Mean Absolute Percentage Error (MAPE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="losses.html#mean-squared-error-mse">Mean Squared Error (MSE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="losses.html#smooth-mae">Smooth MAE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="losses.html#id1">Reference</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models.html#informer">Informer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="models.html#reference">Reference</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="models.html#n-beats">N-BEATS</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="models.html#id2">Reference</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="models.html#scinet">SCINet</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="models.html#id3">Reference</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="models.html#seq2seq">Seq2Seq</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="models.html#id4">Reference</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="optimizers.html">Optimizers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="optimizers.html#adam">Adam</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="optimizers.html#reference">Reference</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="optimizers.html#adamw">AdamW</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id2">Reference</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="optimizers.html#sam">SAM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="optimizers.html#id3">Reference</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="optimizers.html#sgd">SGD</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="scalers.html">Scalers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="scalers.html#identity-scaler">Identity Scaler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scalers.html#min-max-scaler">Min-Max Scaler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scalers.html#standard-scaler">Standard Scaler</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">LR Schedulers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#cosine-annealing">Cosine Annealing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#cosine-annealing-warm-restarts">Cosine Annealing Warm Restarts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exponential-decay">Exponential Decay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#identity">Identity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step">Step</a></li>
-</ul>
-</li>
-</ul>
-
-  
-
-
-        </div>
-
-        
-
-      </div>
-
-    </div>
-
-<footer>
-    <div id="footer-info">
-        <ul id="build-details">
-            
-                <li class="footer-element">
-                    
-                        <a href="../_sources/modules/schedulers.rst.txt" rel="nofollow"> source</a>
-                    
-                </li>
-            
-
-            
-
-            
-        </ul>
-
-        
-            <div id="copyright">
-                &copy; 2021, tsts Development Team
+                        
+                    </div>
+                </div>
             </div>
-        
-
-        <div id="credit">
-            created with <a href="http://sphinx-doc.org/">Sphinx</a> and <a href="https://github.com/Autophagy/insegel">Insegel</a>
-
         </div>
-    </div>
+    </div>    
 
-    <a id="menu-toggle" class="fa fa-bars" aria-hidden="true"></a>
+
+  
 
     <script type="text/javascript">
-      $("#menu-toggle").click(function() {
-        $("#menu-toggle").toggleClass("toggled");
-        $("#side-menu-container").slideToggle(300);
-      });
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
     </script>
-
-</footer> 
-
-</div>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+    <div class="footer" role="contentinfo">
+        <div class="container">
+            &#169; Copyright 2021, tsts development team.
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.
+        </div>
+    </div>  
 
 </body>
 </html>
