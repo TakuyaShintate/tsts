@@ -180,7 +180,7 @@ Dataset
 
 If i-th sequence is smaller than **IO.LOOKBACK**, it is zero padded to match **IO.LOOKBACK**.
 
-.. note:: Zero padding may reduce the accuracy. To avoid zero padding, set **DATASET.BASE_START_INDEX** to the same value to 2 * **IO.LOOKBACK** and **DATASET.BASE_END_INDEX** to the same value to **IO.HORIZON**.
+.. note:: Zero padding may reduce the accuracy. To avoid zero padding, set **DATASET.BASE_START_INDEX** to the same value to 2 * **IO.LOOKBACK**.
 
 .. code-block:: yaml
     :emphasize-lines: 4,5,6,7,8
