@@ -7,6 +7,10 @@
 [![pypi](https://img.shields.io/pypi/v/tsts?style=flat)](https://pypi.org/project/tsts/1.0.0/)
 [![license](https://img.shields.io/github/license/TakuyaShintate/tsts?style=flat)](https://github.com/TakuyaShintate/tsts/blob/main/LICENSE)
 
+<div align="center">
+  <img src="img/result-example.png" width="1200"/>
+</div>
+
 English/[日本語](README_JP.md)
 
 ([documentations](https://takuyashintate.github.io/tsts/))
