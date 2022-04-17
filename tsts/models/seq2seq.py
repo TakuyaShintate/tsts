@@ -5,6 +5,7 @@ from torch import Tensor
 from torch.nn import Linear, LSTMCell, ModuleList
 from tsts.cfg import CfgNode as CN
 from tsts.core import MODELS
+from tsts.types import MaybeTensor
 
 from .module import Module
 
@@ -136,6 +137,7 @@ class Seq2Seq(Module):
         self,
         X: Tensor,
         X_mask: Tensor,
+        bias: MaybeTensor = None,
         time_stamps: Optional[Tensor] = None,
     ) -> Tensor:
         """Return prediction.
