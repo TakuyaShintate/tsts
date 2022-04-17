@@ -123,7 +123,7 @@ from tsts.utils import plot
 
 
 (solver, X_scaler, y_scaler) = init_forecaster(
-    cfg_name,  # Config file (like "my_first_model.yml")
+    cfg_name,  # config file (like "my_first_model.yml")
     train_dir,  # dir to contain training data
     in_feats,  # list of input feature names
     out_feats,  # list of output feature names
