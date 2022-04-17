@@ -731,7 +731,7 @@ class TimeSeriesForecaster(Solver):
             y_valid,
             time_stamps_valid,
         )
-        if self.cfg.TRAINING.PRETRAIN is not None:
+        if len(self.cfg.TRAINING.PRETRAIN) > 0:
             self._load_pretrained_modules()
         for i in range(num_epochs):
             (ave_loss_vals, ave_scores) = self.trainer.step()

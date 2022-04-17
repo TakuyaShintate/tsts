@@ -1,9 +1,11 @@
 import json
 import os
+import random
 import sys
 import warnings
 from typing import List, Optional
 
+import numpy as np
 import torch
 from torch.optim import Optimizer
 from torch.utils.data import ConcatDataset
@@ -25,9 +27,25 @@ from tsts.trainers import Trainer, build_trainer
 from tsts.transforms import build_pipeline
 from tsts.transforms.pipeline import Pipeline
 from tsts.types import MaybeRawDataset, RawDataset
-from tsts.utils import set_random_seed
 
 __all__ = ["Solver"]
+
+
+def set_random_seed(seed: int = 42) -> None:
+    """Enforce deterministic behavior.
+
+    Parameters
+    ----------
+    seed : int, optional
+        Random seed, by default 42
+    """
+    random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 class Solver(object):
