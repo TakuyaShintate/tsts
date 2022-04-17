@@ -118,23 +118,21 @@ Forecasts are made with arbitrary values with a trained model.
 > Size of input values must be of (number of time steps, number of variables)
 
 ```python
-from tsts.utils import init_forecaster, run_forecaster
+from tsts.apis import init_forecaster, run_forecaster
+from tsts.utils import plot
 
 
 (solver, X_scaler, y_scaler) = init_forecaster(
-    cfg_name,
-    train_dir,
-    in_feats, # list of input feature names
-    out_feats, # <list of output feature names>
+    cfg_name,  # Config file (like "my_first_model.yml")
+    train_dir,  # dir to contain training data
+    in_feats,  # list of input feature names
+    out_feats,  # list of output feature names
 )
-
 Z = run_forecaster(
     solver,
     X_scaler,
     y_scaler,
-    X,
+    X,  # torch.Tensor of (number of time steps, number of variables)
 )
-
-# Plot result
 plot(Z)
 ```
