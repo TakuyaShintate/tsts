@@ -24,7 +24,7 @@ _C.TRAINING.NUM_EPOCHS = 100
 # If True, datasets are split randomly (valid only if TRAIN_DATA_SPLIT = "col")
 _C.TRAINING.RANDOM_SPLIT = True
 # Try to load pretrained model & local scaler in this directory
-_C.TRAINING.PRETRAIN = None
+_C.TRAINING.PRETRAIN = ""
 
 _C.OPTIMIZER = CN()
 # Optimizer name

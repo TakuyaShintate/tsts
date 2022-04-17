@@ -48,14 +48,6 @@ pip install git+https://github.com/takuyashintate/tsts
 
 訓練データ（CSVファイル）とバリデーションデータ、テストデータを各々のディレクトリに保存してください。ディレクトリの名前は任意です。訓練・バリデーション・テストデータが複数存在する場合、それらを全て各々のディレクトリに保存してください。
 
-##### CSVファイルの例
-
-> 実行時に使用する入力・出力変数を選択できます
-
-| feat0 | feat1 | feat2 |
-| ----- | ----- | ----- |
-| xxxxx | yyyyy | zzzzz |
-
 #### 2. コンフィグファイルを作成
 
 学習時の設定を記述したコンフィグファイルを作成します。モデル、Data Augmentation、オプティマイザー、学習率スケジューラーなどを指定することができます。設定可能な項目についての詳細は[ドキュメンテーション](https://takuyashintate.github.io/tsts/projects/config.html)を参照してください。
@@ -117,66 +109,21 @@ python tools/test.py \
 > 入力値は（タイムステップ数, 変数の数）の形をしている必要があります
 
 ```python
-import glob
-import os
-
-import pandas as pd
-import torch
-from tsts.cfg import get_cfg_defaults
-from tsts.scalers import build_X_scaler, build_y_scaler
-from tsts.solvers import TimeSeriesForecaster
+from tsts.apis import init_forecaster, run_forecaster
 from tsts.utils import plot
 
 
-IN_FEATS = "<list of input feature names>"
-OUT_FEATS = "<list of output feature names>"
-
-
-def load_cfg(cfg_name):
-    cfg = get_cfg_defaults()
-    cfg.merge_from_file(cfg_name)
-    return cfg
-
-
-def load_sample(cfg, filename):
-    df = pd.read_csv(filename)
-    df = df.fillna(0.0)
-    # Take only the values of input & output variables
-    x = torch.tensor(df[IN_FEATS].values, dtype=torch.float32)
-    y = torch.tensor(df[OUT_FEATS].values, dtype=torch.float32)
-    return (x, y)
-  
-
-def build_scalers(cfg):
-    X_scaler = build_X_scaler(cfg)
-    y_scaler = build_y_scaler(cfg)
-    X = []
-    Y = []
-    for filename in glob.glob(os.path.join("<dir to contain training data>", "*.csv")):
-        # Initialize input & output values
-        (x, y) = load_sample(cfg, filename)
-        X.append(x)
-        Y.append(y)
-    X_scaler.fit_batch(X)
-    y_scaler.fit_batch(Y)
-    return (X_scaler, y_scaler)
-
-
-# Load merged config
-cfg = load_cfg("my_first_model.yml")
-# Build input & output value scalers
-(X_scaler, y_scaler) = build_scalers(cfg)
-solver = TimeSeriesForecaster("my_first_model.yml")
-# Initialize inputs to the model (`torch.Tensor`)
-# NOTE: This input value does not have to be on the device specified in training
-test_input = "..."
-# Before passing input values to the model, scale the values in the same way as during training
-test_input = X_scaler.transform(test_input)
-test_output = solver.predict(test_input)
-# Restore the result to the original scale
-test_output = y_scaler.inv_transform(test_output)
-
-# Plot the result
-# NOTE: One figure is assigned to one variable
-plot(test_output)
+(solver, X_scaler, y_scaler) = init_forecaster(
+    cfg_name,  # config file (like "my_first_model.yml")
+    train_dir,  # dir to contain training data
+    in_feats,  # list of input feature names
+    out_feats,  # list of output feature names
+)
+Z = run_forecaster(
+    solver,
+    X_scaler,
+    y_scaler,
+    X,  # torch.Tensor of (number of time steps, number of variables)
+)
+plot(Z)
 ```

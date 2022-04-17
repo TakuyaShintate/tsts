@@ -13,7 +13,11 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from torch import Tensor
 
-__all__ = ["plot", "set_random_seed"]
+__all__ = [
+    "plot",
+    "set_random_seed",
+    "merge_state_dict",
+]
 
 sns.set_theme(style="darkgrid")
 
