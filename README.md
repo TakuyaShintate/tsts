@@ -49,14 +49,6 @@ If you want to measure the performance of your model on a given benchmark, see "
 
 Save the training data (CSV files), validation data, and test data in their respective directories. The name of the directory is arbitrary. If there are multiple training, validation, and test data, please save them all in their respective directories.
 
-##### Example of CSV file
-
-> You may select input and output variables to be used at runtime
-
-| feat0 | feat1 | feat2 |
-| ----- | ----- | ----- |
-| xxxxx | yyyyy | zzzzz |
-
 #### 2. Create a config file
 
 Create a config file describing the settings during training. You can specify the model, Data Augmentation, Optimizer, Learning Rate Scheduler, etc. See [documentations](https://takuyashintate.github.io/tsts/projects/config.html) for details on the possible configuration items.
