@@ -192,7 +192,8 @@ class SupervisedTrainer(Trainer):
                 # Calc how much time it will take to finish all epochs
                 eta = self.calc_eta(start.elapsed_time(end), pbar.n)
                 pbar.set_description(
-                    f"(loss={total_loss_v.item():.4f}, "
+                    f"(ep={self.current_epoch}, "
+                    f"loss={total_loss_v.item():.4f}, "
                     f"lr={self.scheduler.current_lr:.4f}, "
                     f"eta={eta})"
                 )
