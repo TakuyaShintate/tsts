@@ -674,7 +674,7 @@ class TimeSeriesForecaster(Solver):
             time_stamps = time_stamps.to(device)
         Z = self.model(X, X_mask, time_stamps)
         Z = Z + self.local_scaler(bias)
-        Z = Z[0].detach().cpu()
+        Z = Z[0]
         return Z
 
     def _load_pretrained_modules(self) -> None:

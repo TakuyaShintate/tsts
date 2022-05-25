@@ -5,6 +5,7 @@ from typing import List, Tuple
 import pandas as pd
 import torch
 from torch import Tensor
+from torch.autograd import Variable
 
 from .cfg import CfgNode as CN
 from .cfg import get_cfg_defaults
@@ -80,6 +81,20 @@ def init_forecaster(
     return (solver, X_scaler, y_scaler)
 
 
+def get_activation_map(
+    solver: TimeSeriesForecaster,
+    X_scaler: Scaler,
+    X: Tensor,
+    tgt_time_step: int,
+    tgt_var: int,
+) -> Tensor:
+    X = X_scaler.transform(X)
+    X = Variable(X, requires_grad=True)
+    Z = solver.predict(X)
+    Z[tgt_time_step, tgt_var].backward()
+    return X.grad
+
+
 def run_forecaster(
     solver: TimeSeriesForecaster,
     X_scaler: Scaler,
@@ -88,5 +103,6 @@ def run_forecaster(
 ) -> Tensor:
     X = X_scaler.transform(X)
     Z = solver.predict(X)
+    Z = Z.detach().cpu()
     Z = y_scaler.inv_transform(Z)
     return Z

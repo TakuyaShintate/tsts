@@ -230,6 +230,7 @@ def infer_step(
             y_scale = Y_scaler.transform(y[i : i + horizon])
             b_scale = Y_scaler.transform(y[i - lookback : i])
             pred = solver.predict(x_scale, b_scale)
+            pred = pred.detach().cpu()
             z_scale = Y_scaler.inv_transform(pred)
             mae += (pred - y_scale).abs().mean().item()
             mse += ((pred - y_scale) ** 2).mean().item()
