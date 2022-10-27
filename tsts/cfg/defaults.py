@@ -134,7 +134,7 @@ _C.DATASET.NAME_TRAIN = "Dataset"
 # Validation dataset name
 _C.DATASET.NAME_VALID = "Dataset"
 # Dataset index starts with this value
-_C.DATASET.BASE_START_INDEX = 0
+_C.DATASET.BASE_START_INDEX = 192
 # Last BASE_END_INDEX samples are not used for training
 _C.DATASET.BASE_END_INDEX = -1
 # Normalize per dataset differently
