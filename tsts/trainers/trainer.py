@@ -135,10 +135,12 @@ class SupervisedTrainer(Trainer):
                 _,
             ) in self.train_dataloader:
                 self.optimizer.zero_grad()
+                # TODO: Add timing for cpu mode
                 # Timing one single iteration
-                start = torch.cuda.Event(enable_timing=True)
-                end = torch.cuda.Event(enable_timing=True)
-                start.record()
+                if torch.cuda.is_available() is True:
+                    start = torch.cuda.Event(enable_timing=True)
+                    end = torch.cuda.Event(enable_timing=True)
+                    start.record()
                 X = X.to(self.device)
                 y = y.to(self.device)
                 bias = bias.to(self.device)
@@ -187,10 +189,13 @@ class SupervisedTrainer(Trainer):
                 else:
                     self.optimizer.step()
                 pbar.update(1)
-                end.record()
-                torch.cuda.synchronize()
-                # Calc how much time it will take to finish all epochs
-                eta = self.calc_eta(start.elapsed_time(end), pbar.n)
+                if torch.cuda.is_available() is True:
+                    end.record()
+                    torch.cuda.synchronize()
+                    # Calc how much time it will take to finish all epochs
+                    eta = self.calc_eta(start.elapsed_time(end), pbar.n)
+                else:
+                    eta = "nan"
                 pbar.set_description(
                     f"(ep={self.current_epoch}, "
                     f"loss={total_loss_v.item():.4f}, "
